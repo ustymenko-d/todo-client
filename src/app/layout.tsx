@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
 import ThemeProviderWrapper from '@/components/Theme/ThemeProviderWrapper'
+import Footer from '@/components/Footer'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -20,17 +21,22 @@ export const metadata: Metadata = {
 	creator: 'ustymenko.denys@gmail.com',
 }
 
-export default function RootLayout({
+const RootLayout = ({
 	children,
 }: Readonly<{
 	children: React.ReactNode
-}>) {
+}>) => {
 	return (
 		<html lang='en'>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+				className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-dvh flex flex-col`}>
+				<ThemeProviderWrapper>
+					{children}
+					<Footer />
+				</ThemeProviderWrapper>
 			</body>
 		</html>
 	)
 }
+
+export default RootLayout
