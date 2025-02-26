@@ -13,15 +13,10 @@ import { Button } from './button'
 import { appStore } from '@/store/store'
 
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
-	inputId: string
-	label: ReactNode
+	labelNode: ReactNode
 }
 
-const PasswordInput: FC<PasswordInputProps> = ({
-	inputId,
-	label,
-	...props
-}) => {
+const PasswordInput: FC<PasswordInputProps> = ({ labelNode, ...props }) => {
 	const [showPassword, setShowPassword] = useState(false)
 	const authFormType = appStore((state) => state.authFormType)
 	const setAuthFormType = appStore((state) => state.setAuthFormType)
@@ -29,7 +24,7 @@ const PasswordInput: FC<PasswordInputProps> = ({
 	return (
 		<div className='grid gap-2'>
 			<div className='flex items-center'>
-				{label}
+				{labelNode}
 				{authFormType === 'login' && (
 					<Button
 						onClick={() => setAuthFormType('forgotPassword')}
@@ -42,7 +37,6 @@ const PasswordInput: FC<PasswordInputProps> = ({
 			</div>
 			<div className='relative'>
 				<Input
-					id={inputId}
 					type={showPassword ? 'text' : 'password'}
 					required
 					className='pr-10'

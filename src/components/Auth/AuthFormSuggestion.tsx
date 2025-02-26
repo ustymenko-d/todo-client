@@ -25,7 +25,7 @@ const suggestionConfig: Record<
 	},
 } as const
 
-const FormSuggestion = () => {
+const AuthFormSuggestion = () => {
 	const authFormType = appStore((state) => state.authFormType) as AuthFormType
 	const setAuthFormType = appStore((state) => state.setAuthFormType)
 
@@ -50,4 +50,4 @@ const FormSuggestion = () => {
 	)
 }
 
-export default FormSuggestion
+export default AuthFormSuggestion

@@ -1,51 +1,36 @@
-// 'use client'
-
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { appStore, AuthFormType } from '@/store/store'
+import { useForm } from 'react-hook-form'
+import { z, ZodSchema } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import authValidation from '@/schemas/authFormSchema'
+import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import RememberMeCheckbox from '@/components/ui/RememberMeCheckbox'
-import PasswordInput from '@/components/ui/PasswordInput'
-import EmailInput from '@/components/ui/EmailInput'
-import FormSuggestion from './FormSuggestion'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import {
-	authFormSchema,
-	emailBaseSchema,
-	passwordBaseSchema,
-} from '@/schemas/authFormSchema'
-import { z, ZodSchema } from 'zod'
-import {
-	Form,
-	FormControl,
-	// FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '../ui/form'
-import { Label } from '../ui/label'
+import AuthFormSuggestion from './AuthFormSuggestion'
+import AuthFormInput from './AuthFormInput'
 
-type FieldType = 'email' | 'password' | 'confirmPassword' | 'rememberMe'
+export type BaseFieldType = 'email' | 'password' | 'confirmPassword'
+type FieldType = BaseFieldType | 'rememberMe'
 
 interface IDefaultSchemaValues {
-	email?: ''
-	password?: ''
+	email?: string
+	password?: string
+	confirmPassword?: string
 }
 
-const formConfig: Record<
-	AuthFormType,
-	{
-		fields: FieldType[]
-		buttonText: string
-		validationSchema: ZodSchema
-		defaultValues: IDefaultSchemaValues
-	}
-> = {
+interface IFormConfig {
+	fields: FieldType[]
+	buttonText: string
+	validationSchema: ZodSchema
+	defaultValues: IDefaultSchemaValues
+}
+
+const formConfig: Record<AuthFormType, IFormConfig> = {
 	login: {
 		fields: ['email', 'password', 'rememberMe'],
 		buttonText: 'Log in',
-		validationSchema: authFormSchema,
+		validationSchema: authValidation.loginSchema,
 		defaultValues: {
 			email: '',
 			password: '',
@@ -54,16 +39,17 @@ const formConfig: Record<
 	signup: {
 		fields: ['email', 'password', 'confirmPassword'],
 		buttonText: 'Sign up',
-		validationSchema: authFormSchema,
+		validationSchema: authValidation.signupSchema,
 		defaultValues: {
 			email: '',
 			password: '',
+			confirmPassword: '',
 		},
 	},
 	forgotPassword: {
 		fields: ['email'],
 		buttonText: 'Send password reset email',
-		validationSchema: emailBaseSchema,
+		validationSchema: authValidation.emailSchema,
 		defaultValues: {
 			email: '',
 		},
@@ -71,9 +57,10 @@ const formConfig: Record<
 	resetPassword: {
 		fields: ['password', 'confirmPassword'],
 		buttonText: 'Confirm',
-		validationSchema: passwordBaseSchema,
+		validationSchema: authValidation.resetPasswordSchema,
 		defaultValues: {
 			password: '',
+			confirmPassword: '',
 		},
 	},
 } as const
@@ -86,56 +73,42 @@ const AuthForm = () => {
 		[authFormType]
 	)
 
-	const authForm = useForm<z.infer<typeof authFormSchema>>({
+	const authForm = useForm<z.infer<typeof validationSchema>>({
 		resolver: zodResolver(validationSchema),
-		defaultValues: defaultValues,
+		defaultValues,
 	})
 
-	const onSubmit = (values: z.infer<typeof authFormSchema>) => {
+	const onSubmit = (values: z.infer<typeof validationSchema>) => {
 		console.log(values)
 	}
+
+	useEffect(() => {
+		authForm.reset(defaultValues)
+	}, [authForm, authFormType, defaultValues])
 
 	return (
 		<Form {...authForm}>
 			<form onSubmit={authForm.handleSubmit(onSubmit)}>
 				<div className='flex flex-col gap-6'>
 					{fields.includes('email') && (
-						<FormField
-							control={authForm.control}
+						<AuthFormInput
 							name='email'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Email</FormLabel>
-									<FormControl>
-										<EmailInput {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
+							label='Email'
+							control={authForm.control}
 						/>
 					)}
 					{fields.includes('password') && (
-						<FormField
-							control={authForm.control}
+						<AuthFormInput
 							name='password'
-							render={({ field }) => (
-								<FormItem>
-									<FormControl>
-										<PasswordInput
-											inputId='password'
-											label={<FormLabel>Password</FormLabel>}
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
+							label='Password'
+							control={authForm.control}
 						/>
 					)}
 					{fields.includes('confirmPassword') && (
-						<PasswordInput
-							inputId='confirmPassword'
-							label={<Label htmlFor='confirmPassword'>Confirm password</Label>}
+						<AuthFormInput
+							name='confirmPassword'
+							label='Confirm Password'
+							control={authForm.control}
 						/>
 					)}
 					{fields.includes('rememberMe') && <RememberMeCheckbox />}
@@ -146,7 +119,7 @@ const AuthForm = () => {
 						{buttonText}
 					</Button>
 				</div>
-				{authFormType !== 'resetPassword' && <FormSuggestion />}
+				{authFormType !== 'resetPassword' && <AuthFormSuggestion />}
 			</form>
 		</Form>
 	)
