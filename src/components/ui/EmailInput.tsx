@@ -1,15 +1,21 @@
+import { FC, InputHTMLAttributes } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-const EmailInput = () => {
+interface EmailInputProps extends InputHTMLAttributes<HTMLInputElement> {
+	label?: string
+}
+
+const EmailInput: FC<EmailInputProps> = ({ label, ...props }) => {
 	return (
 		<div className='grid gap-2'>
-			<Label htmlFor='email'>Email</Label>
+			{label && <Label htmlFor='email'>{label}</Label>}
 			<Input
 				id='email'
 				type='email'
 				placeholder='email@example.com'
 				required
+				{...props}
 			/>
 		</div>
 	)

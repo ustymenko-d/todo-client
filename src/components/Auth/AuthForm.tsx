@@ -1,89 +1,154 @@
-'use client'
+// 'use client'
 
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card'
-import RememberMeCheckbox from '../ui/RememberMeCheckbox'
-import PasswordInput from '../ui/PasswordInput'
-import EmailInput from '../ui/EmailInput'
-import FormSuggestion from './FormSuggestion'
-import { appStore } from '@/store/store'
 import { useMemo } from 'react'
+import { appStore, AuthFormType } from '@/store/store'
+import { Button } from '@/components/ui/button'
+import RememberMeCheckbox from '@/components/ui/RememberMeCheckbox'
+import PasswordInput from '@/components/ui/PasswordInput'
+import EmailInput from '@/components/ui/EmailInput'
+import FormSuggestion from './FormSuggestion'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+	authFormSchema,
+	emailBaseSchema,
+	passwordBaseSchema,
+} from '@/schemas/authFormSchema'
+import { z, ZodSchema } from 'zod'
+import {
+	Form,
+	FormControl,
+	// FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '../ui/form'
+import { Label } from '../ui/label'
 
-const formConfig = {
+type FieldType = 'email' | 'password' | 'confirmPassword' | 'rememberMe'
+
+interface IDefaultSchemaValues {
+	email?: ''
+	password?: ''
+}
+
+const formConfig: Record<
+	AuthFormType,
+	{
+		fields: FieldType[]
+		buttonText: string
+		validationSchema: ZodSchema
+		defaultValues: IDefaultSchemaValues
+	}
+> = {
 	login: {
-		title: 'Welcome back',
-		description:
-			'Please enter your email and password below to login to your account',
+		fields: ['email', 'password', 'rememberMe'],
 		buttonText: 'Log in',
+		validationSchema: authFormSchema,
+		defaultValues: {
+			email: '',
+			password: '',
+		},
 	},
 	signup: {
-		title: 'Create account',
-		description:
-			'Please enter your email and password below to sign up your account',
+		fields: ['email', 'password', 'confirmPassword'],
 		buttonText: 'Sign up',
+		validationSchema: authFormSchema,
+		defaultValues: {
+			email: '',
+			password: '',
+		},
 	},
 	forgotPassword: {
-		title: 'Forgot password',
-		description: 'Please enter the email address provided during registration',
+		fields: ['email'],
 		buttonText: 'Send password reset email',
+		validationSchema: emailBaseSchema,
+		defaultValues: {
+			email: '',
+		},
 	},
 	resetPassword: {
-		title: 'Reset password',
-		description: 'Please enter a new password',
+		fields: ['password', 'confirmPassword'],
 		buttonText: 'Confirm',
+		validationSchema: passwordBaseSchema,
+		defaultValues: {
+			password: '',
+		},
 	},
 } as const
 
-const AuthForm = ({
-	className,
-	...props
-}: React.ComponentPropsWithoutRef<'div'>) => {
+const AuthForm = () => {
 	const authFormType = appStore((state) => state.authFormType)
 
-	const { title, description, buttonText } = useMemo(
+	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
 		() => formConfig[authFormType],
 		[authFormType]
 	)
 
+	const authForm = useForm<z.infer<typeof authFormSchema>>({
+		resolver: zodResolver(validationSchema),
+		defaultValues: defaultValues,
+	})
+
+	const onSubmit = (values: z.infer<typeof authFormSchema>) => {
+		console.log(values)
+	}
+
 	return (
-		<div
-			className={cn('flex flex-col gap-6', className)}
-			{...props}>
-			<Card>
-				<CardHeader>
-					<CardTitle className='text-2xl'>{title}</CardTitle>
-					<CardDescription>{description}</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<form>
-						<div className='flex flex-col gap-6'>
-							{authFormType !== 'resetPassword' && <EmailInput />}
-							{authFormType !== 'forgotPassword' && (
-								<PasswordInput label='Password' />
+		<Form {...authForm}>
+			<form onSubmit={authForm.handleSubmit(onSubmit)}>
+				<div className='flex flex-col gap-6'>
+					{fields.includes('email') && (
+						<FormField
+							control={authForm.control}
+							name='email'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Email</FormLabel>
+									<FormControl>
+										<EmailInput {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
 							)}
-							{(authFormType === 'signup' ||
-								authFormType === 'resetPassword') && (
-								<PasswordInput label='Confirm password' />
+						/>
+					)}
+					{fields.includes('password') && (
+						<FormField
+							control={authForm.control}
+							name='password'
+							render={({ field }) => (
+								<FormItem>
+									<FormControl>
+										<PasswordInput
+											inputId='password'
+											label={<FormLabel>Password</FormLabel>}
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
 							)}
-							{authFormType === 'login' && <RememberMeCheckbox />}
-							<Button
-								type='submit'
-								className='w-full'>
-								{buttonText}
-							</Button>
-						</div>
-						{authFormType !== 'resetPassword' && <FormSuggestion />}
-					</form>
-				</CardContent>
-			</Card>
-		</div>
+						/>
+					)}
+					{fields.includes('confirmPassword') && (
+						<PasswordInput
+							inputId='confirmPassword'
+							label={<Label htmlFor='confirmPassword'>Confirm password</Label>}
+						/>
+					)}
+					{fields.includes('rememberMe') && <RememberMeCheckbox />}
+
+					<Button
+						type='submit'
+						className='w-full'>
+						{buttonText}
+					</Button>
+				</div>
+				{authFormType !== 'resetPassword' && <FormSuggestion />}
+			</form>
+		</Form>
 	)
 }
 

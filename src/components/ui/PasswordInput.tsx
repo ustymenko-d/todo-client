@@ -1,8 +1,7 @@
 'use client'
 
-import { FC, useState } from 'react'
+import { FC, InputHTMLAttributes, ReactNode, useState } from 'react'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Eye, EyeOff } from 'lucide-react'
 import {
 	Tooltip,
@@ -13,11 +12,16 @@ import {
 import { Button } from './button'
 import { appStore } from '@/store/store'
 
-interface PasswordInputProps {
-	label: string
+interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
+	inputId: string
+	label: ReactNode
 }
 
-const PasswordInput: FC<PasswordInputProps> = ({ label }) => {
+const PasswordInput: FC<PasswordInputProps> = ({
+	inputId,
+	label,
+	...props
+}) => {
 	const [showPassword, setShowPassword] = useState(false)
 	const authFormType = appStore((state) => state.authFormType)
 	const setAuthFormType = appStore((state) => state.setAuthFormType)
@@ -25,7 +29,7 @@ const PasswordInput: FC<PasswordInputProps> = ({ label }) => {
 	return (
 		<div className='grid gap-2'>
 			<div className='flex items-center'>
-				<Label htmlFor='password'>{label}</Label>
+				{label}
 				{authFormType === 'login' && (
 					<Button
 						onClick={() => setAuthFormType('forgotPassword')}
@@ -38,10 +42,11 @@ const PasswordInput: FC<PasswordInputProps> = ({ label }) => {
 			</div>
 			<div className='relative'>
 				<Input
-					id={label.toLowerCase().split(' ').join('')}
+					id={inputId}
 					type={showPassword ? 'text' : 'password'}
 					required
 					className='pr-10'
+					{...props}
 				/>
 				<TooltipProvider>
 					<Tooltip>
