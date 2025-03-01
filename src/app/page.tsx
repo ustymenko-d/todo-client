@@ -9,19 +9,23 @@ const RootPage = () => {
 	const setAuthFormType = appStore((state) => state.setAuthFormType)
 
 	return (
-		<div className='grow container mx-auto flex flex-col py-4 px-2'>
-			<ThemeToggle />
+		<>
+			<div className='border-b border-dashed'>
+				<div className='container border-x border-dashed mx-auto flex flex-col py-[10] px-2'>
+					<ThemeToggle />
+				</div>
+			</div>
 
-			<main className='grow flex flex-col justify-center'>
-				<h1 className='mb-2 font-medium text-3xl'>Welcome to UpTodo!</h1>
-				<p className='mb-8 text-base'>Manage and organize your tasks.</p>
+			<main className='grow container mx-auto border-x border-dashed px-2 flex flex-col justify-center'>
+				<h1 className='mb-2 font-medium text-3xl text-center'>Welcome to UpTodo!</h1>
+				<p className='mb-8 text-base text-center'>Manage and organize your tasks.</p>
 
 				<div>
-					<p className='mb-2 text-base'>
+					<p className='mb-2 text-base text-center'>
 						Please log in to your account or create a new one to continue.
 					</p>
 
-					<div className='flex gap-2 flex-wrap'>
+					<div className='flex gap-2 flex-wrap items-center justify-center'>
 						<Link
 							className={buttonVariants({ variant: 'default' })}
 							href='/auth'
@@ -41,7 +45,7 @@ const RootPage = () => {
 					</div>
 				</div>
 			</main>
-		</div>
+		</>
 	)
 }
 

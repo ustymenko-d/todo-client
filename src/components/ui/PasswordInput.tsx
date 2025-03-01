@@ -27,6 +27,7 @@ const PasswordInput: FC<PasswordInputProps> = ({ labelNode, ...props }) => {
 				{labelNode}
 				{authFormType === 'login' && (
 					<Button
+						type="button"
 						onClick={() => setAuthFormType('forgotPassword')}
 						variant='link'
 						size='none'

@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import RememberMeCheckbox from '@/components/ui/RememberMeCheckbox'
 import AuthFormSuggestion from './AuthFormSuggestion'
 import AuthFormInput from './AuthFormInput'
+// import AuthService from '@/services/api/auth'
+// import TokenService from '@/utils/token'
 
 export type BaseFieldType = 'email' | 'password' | 'confirmPassword'
 type FieldType = BaseFieldType | 'rememberMe'
@@ -67,6 +69,7 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 
 const AuthForm = () => {
 	const authFormType = appStore((state) => state.authFormType)
+	// const isRememberUser = appStore((state) => state.isRememberUser)
 
 	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
 		() => formConfig[authFormType],
@@ -78,8 +81,18 @@ const AuthForm = () => {
 		defaultValues,
 	})
 
-	const onSubmit = (values: z.infer<typeof validationSchema>) => {
-		console.log(values)
+	const onSubmit = async (values: z.infer<typeof validationSchema>) => {
+		console.log('Submitting:', values)
+		// try {
+		// 	const res = await AuthService.login(values)
+		// 	console.log('Response:', res.data.accessToken)
+
+		// 	if (res.data.accessToken) {
+		// 		TokenService.storeToken(res.data.accessToken, isRememberUser)
+		// 	}
+		// } catch (error) {
+		// 	console.error('Login error:', error)
+		// }
 	}
 
 	useEffect(() => {

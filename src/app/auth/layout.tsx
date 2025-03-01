@@ -5,22 +5,26 @@ import Link from 'next/link'
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<div className='container mx-auto py-4 px-2 flex flex-col grow w-full '>
-			<div className='flex items-center gap-x-2'>
-				<Link
-					className={buttonVariants({
-						variant: 'outline',
-						size: 'icon',
-					})}
-					href='/'>
-					<ChevronLeft />
-				</Link>
+		<>
+			<div className='border-b border-dashed'>
+				<div className='container border-x border-dashed mx-auto py-3 px-2 flex items-center gap-x-2'>
+					<Link
+						className={buttonVariants({
+							variant: 'outline',
+							size: 'icon',
+						})}
+						href='/'>
+						<ChevronLeft />
+					</Link>
 
-				<ThemeToggle />
+					<ThemeToggle />
+				</div>
 			</div>
 
-			<div className='grow flex items-center justify-center'>{children}</div>
-		</div>
+			<main className='border-x border-dashed container mx-auto px-2 grow flex items-center justify-center'>
+				{children}
+			</main>
+		</>
 	)
 }
 
