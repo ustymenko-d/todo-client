@@ -27,10 +27,6 @@ const cardConfig = {
 		title: 'Forgot password',
 		description: 'Please enter the email address provided during registration',
 	},
-	resetPassword: {
-		title: 'Reset password',
-		description: 'Please enter a new password',
-	},
 } as const
 
 const AuthPage = () => {

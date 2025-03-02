@@ -1,13 +1,17 @@
 import { create } from 'zustand'
-import { createJSONStorage, devtools, persist } from 'zustand/middleware'
+import {
+	createJSONStorage,
+	devtools,
+	persist,
+	StateStorage,
+} from 'zustand/middleware'
 
 export type AuthFormType =
 	| 'login'
 	| 'signup'
 	| 'forgotPassword'
-	| 'resetPassword'
 
-interface IAppStore {
+interface AppStore {
 	authFormType: AuthFormType
 	setAuthFormType: (newValue: AuthFormType) => void
 
@@ -15,7 +19,18 @@ interface IAppStore {
 	toggleIsRememberUser: () => void
 }
 
-export const appStore = create<IAppStore>()(
+const getStorage = (): StateStorage => {
+	if (typeof window === 'undefined') {
+		return {
+			getItem: () => null,
+			setItem: () => {},
+			removeItem: () => {},
+		}
+	}
+	return sessionStorage
+}
+
+export const appStore = create<AppStore>()(
 	devtools(
 		persist(
 			(set, get) => ({
@@ -24,16 +39,24 @@ export const appStore = create<IAppStore>()(
 					set({ authFormType: newValue }),
 
 				isRememberUser: false,
-				toggleIsRememberUser: () =>
-					set({ isRememberUser: !get().isRememberUser }),
+				toggleIsRememberUser: () => {
+					const newValue = !get().isRememberUser
+					set({ isRememberUser: newValue })
+
+					persistStorage.setStorage(newValue ? localStorage : sessionStorage)
+				},
 			}),
 			{
 				name: 'Todo_App_Store',
-				storage: createJSONStorage((): Storage => {
-					const state = appStore.getState()
-					return state.isRememberUser ? localStorage : sessionStorage
-				}),
+				storage: createJSONStorage(getStorage),
 			}
 		)
 	)
 )
+
+const persistStorage = {
+	storage: sessionStorage,
+	setStorage: (newStorage: Storage) => {
+		persistStorage.storage = newStorage
+	},
+}

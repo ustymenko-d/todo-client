@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { appStore, AuthFormType } from '@/store/store'
 import { useForm } from 'react-hook-form'
 import { z, ZodSchema } from 'zod'
@@ -9,8 +9,12 @@ import { Button } from '@/components/ui/button'
 import RememberMeCheckbox from '@/components/ui/RememberMeCheckbox'
 import AuthFormSuggestion from './AuthFormSuggestion'
 import AuthFormInput from './AuthFormInput'
-// import AuthService from '@/services/api/auth'
-// import TokenService from '@/utils/token'
+import AuthService from '@/services/api/auth'
+import TokenService from '@/utils/token'
+import { useRouter } from 'next/navigation'
+import { baseAuthDto, emailDto } from '@/dto/auth'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 export type BaseFieldType = 'email' | 'password' | 'confirmPassword'
 type FieldType = BaseFieldType | 'rememberMe'
@@ -56,20 +60,13 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 			email: '',
 		},
 	},
-	resetPassword: {
-		fields: ['password', 'confirmPassword'],
-		buttonText: 'Confirm',
-		validationSchema: authValidation.resetPasswordSchema,
-		defaultValues: {
-			password: '',
-			confirmPassword: '',
-		},
-	},
 } as const
 
 const AuthForm = () => {
+	const router = useRouter()
 	const authFormType = appStore((state) => state.authFormType)
-	// const isRememberUser = appStore((state) => state.isRememberUser)
+	const isRememberUser = appStore((state) => state.isRememberUser)
+	const [loading, setLoading] = useState(false)
 
 	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
 		() => formConfig[authFormType],
@@ -81,18 +78,77 @@ const AuthForm = () => {
 		defaultValues,
 	})
 
-	const onSubmit = async (values: z.infer<typeof validationSchema>) => {
-		console.log('Submitting:', values)
-		// try {
-		// 	const res = await AuthService.login(values)
-		// 	console.log('Response:', res.data.accessToken)
+	const handleSignup = async (payload: baseAuthDto) => {
+		setLoading(true)
+		try {
+			const response = await AuthService.signup(payload)
 
-		// 	if (res.data.accessToken) {
-		// 		TokenService.storeToken(res.data.accessToken, isRememberUser)
-		// 	}
-		// } catch (error) {
-		// 	console.error('Login error:', error)
-		// }
+			if (response.accessToken) {
+				TokenService.setStorageToken(response.accessToken, isRememberUser)
+				toast.success('Your account has been successfully created!')
+				router.replace('/dashboard')
+			}
+		} catch (error) {
+			toast.error('Something went wrong!')
+			console.error('Sign up error:', error)
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const handleLogin = async (payload: baseAuthDto) => {
+		setLoading(true)
+		try {
+			const response = await AuthService.login(payload)
+
+			if (response.accessToken) {
+				TokenService.setStorageToken(response.accessToken, isRememberUser)
+				router.replace('/dashboard')
+			}
+		} catch (error) {
+			toast.error('Something went wrong!')
+			console.error('Log in error:', error)
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const handleForgotPassword = async (payload: emailDto) => {
+		setLoading(true)
+		try {
+			const response = await AuthService.forgotPassword(payload)
+
+			if (response.message) {
+				toast.success(response.message)
+			}
+		} catch (error) {
+			toast.error('Something went wrong!')
+			console.error('Log in error:', error)
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const onSubmit = async (values: z.infer<typeof validationSchema>) => {
+		const payload: baseAuthDto | emailDto =
+			authFormType === 'forgotPassword'
+				? { email: values.email }
+				: { email: values.email, password: values.password || '' }
+
+		switch (authFormType) {
+			case 'signup':
+				handleSignup(payload as baseAuthDto)
+				break
+			case 'login':
+				handleLogin(payload as baseAuthDto)
+				break
+			case 'forgotPassword':
+				handleForgotPassword(payload as emailDto)
+				break
+
+			default:
+				break
+		}
 	}
 
 	useEffect(() => {
@@ -127,12 +183,20 @@ const AuthForm = () => {
 					{fields.includes('rememberMe') && <RememberMeCheckbox />}
 
 					<Button
+						disabled={loading}
 						type='submit'
 						className='w-full'>
-						{buttonText}
+						{loading ? (
+							<>
+								<Loader2 className='animate-spin' />
+								<span>Please wait</span>
+							</>
+						) : (
+							buttonText
+						)}
 					</Button>
 				</div>
-				{authFormType !== 'resetPassword' && <AuthFormSuggestion />}
+				<AuthFormSuggestion />
 			</form>
 		</Form>
 	)

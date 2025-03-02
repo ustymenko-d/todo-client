@@ -14,9 +14,14 @@ import { appStore } from '@/store/store'
 
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	labelNode: ReactNode
+	forgotBtn?: boolean
 }
 
-const PasswordInput: FC<PasswordInputProps> = ({ labelNode, ...props }) => {
+const PasswordInput: FC<PasswordInputProps> = ({
+	labelNode,
+	forgotBtn = false,
+	...props
+}) => {
 	const [showPassword, setShowPassword] = useState(false)
 	const authFormType = appStore((state) => state.authFormType)
 	const setAuthFormType = appStore((state) => state.setAuthFormType)
@@ -25,13 +30,13 @@ const PasswordInput: FC<PasswordInputProps> = ({ labelNode, ...props }) => {
 		<div className='grid gap-2'>
 			<div className='flex items-center'>
 				{labelNode}
-				{authFormType === 'login' && (
+				{authFormType === 'login' && forgotBtn && (
 					<Button
-						type="button"
+						type='button'
 						onClick={() => setAuthFormType('forgotPassword')}
 						variant='link'
 						size='none'
-						className='ml-auto inline-block text-sm underline-offset-4 hover:underline'>
+						className='inline-block ml-auto text-sm underline-offset-4 hover:underline'>
 						Forgot your password?
 					</Button>
 				)}
@@ -49,7 +54,7 @@ const PasswordInput: FC<PasswordInputProps> = ({ labelNode, ...props }) => {
 							<button
 								type='button'
 								onClick={() => setShowPassword(!showPassword)}
-								className='absolute right-0 top-1/2 -translate-y-1/2 h-full aspect-square flex items-center justify-center text-gray-500 hover:text-gray-700'>
+								className='absolute right-0 flex items-center justify-center h-full text-gray-500 -translate-y-1/2 top-1/2 aspect-square hover:text-gray-700'>
 								{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
 							</button>
 						</TooltipTrigger>

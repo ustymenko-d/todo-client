@@ -33,6 +33,7 @@ const AuthFormInput: FC<AuthFormInputProps> = ({ name, label, control }) => (
 					) : (
 						<PasswordInput
 							{...field}
+							forgotBtn={name === 'password'}
 							labelNode={<FormLabel>{label}</FormLabel>}
 							value={field.value || ''}
 						/>

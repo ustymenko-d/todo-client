@@ -1,11 +1,12 @@
+import Header from '@/components/Header'
+import Loader from '@/components/ui/Loader'
+
 const RootLoading = () => {
 	return (
 		<>
-			<div className='border-b border-dashed h-14'>
-				<div className='container mx-auto border-x border-dashed h-full'></div>
-			</div>
-			<div className='grow container mx-auto border-x border-dashed flex items-center justify-center'>
-				<h1>Loading...</h1>
+			<Header />
+			<div className='container flex items-center justify-center px-2 py-8 mx-auto border-dashed grow sm:border-x'>
+				<Loader />
 			</div>
 		</>
 	)
