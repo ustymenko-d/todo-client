@@ -33,7 +33,7 @@ const AuthService = {
 	forgotPassword: (payload: emailDto) =>
 		request('post', 'forgot-password', payload),
 	resetPassword: (payload: passwordDto, param: string) =>
-		request('post', 'reset-password', payload, param),
+		request('patch', 'reset-password', payload, param),
 }
 
 export default AuthService

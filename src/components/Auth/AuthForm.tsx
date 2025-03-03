@@ -88,6 +88,10 @@ const AuthForm = () => {
 				toast.success('Your account has been successfully created!')
 				router.replace('/dashboard')
 			}
+			
+			if (response.error) {
+				toast.error(response.message)
+			}
 		} catch (error) {
 			toast.error('Something went wrong!')
 			console.error('Sign up error:', error)
