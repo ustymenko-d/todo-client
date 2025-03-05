@@ -54,6 +54,12 @@ const ResetPasswordForm = () => {
 					resetPasswordParam
 				)
 
+				if (response.error) {
+					setStatus('error')
+					toast.error(response.message)
+					throw new Error(response.message)
+				}
+
 				setStatus(response.success ? 'success' : 'error')
 				toast.success('Your password has been changed successfully!', {
 					description:

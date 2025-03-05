@@ -1,6 +1,5 @@
 'use client'
 
-import Header from '@/components/Header'
 import ThemeToggle from '@/components/Theme/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import AuthService from '@/services/api/auth'
@@ -61,59 +60,55 @@ const DashboardPage = () => {
 	}
 
 	return (
-		<>
-			<Header>
-				<ThemeToggle />
-				<Button
-					disabled={loading}
-					onClick={handleLogout}>
-					{loading ? (
-						<>
-							<Loader2 className='animate-spin' />
-							<span>Please wait</span>
-						</>
-					) : (
-						'Log out'
-					)}
-				</Button>
+		<div className='flex gap-3'>
+			<ThemeToggle />
+			<Button
+				disabled={loading}
+				onClick={handleLogout}>
+				{loading ? (
+					<>
+						<Loader2 className='animate-spin' />
+						<span>Please wait</span>
+					</>
+				) : (
+					'Log out'
+				)}
+			</Button>
 
-				<AlertDialog>
-					<AlertDialogTrigger asChild={true}>
-						<Button
-							variant='destructive'
-							disabled={loading}>
-							{loading ? (
-								<>
-									<Loader2 className='animate-spin' />
-									<span>Please wait</span>
-								</>
-							) : (
-								'Delete account'
-							)}
-						</Button>
-					</AlertDialogTrigger>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>
-								Are you sure you want to delete your account?
-							</AlertDialogTitle>
-							<AlertDialogDescription>
-								This action cannot be undone. This will permanently delete your
-								account and remove your data from our servers.
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction onClick={handleDeleteAccount}>
-								Continue
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
-			</Header>
-
-			<main className='container px-2 py-3 mx-auto border-dashed grow border-x'></main>
-		</>
+			<AlertDialog>
+				<AlertDialogTrigger asChild={true}>
+					<Button
+						variant='destructive'
+						disabled={loading}>
+						{loading ? (
+							<>
+								<Loader2 className='animate-spin' />
+								<span>Please wait</span>
+							</>
+						) : (
+							'Delete account'
+						)}
+					</Button>
+				</AlertDialogTrigger>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							Are you sure you want to delete your account?
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							This action cannot be undone. This will permanently delete your
+							account and remove your data from our servers.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction onClick={handleDeleteAccount}>
+							Continue
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</div>
 	)
 }
 

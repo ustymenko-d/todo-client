@@ -1,11 +1,9 @@
 'use client'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { buttonVariants } from '@/components/ui/button'
 import Loader from '@/components/ui/Loader'
 import AuthService from '@/services/api/auth'
 import { BadgeCheck, BadgeX } from 'lucide-react'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -67,12 +65,6 @@ const VerificationPage = () => {
 				<span>
 					You will be automatically redirected to the main page in 3 seconds.
 				</span>
-				<Link
-					className={buttonVariants({ variant: 'default' })}
-					href='/'
-					replace>
-					Go to main page
-				</Link>
 			</AlertDescription>
 		</Alert>
 	)

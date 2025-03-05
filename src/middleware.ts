@@ -30,18 +30,18 @@ export async function middleware(request: NextRequest) {
 		if (isValid) return redirectTo('/dashboard', request)
 	}
 
-	// if (
-	// 	url.pathname.startsWith('/auth/verification') ||
-	// 	url.pathname.startsWith('/auth/reset-password')
-	// ) {
-	// 	const token = url.pathname.startsWith('/auth/verification')
-	// 		? url.searchParams.get('verificationToken')
-	// 		: url.searchParams.get('resetToken')
+	if (
+		url.pathname.startsWith('/auth/verification') ||
+		url.pathname.startsWith('/auth/reset-password')
+	) {
+		const token = url.pathname.startsWith('/auth/verification')
+			? url.searchParams.get('verificationToken')
+			: url.searchParams.get('resetToken')
 
-	// 	if (!token) {
-	// 		return redirectTo('/', request)
-	// 	}
-	// }
+		if (!token) {
+			return redirectTo('/', request)
+		}
+	}
 
 	return NextResponse.next()
 }

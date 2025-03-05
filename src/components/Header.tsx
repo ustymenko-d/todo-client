@@ -1,14 +1,28 @@
-import { FC, ReactNode } from 'react'
+'use client'
 
-interface HeaderProps {
-	children?: ReactNode
-}
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import ThemeToggle from './Theme/ThemeToggle'
+import { buttonVariants } from './ui/button'
+import { ChevronLeft } from 'lucide-react'
 
-const Header: FC<HeaderProps> = ({ children }) => {
+const Header = () => {
+	const pathname = usePathname()
+
 	return (
 		<header className='border-b border-dashed min-h-14'>
-			<div className='container flex flex-wrap items-center px-2 mx-auto border-dashed sm:border-x min-h-14 gap-x-2'>
-				{children}
+			<div className='container flex flex-wrap items-center px-2 mx-auto border-dashed lg:px-4 sm:border-x min-h-14 gap-x-2'>
+				{pathname.startsWith('/auth') && (
+					<Link
+						className={buttonVariants({
+							variant: 'outline',
+							size: 'icon',
+						})}
+						href='/'>
+						<ChevronLeft />
+					</Link>
+				)}
+				{(pathname === '/' || pathname.startsWith('/auth')) && <ThemeToggle />}
 			</div>
 		</header>
 	)

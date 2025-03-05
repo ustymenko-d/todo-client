@@ -1,53 +1,43 @@
 'use client'
 
 import Link from 'next/link'
-import ThemeToggle from '@/components/Theme/ThemeToggle'
-import { buttonVariants } from '@/components/ui/button'
 import { appStore } from '@/store/store'
-import Header from '@/components/Header'
+import { buttonVariants } from '@/components/ui/button'
 
 const RootPage = () => {
 	const setAuthFormType = appStore((state) => state.setAuthFormType)
 
 	return (
 		<>
-			<Header>
-				<ThemeToggle />
-			</Header>
+			<div className='flex flex-col gap-2 mb-6'>
+				<h1 className='text-3xl font-bold text-center sm:text-4xl xl:text-5xl'>Welcome to UpTodo!</h1>
+				<p className='text-base font-medium text-center sm:text-xl xl:text-2xl'>Manage and organize your tasks.</p>
+			</div>
 
-			<main className='grow container mx-auto sm:border-x border-dashed px-2 py-8 flex flex-col justify-center'>
-				<h1 className='mb-2 font-medium text-3xl text-center'>
-					Welcome to UpTodo!
-				</h1>
-				<p className='mb-8 text-base text-center'>
-					Manage and organize your tasks.
+			<div className='flex flex-col gap-2'>
+				<p className='text-base text-center xl:text-lg'>
+					Please log in to your account or create a new one to continue.
 				</p>
 
-				<div>
-					<p className='mb-2 text-base text-center'>
-						Please log in to your account or create a new one to continue.
-					</p>
-
-					<div className='flex gap-2 flex-wrap items-center justify-center'>
-						<Link
-							className={buttonVariants({ variant: 'default' })}
-							href='/auth'
-							onClick={() => {
-								setAuthFormType('login')
-							}}>
-							Log in
-						</Link>
-						<Link
-							className={buttonVariants({ variant: 'outline' })}
-							href='/auth'
-							onClick={() => {
-								setAuthFormType('signup')
-							}}>
-							Sign up
-						</Link>
-					</div>
+				<div className='flex flex-wrap items-center justify-center gap-2'>
+					<Link
+						className={buttonVariants({ variant: 'default' })}
+						href='/auth'
+						onClick={() => {
+							setAuthFormType('login')
+						}}>
+						Log in
+					</Link>
+					<Link
+						className={buttonVariants({ variant: 'outline' })}
+						href='/auth'
+						onClick={() => {
+							setAuthFormType('signup')
+						}}>
+						Sign up
+					</Link>
 				</div>
-			</main>
+			</div>
 		</>
 	)
 }

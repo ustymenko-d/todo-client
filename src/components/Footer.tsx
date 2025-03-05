@@ -1,16 +1,21 @@
 import { FC } from 'react'
-import FooterLink from './ui/FooterLink'
+import Link from 'next/link'
+import { buttonVariants } from './ui/button'
 
 const Footer: FC = () => {
 	return (
 		<footer className='border-t border-dashed'>
-			<div className='container mx-auto sm:border-x border-dashed py-4 px-2 text-center text-balance flex flex-wrap gap-x-1'>
-				<p>
+			<div className='container flex flex-wrap px-2 py-4 mx-auto text-center border-dashed sm:border-x lg:px-4 text-balance gap-x-1'>
+				<p className='text-base'>
 					Built&nbsp;by{' '}
-					<FooterLink
-						title='Denys Ustymenko'
-						href='https://ustymenko.vercel.app/'
-					/>
+					<Link
+						className={buttonVariants({
+							variant: 'link',
+							size: 'none',
+						})}
+						href='https://ustymenko.vercel.app/'>
+						Denys Ustymenko
+					</Link>
 					.
 				</p>
 			</div>
