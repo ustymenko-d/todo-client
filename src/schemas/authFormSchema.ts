@@ -16,6 +16,9 @@ const passwordBaseSchema = z
 	.regex(/(?=.*\d)/, {
 		message: 'The password must contain at least one digit.',
 	})
+	.regex(/^[^\s]*$/, {
+		message: 'The password must not contain spaces.',
+	})
 
 const emailBaseSchema = z.string().email({ message: 'Invalid email address.' })
 

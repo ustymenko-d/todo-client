@@ -101,11 +101,13 @@ const AuthForm = () => {
 
 				if (error) {
 					toast.error(message)
-				}
+				} else {
+					if (message) toast.success(message)
 
-				if (!error && accessToken) {
-					TokenService.setStorageToken(accessToken, isRememberUser)
-					router.replace('/dashboard')
+					if (accessToken) {
+						TokenService.setStorageToken(accessToken, isRememberUser)
+						router.replace('/dashboard')
+					}
 				}
 			} catch (error) {
 				toast.error('Something went wrong!')

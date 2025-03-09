@@ -18,7 +18,8 @@ const Header = () => {
 							variant: 'outline',
 							size: 'icon',
 						})}
-						href='/'>
+						href='/'
+						replace>
 						<ChevronLeft />
 					</Link>
 				)}

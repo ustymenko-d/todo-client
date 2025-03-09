@@ -28,8 +28,9 @@ const DashboardPage = () => {
 		try {
 			setLoading(true)
 			const response = await AuthService.deleteAccount()
+			const { success } = response
 
-			if (response.success) {
+			if (success) {
 				TokenService.removeStorageToken()
 				toast.info('Your account has been deleted')
 				router.push('/')
@@ -46,9 +47,11 @@ const DashboardPage = () => {
 		try {
 			setLoading(true)
 			const response = await AuthService.logout()
+			const { success, message } = response
 
-			if (response.success) {
+			if (success) {
 				TokenService.removeStorageToken()
+				toast.info(message)
 				router.push('/')
 			}
 		} catch (error) {
