@@ -6,10 +6,7 @@ import {
 	StateStorage,
 } from 'zustand/middleware'
 
-export type AuthFormType =
-	| 'login'
-	| 'signup'
-	| 'forgotPassword'
+export type AuthFormType = 'login' | 'signup' | 'forgotPassword'
 
 interface AppStore {
 	authFormType: AuthFormType
@@ -27,7 +24,14 @@ const getStorage = (): StateStorage => {
 			removeItem: () => {},
 		}
 	}
-	return sessionStorage
+	return window.sessionStorage
+}
+
+const persistStorage = {
+	storage: typeof window !== 'undefined' ? window.sessionStorage : undefined,
+	setStorage: (newStorage: Storage) => {
+		persistStorage.storage = newStorage
+	},
 }
 
 export const appStore = create<AppStore>()(
@@ -40,10 +44,13 @@ export const appStore = create<AppStore>()(
 
 				isRememberUser: false,
 				toggleIsRememberUser: () => {
-					const newValue = !get().isRememberUser
-					set({ isRememberUser: newValue })
-
-					persistStorage.setStorage(newValue ? localStorage : sessionStorage)
+					if (typeof window !== 'undefined') {
+						const newValue = !get().isRememberUser
+						set({ isRememberUser: newValue })
+						persistStorage.setStorage(
+							newValue ? window.localStorage : window.sessionStorage
+						)
+					}
 				},
 			}),
 			{
@@ -53,10 +60,3 @@ export const appStore = create<AppStore>()(
 		)
 	)
 )
-
-const persistStorage = {
-	storage: sessionStorage,
-	setStorage: (newStorage: Storage) => {
-		persistStorage.storage = newStorage
-	},
-}

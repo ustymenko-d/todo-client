@@ -27,7 +27,13 @@ export async function middleware(request: NextRequest) {
 	}
 
 	if (url.pathname === '/' || url.pathname === '/auth') {
-		if (isValid) return redirectTo('/dashboard', request)
+		if (isValid) {
+			return redirectTo('/dashboard', request)
+		} else {
+			if (refreshToken) {
+				return redirectTo('/auth/refresh', request)
+			}
+		}
 	}
 
 	if (
