@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { appStore, AuthFormType } from '@/store/store'
 import { useForm } from 'react-hook-form'
 import { z, ZodSchema } from 'zod'
@@ -60,7 +60,7 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 			email: '',
 		},
 	},
-} as const
+}
 
 const AuthForm = () => {
 	const router = useRouter()
@@ -78,81 +78,51 @@ const AuthForm = () => {
 		defaultValues,
 	})
 
-	const handleSignup = async (payload: baseAuthDto) => {
-		setLoading(true)
-		try {
-			const response = await AuthService.signup(payload)
+	const handleAuthAction = useCallback(
+		async (payload: baseAuthDto | emailDto) => {
+			setLoading(true)
+			try {
+				let response
+				switch (authFormType) {
+					case 'signup':
+						response = await AuthService.signup(payload as baseAuthDto)
+						break
+					case 'login':
+						response = await AuthService.login(payload as baseAuthDto)
+						break
+					case 'forgotPassword':
+						response = await AuthService.forgotPassword(payload as emailDto)
+						break
+					default:
+						return
+				}
 
-			if (response.accessToken) {
-				TokenService.setStorageToken(response.accessToken, isRememberUser)
-				toast.success('Your account has been successfully created!')
-				router.replace('/dashboard')
+				const { accessToken, error, message } = response
+
+				if (error) {
+					toast.error(message)
+				}
+
+				if (!error && accessToken) {
+					TokenService.setStorageToken(accessToken, isRememberUser)
+					router.replace('/dashboard')
+				}
+			} catch (error) {
+				toast.error('Something went wrong!')
+				console.error(`${authFormType} error:`, error)
+			} finally {
+				setLoading(false)
 			}
-			
-			if (response.error) {
-				toast.error(response.message)
-			}
-		} catch (error) {
-			toast.error('Something went wrong!')
-			console.error('Sign up error:', error)
-		} finally {
-			setLoading(false)
-		}
-	}
+		},
+		[authFormType, isRememberUser, router]
+	)
 
-	const handleLogin = async (payload: baseAuthDto) => {
-		setLoading(true)
-		try {
-			const response = await AuthService.login(payload)
-
-			if (response.accessToken) {
-				TokenService.setStorageToken(response.accessToken, isRememberUser)
-				router.replace('/dashboard')
-			}
-		} catch (error) {
-			toast.error('Something went wrong!')
-			console.error('Log in error:', error)
-		} finally {
-			setLoading(false)
-		}
-	}
-
-	const handleForgotPassword = async (payload: emailDto) => {
-		setLoading(true)
-		try {
-			const response = await AuthService.forgotPassword(payload)
-
-			if (response.message) {
-				toast.success(response.message)
-			}
-		} catch (error) {
-			toast.error('Something went wrong!')
-			console.error('Log in error:', error)
-		} finally {
-			setLoading(false)
-		}
-	}
-
-	const onSubmit = async (values: z.infer<typeof validationSchema>) => {
+	const onSubmit = (values: z.infer<typeof validationSchema>) => {
 		const payload: baseAuthDto | emailDto =
 			authFormType === 'forgotPassword'
 				? { email: values.email }
 				: { email: values.email, password: values.password || '' }
-
-		switch (authFormType) {
-			case 'signup':
-				handleSignup(payload as baseAuthDto)
-				break
-			case 'login':
-				handleLogin(payload as baseAuthDto)
-				break
-			case 'forgotPassword':
-				handleForgotPassword(payload as emailDto)
-				break
-
-			default:
-				break
-		}
+		handleAuthAction(payload)
 	}
 
 	useEffect(() => {
@@ -163,28 +133,18 @@ const AuthForm = () => {
 		<Form {...authForm}>
 			<form onSubmit={authForm.handleSubmit(onSubmit)}>
 				<div className='flex flex-col gap-6'>
-					{fields.includes('email') && (
-						<AuthFormInput
-							name='email'
-							label='Email'
-							control={authForm.control}
-						/>
+					{fields.map((field) =>
+						field === 'rememberMe' ? (
+							<RememberMeCheckbox key={field} />
+						) : (
+							<AuthFormInput
+								key={field}
+								name={field}
+								label={field}
+								control={authForm.control}
+							/>
+						)
 					)}
-					{fields.includes('password') && (
-						<AuthFormInput
-							name='password'
-							label='Password'
-							control={authForm.control}
-						/>
-					)}
-					{fields.includes('confirmPassword') && (
-						<AuthFormInput
-							name='confirmPassword'
-							label='Confirm Password'
-							control={authForm.control}
-						/>
-					)}
-					{fields.includes('rememberMe') && <RememberMeCheckbox />}
 
 					<Button
 						disabled={loading}
