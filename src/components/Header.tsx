@@ -23,7 +23,7 @@ const Header = () => {
 						<ChevronLeft />
 					</Link>
 				)}
-				{(pathname === '/' || pathname.startsWith('/auth')) && <ThemeToggle />}
+				<ThemeToggle />
 			</div>
 		</header>
 	)

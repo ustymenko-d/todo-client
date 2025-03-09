@@ -18,6 +18,7 @@ const ThemeToggle = () => {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
+					className='ms-auto'
 					variant='outline'
 					size='icon'>
 					<Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
@@ -25,7 +26,7 @@ const ThemeToggle = () => {
 					<span className='sr-only'>Toggle theme</span>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align='start'>
+			<DropdownMenuContent align='end'>
 				<DropdownMenuItem onClick={() => setTheme('light')}>
 					Light
 				</DropdownMenuItem>

@@ -5,7 +5,6 @@ import { z, ZodSchema } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import authValidation from '@/schemas/authFormSchema'
 import { Form } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
 import RememberMeCheckbox from '@/components/ui/RememberMeCheckbox'
 import AuthFormSuggestion from './AuthFormSuggestion'
 import AuthFormInput from './AuthFormInput'
@@ -13,8 +12,8 @@ import AuthService from '@/services/api/auth'
 import TokenService from '@/utils/token'
 import { useRouter } from 'next/navigation'
 import { baseAuthDto, emailDto } from '@/dto/auth'
-import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import LoadingButton from '../ui/LoadingButton'
 
 export type BaseFieldType = 'email' | 'password' | 'confirmPassword'
 type FieldType = BaseFieldType | 'rememberMe'
@@ -148,19 +147,11 @@ const AuthForm = () => {
 						)
 					)}
 
-					<Button
-						disabled={loading}
-						type='submit'
-						className='w-full'>
-						{loading ? (
-							<>
-								<Loader2 className='animate-spin' />
-								<span>Please wait</span>
-							</>
-						) : (
-							buttonText
-						)}
-					</Button>
+					<LoadingButton
+						loading={loading}
+						type='submit'>
+						<span className='hidden sm:block'>{buttonText}</span>
+					</LoadingButton>
 				</div>
 				<AuthFormSuggestion />
 			</form>
