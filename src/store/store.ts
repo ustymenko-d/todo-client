@@ -9,6 +9,9 @@ import {
 export type AuthFormType = 'login' | 'signup' | 'forgotPassword'
 
 interface AppStore {
+	isAuthorized: boolean
+	setIsAuthorized: (newValue: boolean) => void
+
 	authFormType: AuthFormType
 	setAuthFormType: (newValue: AuthFormType) => void
 
@@ -38,6 +41,11 @@ export const appStore = create<AppStore>()(
 	devtools(
 		persist(
 			(set, get) => ({
+				isAuthorized: false,
+				setIsAuthorized: (newValue: boolean) => {
+					set({ isAuthorized: newValue })
+				},
+
 				authFormType: 'login',
 				setAuthFormType: (newValue: AuthFormType) =>
 					set({ authFormType: newValue }),

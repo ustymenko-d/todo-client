@@ -1,13 +1,16 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import ThemeToggle from './Theme/ThemeToggle'
-import { buttonVariants } from './ui/button'
+import { usePathname } from 'next/navigation'
+import ThemeToggle from '../Theme/ThemeToggle'
+import AccountActions from './AccountActions'
+import { buttonVariants } from '../ui/button'
 import { ChevronLeft } from 'lucide-react'
+import { appStore } from '@/store/store'
 
 const Header = () => {
 	const pathname = usePathname()
+	const isAuthorized = appStore((state) => state.isAuthorized)
 
 	return (
 		<header className='border-b border-dashed min-h-14'>
@@ -24,6 +27,9 @@ const Header = () => {
 					</Link>
 				)}
 				<ThemeToggle />
+				{pathname.startsWith('/dashboard') && isAuthorized && (
+					<AccountActions />
+				)}
 			</div>
 		</header>
 	)

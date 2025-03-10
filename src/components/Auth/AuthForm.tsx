@@ -65,6 +65,7 @@ const AuthForm = () => {
 	const router = useRouter()
 	const authFormType = appStore((state) => state.authFormType)
 	const isRememberUser = appStore((state) => state.isRememberUser)
+	const setIsAuthorized = appStore((state) => state.setIsAuthorized)
 	const [loading, setLoading] = useState(false)
 
 	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
@@ -105,6 +106,7 @@ const AuthForm = () => {
 
 					if (accessToken) {
 						TokenService.setStorageToken(accessToken, isRememberUser)
+						setIsAuthorized(true)
 						router.replace('/dashboard')
 					}
 				}
@@ -115,7 +117,7 @@ const AuthForm = () => {
 				setLoading(false)
 			}
 		},
-		[authFormType, isRememberUser, router]
+		[authFormType, isRememberUser, router, setIsAuthorized]
 	)
 
 	const onSubmit = (values: z.infer<typeof validationSchema>) => {
