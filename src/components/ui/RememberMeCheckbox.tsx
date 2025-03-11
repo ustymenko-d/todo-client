@@ -1,25 +1,36 @@
-'use client'
-
 import { Checkbox } from '@/components/ui/checkbox'
-import { appStore } from '@/store/store'
+import { FC } from 'react'
+import { FormControl, FormField, FormItem } from './form'
+import { Control } from 'react-hook-form'
 
-const RememberMeCheckbox = () => {
-	const isRememberUser = appStore((state) => state.isRememberUser)
-	const toggleIsRememberUser = appStore((state) => state.toggleIsRememberUser)
+interface RememberMeCheckboxProps {
+	control: Control
+}
 
+const RememberMeCheckbox: FC<RememberMeCheckboxProps> = ({ control }) => {
 	return (
-		<div className='flex items-center space-x-2'>
-			<Checkbox
-				id='rememberMe'
-				checked={isRememberUser}
-				onCheckedChange={toggleIsRememberUser}
-			/>
-			<label
-				htmlFor='rememberMe'
-				className='text-sm font-medium leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
-				Remember me
-			</label>
-		</div>
+		<FormField
+			control={control}
+			name='rememberMe'
+			render={({ field }) => (
+				<FormItem>
+					<FormControl>
+						<div className='flex items-center space-x-2'>
+							<label className='flex items-center gap-2 text-sm font-medium leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+								<Checkbox
+									{...field}
+									checked={field.value}
+									onCheckedChange={(checked: boolean) =>
+										field.onChange(checked)
+									}
+								/>
+								Remember me
+							</label>
+						</div>
+					</FormControl>
+				</FormItem>
+			)}
+		/>
 	)
 }
 

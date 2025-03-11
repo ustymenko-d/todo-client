@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthService from '@/services/api/auth'
-import TokenService from '@/utils/token'
 import { toast } from 'sonner'
 import { Button } from '../ui/button'
 import {
@@ -44,17 +43,15 @@ const AccountActions = () => {
 	const [loading, setLoading] = useState(false)
 
 	const handleAction = async (
-		actionCallback: ActionCallback,
-		successMessage: string
+		actionCallback: ActionCallback
 	): Promise<void> => {
 		try {
 			setLoading(true)
-			const { success } = await actionCallback()
+			const { success, message } = await actionCallback()
 
 			if (success) {
-				TokenService.removeStorageToken()
 				setIsAuthorized(false)
-				toast.info(successMessage)
+				toast.success(message)
 				router.push('/')
 			}
 		} catch (error) {
@@ -66,16 +63,9 @@ const AccountActions = () => {
 	}
 
 	const handleDeleteAccount = () =>
-		handleAction(
-			AuthService.deleteAccount as ActionCallback,
-			'Your account has been deleted'
-		)
+		handleAction(AuthService.deleteAccount as ActionCallback)
 
-	const handleLogout = () =>
-		handleAction(
-			AuthService.logout as ActionCallback,
-			'You have been logged out'
-		)
+	const handleLogout = () => handleAction(AuthService.logout as ActionCallback)
 
 	return (
 		<div className='flex flex-wrap items-center gap-2'>

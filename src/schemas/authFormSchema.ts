@@ -20,6 +20,10 @@ const passwordBaseSchema = z
 		message: 'The password must not contain spaces.',
 	})
 
+const passwordSchema = z.object({
+	password: passwordBaseSchema,
+})
+
 const emailBaseSchema = z.string().email({ message: 'Invalid email address.' })
 
 const emailSchema = z.object({
@@ -29,6 +33,7 @@ const emailSchema = z.object({
 const loginSchema = z.object({
 	email: emailBaseSchema,
 	password: passwordBaseSchema,
+	rememberMe: z.boolean(),
 })
 
 const signupSchema = z
@@ -36,6 +41,7 @@ const signupSchema = z
 		email: emailBaseSchema,
 		password: passwordBaseSchema,
 		confirmPassword: passwordBaseSchema,
+		rememberMe: z.boolean(),
 	})
 	.refine(({ password, confirmPassword }) => password === confirmPassword, {
 		message: 'Passwords do not match.',
@@ -52,11 +58,12 @@ const resetPasswordSchema = z
 		path: ['confirmPassword'],
 	})
 
-const authValidation = {
+const AuthValidation = {
 	emailSchema,
+	passwordSchema,
 	loginSchema,
 	signupSchema,
 	resetPasswordSchema,
 }
 
-export default authValidation
+export default AuthValidation

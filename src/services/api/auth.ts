@@ -1,39 +1,28 @@
-import Axios from '../Axios'
+import apiRequestHandler from '@/utils/apiRequestHandler'
 import { baseAuthDto, emailDto, passwordDto } from '@/dto/auth'
 
-type Method = 'post' | 'get' | 'delete' | 'patch' | 'put'
-
 const API_URL = '/auth'
-const request = async (
-	method: Method,
-	endpoint: string,
-	payload?: baseAuthDto | emailDto | passwordDto,
-	param?: string
-) => {
-	try {
-		const url = param
-			? `${API_URL}/${endpoint}?${param}`
-			: `${API_URL}/${endpoint}`
-		const response = await Axios[method](url, payload)
-		return response.data
-	} catch (error) {
-		console.error(`${endpoint} error:`, error)
-		throw error
-	}
-}
 
 const AuthService = {
-	signup: (payload: baseAuthDto) => request('post', 'signup', payload),
+	signup: (payload: baseAuthDto) =>
+		apiRequestHandler<baseAuthDto>(API_URL, 'post', 'signup', payload),
 	verifyEmail: (param: string) =>
-		request('get', 'verification', undefined, param),
-	login: (payload: baseAuthDto) => request('post', 'login', payload),
-	logout: () => request('post', 'logout'),
-	refreshToken: () => request('get', 'refresh'),
-	deleteAccount: () => request('delete', 'delete'),
+		apiRequestHandler<string>(API_URL, 'get', 'verification', undefined, param),
+	login: (payload: baseAuthDto) =>
+		apiRequestHandler<baseAuthDto>(API_URL, 'post', 'login', payload),
+	logout: () => apiRequestHandler(API_URL, 'post', 'logout'),
+	refreshToken: () => apiRequestHandler(API_URL, 'get', 'refresh'),
+	deleteAccount: () => apiRequestHandler(API_URL, 'delete', 'delete'),
 	forgotPassword: (payload: emailDto) =>
-		request('post', 'forgot-password', payload),
+		apiRequestHandler<emailDto>(API_URL, 'post', 'forgot-password', payload),
 	resetPassword: (payload: passwordDto, param: string) =>
-		request('patch', 'reset-password', payload, param),
+		apiRequestHandler<passwordDto>(
+			API_URL,
+			'patch',
+			'reset-password',
+			payload,
+			param
+		),
 }
 
 export default AuthService

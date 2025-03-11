@@ -1,12 +1,6 @@
-export interface emailDto {
-	email: string
-}
+import { z } from 'zod'
+import AuthValidation from '@/schemas/authFormSchema'
 
-export interface passwordDto {
-	password: string
-}
-
-export interface baseAuthDto {
-	email: string
-	password: string
-}
+export type emailDto = z.infer<typeof AuthValidation.emailSchema>
+export type passwordDto = z.infer<typeof AuthValidation.passwordSchema>
+export type baseAuthDto = z.infer<typeof AuthValidation.loginSchema>

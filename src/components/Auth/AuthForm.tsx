@@ -9,7 +9,6 @@ import RememberMeCheckbox from '@/components/ui/RememberMeCheckbox'
 import AuthFormSuggestion from './AuthFormSuggestion'
 import AuthFormInput from './AuthFormInput'
 import AuthService from '@/services/api/auth'
-import TokenService from '@/utils/token'
 import { useRouter } from 'next/navigation'
 import { baseAuthDto, emailDto } from '@/dto/auth'
 import { toast } from 'sonner'
@@ -22,6 +21,7 @@ interface IDefaultSchemaValues {
 	email?: string
 	password?: string
 	confirmPassword?: string
+	rememberMe?: boolean
 }
 
 interface IFormConfig {
@@ -39,16 +39,18 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 		defaultValues: {
 			email: '',
 			password: '',
+			rememberMe: false,
 		},
 	},
 	signup: {
-		fields: ['email', 'password', 'confirmPassword'],
+		fields: ['email', 'password', 'confirmPassword', 'rememberMe'],
 		buttonText: 'Sign up',
 		validationSchema: authValidation.signupSchema,
 		defaultValues: {
 			email: '',
 			password: '',
 			confirmPassword: '',
+			rememberMe: false,
 		},
 	},
 	forgotPassword: {
@@ -64,7 +66,6 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 const AuthForm = () => {
 	const router = useRouter()
 	const authFormType = appStore((state) => state.authFormType)
-	const isRememberUser = appStore((state) => state.isRememberUser)
 	const setIsAuthorized = appStore((state) => state.setIsAuthorized)
 	const [loading, setLoading] = useState(false)
 
@@ -97,17 +98,19 @@ const AuthForm = () => {
 						return
 				}
 
-				const { accessToken, error, message } = response
+				const { success, error, message } = response
 
 				if (error) {
 					toast.error(message)
 				} else {
 					if (message) toast.success(message)
 
-					if (accessToken) {
-						TokenService.setStorageToken(accessToken, isRememberUser)
-						setIsAuthorized(true)
-						router.replace('/dashboard')
+					if (success) {
+						if (authFormType !== 'forgotPassword') {
+							setIsAuthorized(true)
+							router.replace('/dashboard')
+						}
+						authForm.reset(defaultValues)
 					}
 				}
 			} catch (error) {
@@ -117,14 +120,18 @@ const AuthForm = () => {
 				setLoading(false)
 			}
 		},
-		[authFormType, isRememberUser, router, setIsAuthorized]
+		[authForm, authFormType, defaultValues, router, setIsAuthorized]
 	)
 
 	const onSubmit = (values: z.infer<typeof validationSchema>) => {
 		const payload: baseAuthDto | emailDto =
 			authFormType === 'forgotPassword'
 				? { email: values.email }
-				: { email: values.email, password: values.password || '' }
+				: {
+						email: values.email,
+						password: values.password || '',
+						rememberMe: values.rememberMe,
+				  }
 		handleAuthAction(payload)
 	}
 
@@ -138,7 +145,10 @@ const AuthForm = () => {
 				<div className='flex flex-col gap-6'>
 					{fields.map((field) =>
 						field === 'rememberMe' ? (
-							<RememberMeCheckbox key={field} />
+							<RememberMeCheckbox
+								key={field}
+								control={authForm.control}
+							/>
 						) : (
 							<AuthFormInput
 								key={field}
@@ -152,7 +162,7 @@ const AuthForm = () => {
 					<LoadingButton
 						loading={loading}
 						type='submit'>
-						<span className='hidden sm:block'>{buttonText}</span>
+						<span>{buttonText}</span>
 					</LoadingButton>
 				</div>
 				<AuthFormSuggestion />
