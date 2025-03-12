@@ -1,12 +1,31 @@
 'use client'
 
-import { TaskBaseDto } from '@/dto/tasks'
+import { Button } from '@/components/ui/button'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { TaskDto } from '@/dto/tasks'
 import { ColumnDef } from '@tanstack/react-table'
+import { MoreHorizontal } from 'lucide-react'
+import { DataTableColumnHeader } from './ColumnHeader'
 
-const columns: ColumnDef<TaskBaseDto>[] = [
+const columns: ColumnDef<TaskDto>[] = [
+	{
+		accessorKey: 'completed',
+		header: 'Completed',
+	},
 	{
 		accessorKey: 'title',
-		header: 'Title',
+		header: ({ column }) => (
+			<DataTableColumnHeader
+				column={column}
+				title='Title'
+			/>
+		),
 	},
 	{
 		accessorKey: 'description',
@@ -17,12 +36,53 @@ const columns: ColumnDef<TaskBaseDto>[] = [
 		header: 'Folder',
 	},
 	{
-		accessorKey: 'completed',
-		header: 'Completed',
+		accessorKey: 'createdAt',
+		header: ({ column }) => (
+			<DataTableColumnHeader
+				column={column}
+				title='Created'
+			/>
+		),
 	},
 	{
 		accessorKey: 'expiresAt',
-		header: 'Expires',
+		header: ({ column }) => (
+			<DataTableColumnHeader
+				column={column}
+				title='Expires'
+			/>
+		),
+	},
+	{
+		id: 'actions',
+		cell: ({ row }) => {
+			const task = row.original
+
+			return (
+				<DropdownMenu>
+					<DropdownMenuTrigger
+						asChild
+						className='flex ml-auto'>
+						<Button
+							variant='ghost'
+							className='h-8 w-8 p-0'>
+							<span className='sr-only'>Open menu</span>
+							<MoreHorizontal className='h-4 w-4' />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align='end'>
+						<DropdownMenuItem>Edit</DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => navigator.clipboard.writeText(task.id)}>
+							Copy ID
+						</DropdownMenuItem>
+						<DropdownMenuItem>Toggle status</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem>Delete</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			)
+		},
 	},
 ]
 

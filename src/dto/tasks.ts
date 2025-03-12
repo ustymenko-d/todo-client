@@ -6,3 +6,5 @@ export type GetTasksRequestDto = z.infer<
 >
 
 export type TaskBaseDto = z.infer<typeof TasksValidation.taskBaseSchema>
+
+export type TaskDto = z.infer<typeof TasksValidation.taskDtoSchema>

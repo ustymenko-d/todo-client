@@ -109,8 +109,9 @@ const AuthForm = () => {
 						if (authFormType !== 'forgotPassword') {
 							setIsAuthorized(true)
 							router.replace('/dashboard')
+						} else {
+							authForm.reset(defaultValues)
 						}
-						authForm.reset(defaultValues)
 					}
 				}
 			} catch (error) {

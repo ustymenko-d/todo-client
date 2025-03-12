@@ -35,9 +35,17 @@ export const taskBaseSchema = z.object({
 	folderId: z.string().uuid().nullable().optional(),
 })
 
+export const taskDtoSchema: z.ZodSchema = taskBaseSchema.extend({
+	id: z.string(),
+	userId: z.string(),
+	createdAt: z.date(),
+	subtasks: z.array(z.lazy((): z.ZodSchema => taskDtoSchema)),
+})
+
 const TasksValidation = {
 	getTasksRequestSchema,
 	taskBaseSchema,
+	taskDtoSchema,
 }
 
 export default TasksValidation

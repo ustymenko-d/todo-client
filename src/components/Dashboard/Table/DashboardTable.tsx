@@ -1,21 +1,32 @@
 import TasksService from '@/services/api/tasks'
 import DataTable from './components/DataTable'
 import columns from './components/Columns'
+import { FC } from 'react'
 
-const DashboardTable = async () => {
-	const tasksResponse = await TasksService.getTasks({
-		limit: 20,
-		page: 1,
+interface DashboardTableProps {
+	page: string
+	limit: string
+}
+
+const DashboardTable: FC<DashboardTableProps> = async ({ page, limit }) => {
+	const response = await TasksService.getTasks({
+		limit: limit ? Number(limit) : 5,
+		page: page ? Number(page) : 1,
 		topLayerTasks: true,
 	})
-	const { tasks } = tasksResponse.tasksData
-	console.log(tasks)
+	const { tasks, pages } = response.tasksData
+	const pagination = {
+		initialLimit: limit ? Number(limit) : 5,
+		initialPage: page ? Number(page) : 1,
+		pages,
+	}
 
 	return (
-		<div className='container mx-auto py-10'>
+		<div className='container py-4 mx-auto lg:py-10'>
 			<DataTable
 				columns={columns}
 				data={tasks}
+				pagination={pagination}
 			/>
 		</div>
 	)
