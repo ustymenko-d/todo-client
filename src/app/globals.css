@@ -113,3 +113,7 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+body {
+	transition: min-height 0.3s;
+}

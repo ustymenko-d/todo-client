@@ -85,8 +85,6 @@ const DataTable = <TData, TValue>({
 					: updater
 			const newPage = newState.pageIndex + 1
 			const newLimit = newState.pageSize
-
-			// Оновлюємо URL, щоб серверний компонент заново фетчив дані
 			router.push(`?page=${newPage}&limit=${newLimit}`)
 		},
 	})
