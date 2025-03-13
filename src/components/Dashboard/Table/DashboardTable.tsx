@@ -22,7 +22,7 @@ const DashboardTable: FC<DashboardTableProps> = async ({ page, limit }) => {
 	}
 
 	return (
-		<div className='container py-4 mx-auto lg:py-10'>
+		<div className='container mx-auto'>
 			<DataTable
 				columns={columns}
 				data={tasks}

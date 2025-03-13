@@ -1,3 +1,4 @@
+import AddTask from '@/components/AddTask/AddTask'
 import DashboardTable from '@/components/Dashboard/Table/DashboardTable'
 import { redirect } from 'next/navigation'
 
@@ -21,6 +22,8 @@ const DashboardPage = async ({
 						Here&apos;s a list of your tasks
 					</p>
 				</div>
+
+				<AddTask />
 			</div>
 
 			<DashboardTable

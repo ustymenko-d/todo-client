@@ -1,6 +1,6 @@
 'use client'
 
-import authValidation from '@/schemas/authFormSchema'
+import AuthValidation from '@/schemas/authFormSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -22,7 +22,7 @@ import { passwordDto } from '@/dto/auth'
 import { toast } from 'sonner'
 
 const formConfig = {
-	validationSchema: authValidation.resetPasswordSchema,
+	validationSchema: AuthValidation.resetPasswordSchema,
 	defaultValues: {
 		password: '',
 		confirmPassword: '',

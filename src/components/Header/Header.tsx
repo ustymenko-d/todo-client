@@ -13,7 +13,7 @@ const Header = () => {
 	const isAuthorized = appStore((state) => state.isAuthorized)
 
 	return (
-		<header className='border-b border-dashed min-h-14'>
+		<header className='border-b border-dashed'>
 			<div className='container flex flex-wrap items-center px-2 mx-auto border-dashed lg:px-4 sm:border-x min-h-14 gap-x-2'>
 				{pathname.startsWith('/auth') && (
 					<Link

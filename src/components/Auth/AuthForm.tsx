@@ -3,7 +3,7 @@ import { appStore, AuthFormType } from '@/store/store'
 import { useForm } from 'react-hook-form'
 import { z, ZodSchema } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import authValidation from '@/schemas/authFormSchema'
+import AuthValidation from '@/schemas/authFormSchema'
 import { Form } from '@/components/ui/form'
 import RememberMeCheckbox from '@/components/ui/RememberMeCheckbox'
 import AuthFormSuggestion from './AuthFormSuggestion'
@@ -35,7 +35,7 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 	login: {
 		fields: ['email', 'password', 'rememberMe'],
 		buttonText: 'Log in',
-		validationSchema: authValidation.loginSchema,
+		validationSchema: AuthValidation.loginSchema,
 		defaultValues: {
 			email: '',
 			password: '',
@@ -45,7 +45,7 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 	signup: {
 		fields: ['email', 'password', 'confirmPassword', 'rememberMe'],
 		buttonText: 'Sign up',
-		validationSchema: authValidation.signupSchema,
+		validationSchema: AuthValidation.signupSchema,
 		defaultValues: {
 			email: '',
 			password: '',
@@ -56,7 +56,7 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 	forgotPassword: {
 		fields: ['email'],
 		buttonText: 'Send password reset email',
-		validationSchema: authValidation.emailSchema,
+		validationSchema: AuthValidation.emailSchema,
 		defaultValues: {
 			email: '',
 		},

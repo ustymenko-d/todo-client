@@ -35,6 +35,12 @@ export const taskBaseSchema = z.object({
 	folderId: z.string().uuid().nullable().optional(),
 })
 
+const taskFormSchema = taskBaseSchema.omit({
+	completed: true,
+})
+
+export type TaskFormSchema = z.infer<typeof taskFormSchema>
+
 export const taskDtoSchema: z.ZodSchema = taskBaseSchema.extend({
 	id: z.string(),
 	userId: z.string(),
@@ -45,6 +51,7 @@ export const taskDtoSchema: z.ZodSchema = taskBaseSchema.extend({
 const TasksValidation = {
 	getTasksRequestSchema,
 	taskBaseSchema,
+	taskFormSchema,
 	taskDtoSchema,
 }
 

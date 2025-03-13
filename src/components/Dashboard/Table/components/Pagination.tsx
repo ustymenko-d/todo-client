@@ -50,14 +50,10 @@ export function DataTablePagination<TData>({
 				</Select>
 			</div>
 
-			<div className='flex w-[100px] items-center justify-center text-sm font-medium'>
-				Page {pageIndex + 1} of {totalPages}
-			</div>
-
-			<div className='flex items-center space-x-2'>
+			<div className='flex items-center gap-2'>
 				<Button
 					variant='outline'
-					className='hidden w-8 h-8 p-0 sm:flex'
+					className='w-8 h-8 p-0'
 					onClick={() => table.setPageIndex(0)}
 					disabled={!table.getCanPreviousPage()}>
 					<span className='sr-only'>Go to first page</span>
@@ -71,6 +67,9 @@ export function DataTablePagination<TData>({
 					<span className='sr-only'>Go to previous page</span>
 					<ChevronLeft />
 				</Button>
+				<div className='flex w-[100px] items-center justify-center text-sm font-medium'>
+					Page {pageIndex + 1} of {totalPages}
+				</div>
 				<Button
 					variant='outline'
 					className='w-8 h-8 p-0'
@@ -81,7 +80,7 @@ export function DataTablePagination<TData>({
 				</Button>
 				<Button
 					variant='outline'
-					className='hidden w-8 h-8 p-0 sm:flex'
+					className='w-8 h-8 p-0'
 					onClick={() => table.setPageIndex(totalPages - 1)}
 					disabled={!table.getCanNextPage()}>
 					<span className='sr-only'>Go to last page</span>

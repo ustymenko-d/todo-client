@@ -5,6 +5,11 @@ export type GetTasksRequestDto = z.infer<
 	typeof TasksValidation.getTasksRequestSchema
 >
 
-export type TaskBaseDto = z.infer<typeof TasksValidation.taskBaseSchema>
+export type TaskBaseDto = Omit<
+	z.infer<typeof TasksValidation.taskBaseSchema>,
+	'expiresAt'
+> & {
+	expiresAt: string | null | undefined
+}
 
 export type TaskDto = z.infer<typeof TasksValidation.taskDtoSchema>
