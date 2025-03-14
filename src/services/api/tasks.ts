@@ -11,9 +11,9 @@ const TasksService = {
 	editTask: (payload: TaskDto) =>
 		apiRequestHandler(API_URL, 'put', '', payload),
 	toggleStatus: (taskId: string) =>
-		apiRequestHandler(API_URL, 'patch', '', null, taskId),
+		apiRequestHandler(API_URL, 'patch', `${taskId}`),
 	deleteTask: (taskId: string) =>
-		apiRequestHandler(API_URL, 'delete', '', null, taskId),
+		apiRequestHandler(API_URL, 'delete', `${taskId}`),
 }
 
 export default TasksService
