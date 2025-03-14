@@ -27,7 +27,7 @@ import {
 import LoadingButton from '../ui/LoadingButton'
 import { CircleUser, LogOut } from 'lucide-react'
 import { appStore } from '@/store/store'
-import { useBreakpoints } from '@/hook/useBreakpoints'
+import useBreakpoints from '@/hooks/useBreakpoints'
 
 type ActionResponse = {
 	success: boolean

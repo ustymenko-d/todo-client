@@ -1,5 +1,10 @@
 'use client'
 
+import { ElementType, FC, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import TasksValidation, { TaskFormSchema } from '@/schemas/tasksSchema'
+import { TaskBaseDto } from '@/dto/tasks'
 import {
 	Form,
 	FormControl,
@@ -8,109 +13,89 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import LoadingButton from '@/components/ui/LoadingButton'
-import { Textarea } from '@/components/ui/textarea'
-import TasksValidation, { TaskFormSchema } from '@/schemas/tasksSchema'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { FC, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import FormDatePicker from './FormDatePicker'
-import { TaskBaseDto } from '@/dto/tasks'
-import { toast } from 'sonner'
-import TasksService from '@/services/api/tasks'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import LoadingButton from '@/components/ui/LoadingButton'
 
 interface TaskFormProps {
-	handleClose: () => void
+	handleCreateTask: (payload: TaskBaseDto) => void
 }
 
-const TaskForm: FC<TaskFormProps> = ({ handleClose }) => {
-	const [loading, setLoading] = useState(false)
+const defaultValues: TaskFormSchema = {
+	title: '',
+	description: null,
+	parentTaskId: null,
+	expiresAt: null,
+	folderId: null,
+}
+
+const TaskForm: FC<TaskFormProps> = ({ handleCreateTask }) => {
+	const [loading, setLoading] = useState<boolean>(false)
 
 	const taskForm = useForm<TaskFormSchema>({
 		resolver: zodResolver(TasksValidation.taskFormSchema),
-		defaultValues: {
-			title: '',
-			description: null,
-			parentTaskId: null,
-			expiresAt: null,
-			folderId: null,
-		},
+		defaultValues,
 	})
 
 	const onSubmit = async (values: TaskFormSchema) => {
-		console.log(values)
-		const payload: TaskBaseDto = {
-			...values,
-			completed: false,
-			expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
-		}
-		console.log(payload)
-
 		try {
 			setLoading(true)
-			const response = await TasksService.createTask(payload)
-			const { success, error, message } = response
-
-			if (success) {
-				toast.success('Task successfully created')
-				handleClose()
+			const payload: TaskBaseDto = {
+				...values,
+				completed: false,
+				expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
 			}
-
-			if (error) toast.error(message)
-		} catch (error) {
-			toast.error('Something went wrong!')
-			console.error(`Error while creating a task: ${error}`)
+			handleCreateTask(payload)
 		} finally {
 			setLoading(false)
 		}
+	}
+
+	const renderFormField = (
+		name: keyof TaskFormSchema,
+		label: string,
+		placeholder: string,
+		Component: ElementType
+	) => {
+		return (
+			<FormField
+				control={taskForm.control}
+				name={name}
+				render={({ field }) => (
+					<FormItem>
+						<FormLabel>{label}</FormLabel>
+						<FormControl>
+							<Component
+								{...field}
+								placeholder={placeholder}
+								value={field.value || ''}
+							/>
+						</FormControl>
+						<FormMessage />
+					</FormItem>
+				)}
+			/>
+		)
 	}
 
 	return (
 		<Form {...taskForm}>
 			<form onSubmit={taskForm.handleSubmit(onSubmit)}>
 				<div className='flex flex-col gap-6'>
-					<FormField
-						control={taskForm.control}
-						name='title'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Title</FormLabel>
-								<FormControl>
-									<Input
-										{...field}
-										placeholder='Title of the task'
-										value={field.value || ''}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={taskForm.control}
-						name='description'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Description</FormLabel>
-								<FormControl>
-									<Textarea
-										{...field}
-										className='resize-none'
-										placeholder='Add some description'
-										value={field.value || ''}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+					{renderFormField('title', 'Title', 'Title of the task *', Input)}
+					{renderFormField(
+						'description',
+						'Description',
+						'Add some description',
+						Textarea
+					)}
 					<FormField
 						control={taskForm.control}
 						name='expiresAt'
 						render={({ field }) => (
 							<FormItem className='flex flex-col gap-1'>
-								<FormLabel>Set date</FormLabel>
+								<FormLabel>Set expires date</FormLabel>
 								<FormControl>
 									<FormDatePicker field={field} />
 								</FormControl>

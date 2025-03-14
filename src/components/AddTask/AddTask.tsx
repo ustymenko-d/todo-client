@@ -1,6 +1,10 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import TasksService from '@/services/api/tasks'
+import { TaskBaseDto } from '@/dto/tasks'
+import { toast } from 'sonner'
 import {
 	Dialog,
 	DialogContent,
@@ -9,15 +13,34 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
-import { Plus } from 'lucide-react'
 import TaskForm from './compoonents/TaskForm'
-import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
 
 const AddTask = () => {
-	const [open, setOpen] = useState(false)
+	const router = useRouter()
+	const pathname = usePathname()
+	const [open, setOpen] = useState<boolean>(false)
 
 	const handleClose = () => {
 		setOpen(false)
+	}
+
+	const handleCreateTask = async (payload: TaskBaseDto) => {
+		try {
+			const { success, error, message } = await TasksService.createTask(payload)
+
+			if (success) {
+				toast.success('Task successfully created')
+				handleClose()
+				if (pathname === '/dashboard') router.push(`?page=1&limit=5`)
+			}
+
+			if (error) toast.error(message)
+		} catch (error) {
+			toast.error('Something went wrong!')
+			console.error(`Error while creating a task: ${error}`)
+		}
 	}
 
 	return (
@@ -37,7 +60,7 @@ const AddTask = () => {
 					<DialogDescription>* indicates required fields</DialogDescription>
 				</DialogHeader>
 				<div className='grid gap-4 py-4'>
-					<TaskForm handleClose={handleClose} />
+					<TaskForm handleCreateTask={handleCreateTask} />
 				</div>
 			</DialogContent>
 		</Dialog>

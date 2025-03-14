@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export const useBreakpoints = (breakpoints: number[]): number => {
+const useBreakpoints = (breakpoints: number[]): number => {
 	const [index, setIndex] = useState(0)
 	const timeoutId = useRef<number | null>(null)
 
@@ -35,3 +35,5 @@ export const useBreakpoints = (breakpoints: number[]): number => {
 
 	return index
 }
+
+export default useBreakpoints
