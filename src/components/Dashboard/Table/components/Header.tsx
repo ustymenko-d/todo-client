@@ -13,7 +13,7 @@ const Header = <TData,>({ table }: TableComponentsProps<TData>) => {
 	return (
 		<div className='flex items-center gap-4 py-4'>
 			<Input
-				placeholder='Filter tasks...'
+				placeholder='Filter by title...'
 				value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
 				onChange={(event) =>
 					table.getColumn('title')?.setFilterValue(event.target.value)
