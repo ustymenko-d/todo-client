@@ -17,7 +17,7 @@ import TaskForm from './compoonents/TaskForm'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 
-const AddTask = () => {
+const TaskEditor = () => {
 	const router = useRouter()
 	const pathname = usePathname()
 	const [open, setOpen] = useState<boolean>(false)
@@ -67,4 +67,4 @@ const AddTask = () => {
 	)
 }
 
-export default AddTask
+export default TaskEditor

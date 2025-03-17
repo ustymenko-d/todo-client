@@ -1,4 +1,4 @@
-import AddTask from '../AddTask/AddTask'
+import TaskEditor from '../TaskEditor/TaskEditor'
 
 const Header = () => {
 	return (
@@ -10,7 +10,7 @@ const Header = () => {
 				</p>
 			</div>
 
-			<AddTask />
+			<TaskEditor />
 		</div>
 	)
 }
