@@ -1,6 +1,18 @@
-import TaskEditor from '../TaskEditor/TaskEditor'
+'use client'
+
+import useAppStore from '@/store/store'
+import { Button } from '../ui/button'
+import { Plus } from 'lucide-react'
 
 const Header = () => {
+	const taskEditorSettings = useAppStore((state) => state.taskEditorSettings)
+	const setTaskEditorSettings = useAppStore(
+		(state) => state.setTaskEditorSettings
+	)
+
+	const openTaskEditor = () =>
+		setTaskEditorSettings({ ...taskEditorSettings, open: true })
+
 	return (
 		<div className='flex flex-wrap items-center justify-between gap-4 pt-2'>
 			<div className='flex flex-col'>
@@ -10,7 +22,10 @@ const Header = () => {
 				</p>
 			</div>
 
-			<TaskEditor />
+			<Button onClick={openTaskEditor}>
+				<Plus />
+				<span>Add task</span>
+			</Button>
 		</div>
 	)
 }

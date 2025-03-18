@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import TasksService from '@/services/api/tasks'
-import { TaskBaseDto } from '@/dto/tasks'
+import { TaskBaseDto, TaskDto } from '@/dto/tasks'
 import { toast } from 'sonner'
 import {
 	Dialog,
@@ -11,32 +10,41 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from '@/components/ui/dialog'
 import TaskForm from './compoonents/TaskForm'
-import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import useAppStore from '@/store/store'
 
 const TaskEditor = () => {
 	const router = useRouter()
 	const pathname = usePathname()
-	const [open, setOpen] = useState<boolean>(false)
+	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
+	const taskEditorSettings = useAppStore((state) => state.taskEditorSettings)
 
-	const handleClose = () => {
-		setOpen(false)
-	}
+	const { open, mode, selectedTask } = taskEditorSettings
 
-	const handleCreateTask = async (payload: TaskBaseDto) => {
+	const handleTaskAction = async (taskData: TaskBaseDto | TaskDto) => {
+		const payload = { ...selectedTask, ...taskData }
+		delete payload.subtasks
+
 		try {
-			const { success, error, message } = await TasksService.createTask(payload)
+			const response =
+				mode === 'create'
+					? await TasksService.createTask(payload)
+					: await TasksService.editTask(payload)
+
+			const { success, message } = response
 
 			if (success) {
-				toast.success('Task successfully created')
-				handleClose()
+				toast.success(
+					mode === 'create'
+						? 'Task successfully created'
+						: 'Task successfully edited'
+				)
+				closeTaskEditor()
 				if (pathname === '/dashboard') router.push(`?page=1&limit=5`)
+			} else {
+				toast.error(message || 'Failed to process task')
 			}
-
-			if (error) toast.error(message)
 		} catch (error) {
 			toast.error('Something went wrong!')
 			console.error(`Error while creating a task: ${error}`)
@@ -46,21 +54,16 @@ const TaskEditor = () => {
 	return (
 		<Dialog
 			open={open}
-			onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button>
-					<Plus />
-					<span>Add task</span>
-				</Button>
-			</DialogTrigger>
-
+			onOpenChange={closeTaskEditor}>
 			<DialogContent className='sm:max-w-[425px]'>
 				<DialogHeader>
-					<DialogTitle>Create new task</DialogTitle>
+					<DialogTitle>
+						{mode === 'edit' ? 'Edit task' : 'Create new task'}
+					</DialogTitle>
 					<DialogDescription>* indicates required fields</DialogDescription>
 				</DialogHeader>
 				<div className='grid gap-4 py-4'>
-					<TaskForm handleCreateTask={handleCreateTask} />
+					<TaskForm handleTaskAction={handleTaskAction} />
 				</div>
 			</DialogContent>
 		</Dialog>

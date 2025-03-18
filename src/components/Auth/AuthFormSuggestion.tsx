@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { appStore } from '@/store/store'
+import useAppStore from '@/store/store'
 import { useMemo } from 'react'
 
 type AuthFormType = 'login' | 'signup' | 'forgotPassword'
@@ -26,9 +26,8 @@ const suggestionConfig: Record<
 } as const
 
 const AuthFormSuggestion = () => {
-	const authFormType = appStore((state) => state.authFormType) as AuthFormType
-	const setAuthFormType = appStore((state) => state.setAuthFormType)
-
+	const authFormType = useAppStore((state) => state.authFormType)
+	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
 	const {
 		text: suggestionText,
 		linkText,

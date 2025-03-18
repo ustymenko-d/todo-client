@@ -17,21 +17,29 @@ import FormDatePicker from './FormDatePicker'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import LoadingButton from '@/components/ui/LoadingButton'
+import useAppStore from '@/store/store'
 
 interface TaskFormProps {
-	handleCreateTask: (payload: TaskBaseDto) => void
+	handleTaskAction: (payload: TaskBaseDto) => void
 }
 
-const defaultValues: TaskFormSchema = {
-	title: '',
-	description: null,
-	parentTaskId: null,
-	expiresAt: null,
-	folderId: null,
-}
-
-const TaskForm: FC<TaskFormProps> = ({ handleCreateTask }) => {
+const TaskForm: FC<TaskFormProps> = ({ handleTaskAction }) => {
+	const { mode, selectedTask } = useAppStore(
+		(state) => state.taskEditorSettings
+	)
 	const [loading, setLoading] = useState<boolean>(false)
+
+	const defaultValues: TaskFormSchema = {
+		title: mode === 'edit' ? selectedTask?.title : '',
+		description: mode === 'edit' ? selectedTask?.description : null,
+		parentTaskId:
+			mode === 'edit' ? selectedTask?.parentTaskId : selectedTask?.id || null,
+		expiresAt:
+			mode === 'edit' && selectedTask.expiresAt
+				? new Date(selectedTask.expiresAt)
+				: null,
+		folderId: mode === 'edit' ? selectedTask?.folderId : null,
+	}
 
 	const taskForm = useForm<TaskFormSchema>({
 		resolver: zodResolver(TasksValidation.taskFormSchema),
@@ -39,14 +47,14 @@ const TaskForm: FC<TaskFormProps> = ({ handleCreateTask }) => {
 	})
 
 	const onSubmit = async (values: TaskFormSchema) => {
+		setLoading(true)
 		try {
-			setLoading(true)
 			const payload: TaskBaseDto = {
 				...values,
-				completed: false,
+				completed: mode === 'create' ? false : selectedTask?.completed,
 				expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
 			}
-			handleCreateTask(payload)
+			handleTaskAction(payload)
 		} finally {
 			setLoading(false)
 		}
@@ -107,7 +115,7 @@ const TaskForm: FC<TaskFormProps> = ({ handleCreateTask }) => {
 					<LoadingButton
 						loading={loading}
 						type='submit'>
-						<span>Create task</span>
+						<span>{mode === 'create' ? 'Create task' : 'Edit task'}</span>
 					</LoadingButton>
 				</div>
 			</form>

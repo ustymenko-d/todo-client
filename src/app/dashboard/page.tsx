@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import TasksService from '@/services/api/tasks'
 import Header from '@/components/Dashboard/Header'
 import Table from '@/components/Dashboard/Table/Table'
+import TaskEditor from '@/components/TaskEditor/TaskEditor'
 
 interface DashboardPageProps {
 	searchParams: { page?: string; limit?: string }
@@ -35,6 +36,7 @@ const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 				data={tasks}
 				pagination={pagination}
 			/>
+			<TaskEditor />
 		</section>
 	)
 }

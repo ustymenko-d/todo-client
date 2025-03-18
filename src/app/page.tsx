@@ -1,17 +1,21 @@
 'use client'
 
 import Link from 'next/link'
-import { appStore } from '@/store/store'
+import useAppStore from '@/store/store'
 import { buttonVariants } from '@/components/ui/button'
 
 const RootPage = () => {
-	const setAuthFormType = appStore((state) => state.setAuthFormType)
+	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
 
 	return (
 		<>
 			<div className='flex flex-col gap-2 mb-6'>
-				<h1 className='text-3xl font-bold text-center sm:text-4xl xl:text-5xl'>Welcome to UpTodo!</h1>
-				<p className='text-base font-medium text-center sm:text-xl xl:text-2xl'>Manage and organize your tasks.</p>
+				<h1 className='text-3xl font-bold text-center sm:text-4xl xl:text-5xl'>
+					Welcome to UpTodo!
+				</h1>
+				<p className='text-base font-medium text-center sm:text-xl xl:text-2xl'>
+					Manage and organize your tasks.
+				</p>
 			</div>
 
 			<div className='flex flex-col gap-2'>

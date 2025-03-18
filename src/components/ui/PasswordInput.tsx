@@ -10,7 +10,7 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Button } from './button'
-import { appStore } from '@/store/store'
+import useAppStore from '@/store/store'
 
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	labelNode: ReactNode
@@ -23,8 +23,8 @@ const PasswordInput: FC<PasswordInputProps> = ({
 	...props
 }) => {
 	const [showPassword, setShowPassword] = useState(false)
-	const authFormType = appStore((state) => state.authFormType)
-	const setAuthFormType = appStore((state) => state.setAuthFormType)
+	const authFormType = useAppStore((state) => state.authFormType)
+	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
 
 	return (
 		<div className='grid gap-2'>

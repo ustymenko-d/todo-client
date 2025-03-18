@@ -26,10 +26,15 @@ import { Button } from '@/components/ui/button'
 import LoadingButton from '@/components/ui/LoadingButton'
 import { MoreHorizontal } from 'lucide-react'
 import { TaskDto } from '@/dto/tasks'
+import useAppStore from '@/store/store'
 
 const ActionMenu = ({ task }: { task: TaskDto }) => {
 	const router = useRouter()
 	const pathname = usePathname()
+	const setTaskEditorSettings = useAppStore(
+		(state) => state.setTaskEditorSettings
+	)
+
 	const [open, setOpen] = useState<boolean>(false)
 	const [loading, setLoading] = useState<boolean>(false)
 
@@ -77,8 +82,26 @@ const ActionMenu = ({ task }: { task: TaskDto }) => {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
-				<DropdownMenuItem disabled>Edit</DropdownMenuItem>
-				<DropdownMenuItem disabled>Add Subtask</DropdownMenuItem>
+				<DropdownMenuItem
+					onClick={() =>
+						setTaskEditorSettings({
+							open: true,
+							mode: 'edit',
+							selectedTask: task,
+						})
+					}>
+					Edit
+				</DropdownMenuItem>
+				<DropdownMenuItem
+					onClick={() =>
+						setTaskEditorSettings({
+							open: true,
+							mode: 'create',
+							selectedTask: task,
+						})
+					}>
+					Add Subtask
+				</DropdownMenuItem>
 				<DropdownMenuItem onClick={() => handleTaskAction('toggleStatus')}>
 					Toggle status
 				</DropdownMenuItem>

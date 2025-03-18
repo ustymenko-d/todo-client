@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { appStore } from '@/store/store'
+import useAppStore from '@/store/store'
 import { cn } from '@/lib/utils'
 import {
 	Card,
@@ -30,7 +30,7 @@ const cardConfig = {
 } as const
 
 const AuthPage = () => {
-	const authFormType = appStore((state) => state.authFormType)
+	const authFormType = useAppStore((state) => state.authFormType)
 
 	const { title, description } = useMemo(
 		() => cardConfig[authFormType],

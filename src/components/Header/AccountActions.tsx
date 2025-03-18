@@ -26,7 +26,7 @@ import {
 } from '../ui/alert-dialog'
 import LoadingButton from '../ui/LoadingButton'
 import { CircleUser, LogOut } from 'lucide-react'
-import { appStore } from '@/store/store'
+import useAppStore from '@/store/store'
 import useBreakpoints from '@/hooks/useBreakpoints'
 
 type ActionResponse = {
@@ -38,7 +38,7 @@ type ActionCallback = () => Promise<ActionResponse>
 
 const AccountActions = () => {
 	const router = useRouter()
-	const setIsAuthorized = appStore((state) => state.setIsAuthorized)
+	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const breakpoints = useBreakpoints([639])
 	const [loading, setLoading] = useState(false)
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { appStore, AuthFormType } from '@/store/store'
+import useAppStore from '@/store/store'
 import { useForm } from 'react-hook-form'
 import { z, ZodSchema } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation'
 import { baseAuthDto, emailDto } from '@/dto/auth'
 import { toast } from 'sonner'
 import LoadingButton from '../ui/LoadingButton'
+import { AuthFormType } from '@/store/slices/auth'
 
 export type BaseFieldType = 'email' | 'password' | 'confirmPassword'
 type FieldType = BaseFieldType | 'rememberMe'
@@ -65,9 +66,9 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 
 const AuthForm = () => {
 	const router = useRouter()
-	const authFormType = appStore((state) => state.authFormType)
-	const setIsAuthorized = appStore((state) => state.setIsAuthorized)
 	const [loading, setLoading] = useState(false)
+	const authFormType = useAppStore((state) => state.authFormType)
+	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 
 	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
 		() => formConfig[authFormType],

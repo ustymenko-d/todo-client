@@ -6,11 +6,11 @@ import ThemeToggle from '../Theme/ThemeToggle'
 import AccountActions from './AccountActions'
 import { buttonVariants } from '../ui/button'
 import { ChevronLeft } from 'lucide-react'
-import { appStore } from '@/store/store'
+import useAppStore from '@/store/store'
 
 const Header = () => {
 	const pathname = usePathname()
-	const isAuthorized = appStore((state) => state.isAuthorized)
+	const isAuthorized = useAppStore((state) => state.isAuthorized)
 
 	return (
 		<header className='border-b border-dashed'>
