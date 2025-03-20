@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
 	ColumnFiltersState,
 	getCoreRowModel,
+	getExpandedRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
@@ -17,9 +18,10 @@ import columns from './components/Columns/Columns'
 import Header from './components/Header'
 import Body from './components/Body'
 import Pagination from './components/Pagination/Pagination'
+import { ITask } from '@/types/task.types'
 
-interface TableProps<TData> {
-	data: TData[]
+interface TableProps {
+	data: ITask[] | []
 	pagination: {
 		page: number
 		limit: number
@@ -27,17 +29,16 @@ interface TableProps<TData> {
 	}
 }
 
-export interface TableComponentsProps<TData> {
-	table: TanstackTable<TData>
+export interface ITableComponentProps {
+	table: TanstackTable<ITask>
 }
 
-const Table = <TData,>({ data, pagination }: TableProps<TData>) => {
+const Table: FC<TableProps> = ({ data, pagination }) => {
 	const router = useRouter()
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const { page, limit, pages } = pagination
-
 	const table = useReactTable({
 		data,
 		columns,
@@ -48,6 +49,8 @@ const Table = <TData,>({ data, pagination }: TableProps<TData>) => {
 		onColumnFiltersChange: setColumnFilters,
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
+		getExpandedRowModel: getExpandedRowModel(),
+		getRowCanExpand: (row) => row.original?.subtasks.length > 0,
 		state: {
 			sorting,
 			columnFilters,

@@ -6,9 +6,10 @@ import {
 } from 'lucide-react'
 import PaginationSelect from './PaginationSelect'
 import PaginationButton from './PaginationButton'
-import { TableComponentsProps } from '../../Table'
+import { ITableComponentProps } from '../../Table'
+import { FC } from 'react'
 
-const Pagination = <TData,>({ table }: TableComponentsProps<TData>) => {
+const Pagination: FC<ITableComponentProps> = ({ table }) => {
 	const pageIndex = table.getState().pagination.pageIndex
 	const totalPages = table.getPageCount()
 

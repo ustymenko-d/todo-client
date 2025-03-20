@@ -28,6 +28,8 @@ const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 		pages,
 	}
 
+	console.log(tasks)
+
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
 			<Header />

@@ -6,11 +6,14 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { TableComponentsProps } from '../Table'
+import { ITableComponentProps } from '../Table'
 import { flexRender } from '@tanstack/react-table'
 import columns from './Columns/Columns'
+import { FC, Fragment } from 'react'
+import SubtasksTable from './SubtasksTable/SubtasksTable'
+import { ITask } from '@/types/task.types'
 
-const Body = <TData,>({ table }: TableComponentsProps<TData>) => {
+const Body: FC<ITableComponentProps> = ({ table }) => {
 	return (
 		<Table>
 			<TableHeader>
@@ -33,17 +36,36 @@ const Body = <TData,>({ table }: TableComponentsProps<TData>) => {
 			</TableHeader>
 			<TableBody>
 				{table.getRowModel().rows?.length ? (
-					table.getRowModel().rows.map((row) => (
-						<TableRow
-							key={row.id}
-							data-state={row.getIsSelected() && 'selected'}>
-							{row.getVisibleCells().map((cell) => (
-								<TableCell key={cell.id}>
-									{flexRender(cell.column.columnDef.cell, cell.getContext())}
-								</TableCell>
-							))}
-						</TableRow>
-					))
+					table.getRowModel().rows.map((row) => {
+						const { id, subtasks } = row.original as ITask
+
+						return (
+							<Fragment key={id}>
+								<TableRow>
+									{row.getVisibleCells().map((cell) => (
+										<TableCell key={cell.id}>
+											{flexRender(
+												cell.column.columnDef.cell,
+												cell.getContext()
+											)}
+										</TableCell>
+									))}
+								</TableRow>
+								{row.getIsExpanded() && (
+									<TableRow>
+										<TableCell
+											colSpan={row.getAllCells().length}
+											className='bg-muted p-1.5 pr-0'>
+											<SubtasksTable
+												data={subtasks}
+												classNames='border border-r-0 bg-white'
+											/>
+										</TableCell>
+									</TableRow>
+								)}
+							</Fragment>
+						)
+					})
 				) : (
 					<TableRow>
 						<TableCell

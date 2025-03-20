@@ -7,9 +7,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Settings2 } from 'lucide-react'
-import { TableComponentsProps } from '../Table'
+import { ITableComponentProps } from '../Table'
+import { FC } from 'react'
 
-const Header = <TData,>({ table }: TableComponentsProps<TData>) => {
+const Header: FC<ITableComponentProps> = ({ table }) => {
 	return (
 		<div className='flex items-center gap-4 py-4'>
 			<Input

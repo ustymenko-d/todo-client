@@ -5,9 +5,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { TableComponentsProps } from '../../Table'
+import { ITableComponentProps } from '../../Table'
+import { FC } from 'react'
 
-const PaginationSelect = <TData,>({ table }: TableComponentsProps<TData>) => {
+const PaginationSelect: FC<ITableComponentProps> = ({ table }) => {
 	const pageSize = table.getState().pagination.pageSize
 	const pageSizes = [5, 10, 20, 30, 40, 50]
 
