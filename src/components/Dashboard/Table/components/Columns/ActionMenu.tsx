@@ -27,16 +27,21 @@ import LoadingButton from '@/components/ui/LoadingButton'
 import { MoreHorizontal } from 'lucide-react'
 import { TaskDto } from '@/dto/tasks'
 import useAppStore from '@/store/store'
+import { Row } from '@tanstack/react-table'
 
-const ActionMenu = ({ task }: { task: TaskDto }) => {
+const Actions = ({ row }: { row: Row<TaskDto> }) => {
+	const task = row.original
 	const router = useRouter()
 	const pathname = usePathname()
+	const [menuOpen, setMenuOpen] = useState<boolean>(false)
+	const [loading, setLoading] = useState<boolean>(false)
 	const setTaskEditorSettings = useAppStore(
 		(state) => state.setTaskEditorSettings
 	)
 
-	const [open, setOpen] = useState<boolean>(false)
-	const [loading, setLoading] = useState<boolean>(false)
+	const openTaskEditor = (mode: 'edit' | 'create'): void => {
+		setTaskEditorSettings({ open: true, mode, selectedTask: task })
+	}
 
 	const handleTaskAction = async (action: 'delete' | 'toggleStatus') => {
 		try {
@@ -69,8 +74,8 @@ const ActionMenu = ({ task }: { task: TaskDto }) => {
 
 	return (
 		<DropdownMenu
-			open={open}
-			onOpenChange={setOpen}>
+			open={menuOpen}
+			onOpenChange={setMenuOpen}>
 			<DropdownMenuTrigger
 				asChild
 				className='flex ml-auto'>
@@ -81,32 +86,20 @@ const ActionMenu = ({ task }: { task: TaskDto }) => {
 					<MoreHorizontal className='w-4 h-4' />
 				</Button>
 			</DropdownMenuTrigger>
+
 			<DropdownMenuContent align='end'>
-				<DropdownMenuItem
-					onClick={() =>
-						setTaskEditorSettings({
-							open: true,
-							mode: 'edit',
-							selectedTask: task,
-						})
-					}>
-					Edit
+				<DropdownMenuItem disabled>Details</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => openTaskEditor('edit')}>
+					Edit task
 				</DropdownMenuItem>
-				<DropdownMenuItem
-					onClick={() =>
-						setTaskEditorSettings({
-							open: true,
-							mode: 'create',
-							selectedTask: task,
-						})
-					}>
+				<DropdownMenuItem onClick={() => openTaskEditor('create')}>
 					Add Subtask
 				</DropdownMenuItem>
 				<DropdownMenuItem onClick={() => handleTaskAction('toggleStatus')}>
 					Toggle status
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<AlertDialog onOpenChange={setOpen}>
+				<AlertDialog onOpenChange={setMenuOpen}>
 					<AlertDialogTrigger asChild>
 						<LoadingButton
 							loading={loading}
@@ -127,7 +120,9 @@ const ActionMenu = ({ task }: { task: TaskDto }) => {
 						</AlertDialogHeader>
 						<AlertDialogFooter>
 							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction onClick={() => handleTaskAction('delete')}>
+							<AlertDialogAction
+								className='bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'
+								onClick={() => handleTaskAction('delete')}>
 								Continue
 							</AlertDialogAction>
 						</AlertDialogFooter>
@@ -138,4 +133,4 @@ const ActionMenu = ({ task }: { task: TaskDto }) => {
 	)
 }
 
-export default ActionMenu
+export default Actions

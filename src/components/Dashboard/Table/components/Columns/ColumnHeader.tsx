@@ -15,6 +15,12 @@ interface ColumnHeaderProps<TData, TValue>
 	title: string
 }
 
+const getSortingIcon = (sortState: string | false) => {
+	if (sortState === 'desc') return <ArrowDown />
+	if (sortState === 'asc') return <ArrowUp />
+	return <ChevronsUpDown />
+}
+
 const ColumnHeader = <TData, TValue>({
 	column,
 	title,
@@ -33,13 +39,7 @@ const ColumnHeader = <TData, TValue>({
 						size='sm'
 						className='-ml-3 h-8 data-[state=open]:bg-accent'>
 						<span>{title}</span>
-						{column.getIsSorted() === 'desc' ? (
-							<ArrowDown />
-						) : column.getIsSorted() === 'asc' ? (
-							<ArrowUp />
-						) : (
-							<ChevronsUpDown />
-						)}
+						{getSortingIcon(column.getIsSorted())}
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='start'>

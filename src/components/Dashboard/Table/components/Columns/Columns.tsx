@@ -1,8 +1,35 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { TaskDto } from '@/dto/tasks'
 import ColumnHeader from './ColumnHeader'
-import ActionMenu from './ActionMenu'
-import { ChevronRight } from 'lucide-react'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { ReactNode } from 'react'
+import Actions from './ActionMenu'
+import { Button } from '@/components/ui/button'
+import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react'
+
+const formatValue = (value: string | null): ReactNode => {
+	if (!value) return '-'
+	const stringValue = String(value)
+	if (stringValue.length <= 30) return <p>{stringValue}</p>
+
+	return (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<p>{stringValue.slice(0, 30) + '…'}</p>
+				</TooltipTrigger>
+				<TooltipContent>
+					<p>{stringValue}</p>
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
+	)
+}
 
 const formatDate = (dateString?: string): string => {
 	if (!dateString) return '-'
@@ -16,28 +43,6 @@ const formatDate = (dateString?: string): string => {
 
 const columns: ColumnDef<TaskDto>[] = [
 	{
-		header: 'Children',
-		cell: ({ row }) => {
-			return row.getCanExpand() ? (
-				<button
-					className='flex'
-					onClick={row.getToggleExpandedHandler()}
-					style={{ cursor: 'pointer' }}>
-					<ChevronRight
-						strokeWidth={1}
-						className={`duration-200 ${row.getIsExpanded() ? 'rotate-90' : ''}`}
-					/>
-				</button>
-			) : (
-				<div className='w-6'></div>
-			)
-		},
-	},
-	{
-		accessorKey: 'completed',
-		header: 'Completed',
-	},
-	{
 		accessorKey: 'title',
 		header: ({ column }) => (
 			<ColumnHeader
@@ -45,14 +50,38 @@ const columns: ColumnDef<TaskDto>[] = [
 				title='Title'
 			/>
 		),
+		cell: ({ row }) => (
+			<div className='flex gap-2'>
+				{row.getCanExpand() && (
+					<Button
+						variant='ghost'
+						onClick={row.getToggleExpandedHandler()}
+						size='icon'>
+						{row.getIsExpanded() ? <ChevronsDownUp /> : <ChevronsUpDown />}
+						<span className='sr-only'>
+							{row.getIsExpanded() ? 'Collapse' : 'Expand'}
+						</span>
+					</Button>
+				)}
+				<div className={row.getCanExpand() ? '' : 'ml-10'}>
+					{formatValue(row.original.title)}
+				</div>
+			</div>
+		),
 	},
 	{
 		accessorKey: 'description',
 		header: 'Description',
+		cell: ({ row }) => formatValue(row.original.description),
+	},
+	{
+		accessorKey: 'completed',
+		header: 'Completed',
 	},
 	{
 		accessorKey: 'folderId',
 		header: 'Folder',
+		cell: ({ row }) => formatValue(row.original.folderId),
 	},
 	{
 		accessorKey: 'createdAt',
@@ -62,7 +91,7 @@ const columns: ColumnDef<TaskDto>[] = [
 				title='Created'
 			/>
 		),
-		cell: ({ row }) => <div>{formatDate(row.original.createdAt)}</div>,
+		cell: ({ row }) => formatDate(row.original.createdAt),
 	},
 	{
 		accessorKey: 'expiresAt',
@@ -72,11 +101,11 @@ const columns: ColumnDef<TaskDto>[] = [
 				title='Expires'
 			/>
 		),
-		cell: ({ row }) => <div>{formatDate(row.original.expiresAt)}</div>,
+		cell: ({ row }) => formatDate(row.original.expiresAt),
 	},
 	{
 		id: 'actions',
-		cell: ({ row }) => <ActionMenu task={row.original} />,
+		cell: ({ row }) => <Actions row={row} />,
 	},
 ]
 

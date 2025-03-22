@@ -1,3 +1,4 @@
+import { FC } from 'react'
 import {
 	Table,
 	TableBody,
@@ -6,77 +7,72 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { ITableComponentProps } from '../Table'
 import { flexRender } from '@tanstack/react-table'
 import columns from './Columns/Columns'
-import { FC, Fragment } from 'react'
-import SubtasksTable from './SubtasksTable/SubtasksTable'
-import { ITask } from '@/types/task.types'
+import { ITableComponentProps } from '../DashboardTable'
 
 const Body: FC<ITableComponentProps> = ({ table }) => {
-	return (
-		<Table>
-			<TableHeader>
-				{table.getHeaderGroups().map((headerGroup) => (
-					<TableRow key={headerGroup.id}>
-						{headerGroup.headers.map((header) => {
-							return (
-								<TableHead key={header.id}>
-									{header.isPlaceholder
-										? null
-										: flexRender(
-												header.column.columnDef.header,
-												header.getContext()
-										  )}
-								</TableHead>
-							)
-						})}
-					</TableRow>
-				))}
-			</TableHeader>
-			<TableBody>
-				{table.getRowModel().rows?.length ? (
-					table.getRowModel().rows.map((row) => {
-						const { id, subtasks } = row.original as ITask
+	const rows = table.getRowModel().rows
+	const hasRows = rows?.length > 0
 
-						return (
-							<Fragment key={id}>
-								<TableRow>
-									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
-										</TableCell>
-									))}
+	return (
+		<div className='border rounded-md'>
+			<Table>
+				<TableHeader>
+					{table.getHeaderGroups().map((headerGroup) => (
+						<TableRow key={headerGroup.id}>
+							{headerGroup.headers.map((header) => {
+								return (
+									<TableHead key={header.id}>
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef.header,
+													header.getContext()
+											  )}
+									</TableHead>
+								)
+							})}
+						</TableRow>
+					))}
+				</TableHeader>
+				<TableBody>
+					{hasRows ? (
+						rows.map((row) => {
+							return (
+								<TableRow key={row.id}>
+									{row.getVisibleCells().map((cell) => {
+										return (
+											<TableCell key={cell.id}>
+												<div
+													style={
+														cell.column.id === 'title'
+															? { marginLeft: row.depth * 8 }
+															: {}
+													}>
+													{flexRender(
+														cell.column.columnDef.cell,
+														cell.getContext()
+													)}
+												</div>
+											</TableCell>
+										)
+									})}
 								</TableRow>
-								{row.getIsExpanded() && (
-									<TableRow>
-										<TableCell
-											colSpan={row.getAllCells().length}
-											className='bg-muted p-1.5 pr-0'>
-											<SubtasksTable
-												data={subtasks}
-												classNames='border border-r-0 bg-white'
-											/>
-										</TableCell>
-									</TableRow>
-								)}
-							</Fragment>
-						)
-					})
-				) : (
-					<TableRow>
-						<TableCell
-							colSpan={columns.length}
-							className='h-24 text-center'>
-							No results.
-						</TableCell>
-					</TableRow>
-				)}
-			</TableBody>
-		</Table>
+							)
+						})
+					) : (
+						<TableRow>
+							<TableCell
+								colSpan={columns.length}
+								className='h-24 text-center'>
+								No results.
+							</TableCell>
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+		</div>
 	)
 }
 

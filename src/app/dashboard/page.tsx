@@ -2,8 +2,8 @@ import { FC } from 'react'
 import { redirect } from 'next/navigation'
 import TasksService from '@/services/api/tasks'
 import Header from '@/components/Dashboard/Header'
-import Table from '@/components/Dashboard/Table/Table'
 import TaskEditor from '@/components/TaskEditor/TaskEditor'
+import DashboardTable from '@/components/Dashboard/Table/DashboardTable'
 
 interface DashboardPageProps {
 	searchParams: { page?: string; limit?: string }
@@ -28,13 +28,11 @@ const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 		pages,
 	}
 
-	console.log(tasks)
-
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
 			<Header />
 
-			<Table
+			<DashboardTable
 				data={tasks}
 				pagination={pagination}
 			/>

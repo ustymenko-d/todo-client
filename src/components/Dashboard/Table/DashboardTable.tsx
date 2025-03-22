@@ -10,7 +10,7 @@ import {
 	getPaginationRowModel,
 	getSortedRowModel,
 	SortingState,
-	Table as TanstackTable,
+	Table,
 	useReactTable,
 	VisibilityState,
 } from '@tanstack/react-table'
@@ -20,7 +20,7 @@ import Body from './components/Body'
 import Pagination from './components/Pagination/Pagination'
 import { ITask } from '@/types/task.types'
 
-interface TableProps {
+interface DashboardTableProps {
 	data: ITask[] | []
 	pagination: {
 		page: number
@@ -30,15 +30,18 @@ interface TableProps {
 }
 
 export interface ITableComponentProps {
-	table: TanstackTable<ITask>
+	table: Table<ITask>
+	classNames?: string
+	columnVisibility?: VisibilityState
 }
 
-const Table: FC<TableProps> = ({ data, pagination }) => {
+const DashboardTable: FC<DashboardTableProps> = ({ data, pagination }) => {
 	const router = useRouter()
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const { page, limit, pages } = pagination
+
 	const table = useReactTable({
 		data,
 		columns,
@@ -50,7 +53,7 @@ const Table: FC<TableProps> = ({ data, pagination }) => {
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
 		getExpandedRowModel: getExpandedRowModel(),
-		getRowCanExpand: (row) => row.original?.subtasks.length > 0,
+		getSubRows: (row) => row.subtasks,
 		state: {
 			sorting,
 			columnFilters,
@@ -76,12 +79,10 @@ const Table: FC<TableProps> = ({ data, pagination }) => {
 	return (
 		<div className='container mx-auto'>
 			<Header table={table} />
-			<div className='border rounded-md'>
-				<Body table={table} />
-			</div>
+			<Body table={table} />
 			<Pagination table={table} />
 		</div>
 	)
 }
 
-export default Table
+export default DashboardTable

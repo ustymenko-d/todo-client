@@ -7,8 +7,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Settings2 } from 'lucide-react'
-import { ITableComponentProps } from '../Table'
+import { ITableComponentProps } from '../DashboardTable'
 import { FC } from 'react'
+
+const defaultColumns = ['completed', 'title', 'actions']
 
 const Header: FC<ITableComponentProps> = ({ table }) => {
 	return (
@@ -36,7 +38,7 @@ const Header: FC<ITableComponentProps> = ({ table }) => {
 						.getAllColumns()
 						.filter((column) => column.getCanHide())
 						.map((column) => {
-							if (column.id !== 'title') {
+							if (!defaultColumns.includes(column.id)) {
 								return (
 									<DropdownMenuCheckboxItem
 										key={column.id}

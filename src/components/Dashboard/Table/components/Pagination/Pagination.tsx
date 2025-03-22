@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import PaginationSelect from './PaginationSelect'
 import PaginationButton from './PaginationButton'
-import { ITableComponentProps } from '../../Table'
+import { ITableComponentProps } from '../../DashboardTable'
 import { FC } from 'react'
 
 const Pagination: FC<ITableComponentProps> = ({ table }) => {

@@ -5,7 +5,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { ITableComponentProps } from '../../Table'
+import { ITableComponentProps } from '../../DashboardTable'
 import { FC } from 'react'
 
 const PaginationSelect: FC<ITableComponentProps> = ({ table }) => {

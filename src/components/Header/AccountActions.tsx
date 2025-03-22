@@ -109,7 +109,9 @@ const AccountActions = () => {
 								</AlertDialogHeader>
 								<AlertDialogFooter>
 									<AlertDialogCancel>Cancel</AlertDialogCancel>
-									<AlertDialogAction onClick={handleDeleteAccount}>
+									<AlertDialogAction
+										className='bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'
+										onClick={handleDeleteAccount}>
 										Continue
 									</AlertDialogAction>
 								</AlertDialogFooter>
