@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import TasksService from '@/services/api/tasks'
 import Header from '@/components/Dashboard/Header'
 import TaskEditor from '@/components/TaskEditor/TaskEditor'
-import DashboardTable from '@/components/Dashboard/Table/DashboardTable'
+import DashboardTable from '@/components/Dashboard/DashboardTable/DashboardTable'
 
 interface DashboardPageProps {
 	searchParams: { page?: string; limit?: string }

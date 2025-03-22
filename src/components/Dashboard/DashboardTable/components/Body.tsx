@@ -44,17 +44,10 @@ const Body: FC<ITableComponentProps> = ({ table }) => {
 									{row.getVisibleCells().map((cell) => {
 										return (
 											<TableCell key={cell.id}>
-												<div
-													style={
-														cell.column.id === 'title'
-															? { marginLeft: row.depth * 8 }
-															: {}
-													}>
-													{flexRender(
-														cell.column.columnDef.cell,
-														cell.getContext()
-													)}
-												</div>
+												{flexRender(
+													cell.column.columnDef.cell,
+													cell.getContext()
+												)}
 											</TableCell>
 										)
 									})}
