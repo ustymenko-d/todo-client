@@ -59,7 +59,7 @@ const columns: ColumnDef<TaskDto>[] = [
 			return (
 				<div
 					style={{ marginLeft: row.depth * 9 }}
-					className='flex gap-2 items-center'>
+					className='flex items-center gap-2'>
 					{canExpand && (
 						<Button
 							variant='ghost'
@@ -94,7 +94,7 @@ const columns: ColumnDef<TaskDto>[] = [
 			const { completed } = row.original
 
 			return (
-				<div className='flex gap-2 items-center'>
+				<div className='flex items-center gap-2'>
 					{completed ? (
 						<CircleCheck
 							className='text-muted-foreground'
