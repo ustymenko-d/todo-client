@@ -1,4 +1,8 @@
-import { FC } from 'react'
+'use client'
+
+import { FC, useEffect, useState, useTransition } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { debounce } from 'lodash'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,18 +12,36 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ITableComponentProps } from '../DashboardTable'
-import { Settings2 } from 'lucide-react'
+import { Loader2, Settings2 } from 'lucide-react'
 
 const defaultColumns = ['completed', 'title', 'actions']
 
 const Header: FC<ITableComponentProps> = ({ table }) => {
-	const titleFilterValue =
-		(table.getColumn('title')?.getFilterValue() as string) ?? ''
+	const router = useRouter()
+	const searchParams = useSearchParams()
+	const [searchTerm, setSearchTerm] = useState<string>(
+		searchParams.get('title') || ''
+	)
+	const [isPending, startTransition] = useTransition()
 
-	const handleTitleFilterChange = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		table.getColumn('title')?.setFilterValue(event.target.value)
+	const handleSearchChange = debounce((value: string) => {
+		startTransition(() => {
+			const params = new URLSearchParams()
+			if (value) {
+				params.set('title', value)
+				params.set('page', '1')
+				params.set('topLayerTasks', 'false')
+			} else {
+				params.set('topLayerTasks', 'true')
+			}
+			router.push(`?${params.toString()}`, { scroll: false })
+		})
+	}, 300)
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value
+		setSearchTerm(value)
+		handleSearchChange(value)
 	}
 
 	const renderColumnVisibility = () => {
@@ -39,14 +61,26 @@ const Header: FC<ITableComponentProps> = ({ table }) => {
 			))
 	}
 
+	useEffect(() => {
+		setSearchTerm(searchParams.get('title') || '')
+	}, [searchParams])
+
 	return (
 		<div className='flex items-center gap-4 py-4'>
-			<Input
-				className='max-w-sm'
-				value={titleFilterValue}
-				onChange={handleTitleFilterChange}
-				placeholder='Filter by title...'
-			/>
+			<div className='flex items-center gap-2'>
+				<Input
+					className='max-w-sm'
+					value={searchTerm}
+					onChange={(e) => handleChange(e)}
+					placeholder='Search by title...'
+				/>
+				{isPending && (
+					<div className='flex items-center'>
+						<Loader2 className='h-5 w-5 animate-spin text-gray-500' />
+						<span>Searching...</span>
+					</div>
+				)}
+			</div>
 
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>

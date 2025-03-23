@@ -6,35 +6,47 @@ import TaskEditor from '@/components/TaskEditor/TaskEditor'
 import DashboardTable from '@/components/Dashboard/DashboardTable/DashboardTable'
 
 interface DashboardPageProps {
-	searchParams: { page?: string; limit?: string }
+	searchParams: {
+		page?: string
+		limit?: string
+		title?: string
+		topLayerTasks?: string
+	}
 }
 
+const strToBool = (value?: string): boolean =>
+	value?.trim().toLowerCase() === 'true' || false
+
 const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
-	const { page, limit } = await searchParams
+	const {
+		page = '1',
+		limit = '2',
+		title,
+		topLayerTasks = 'true',
+	} = await searchParams
 
 	if (!page || !limit) {
-		redirect(`/dashboard?page=1&limit=5`)
+		redirect(`/dashboard?page=1&limit=5&topLayerTasks=true`)
+	}
+
+	const pagination = {
+		page: +page || 1,
+		limit: +limit || 5,
 	}
 
 	const { tasksData } = await TasksService.getTasks({
-		limit: +limit,
-		page: +page,
-		topLayerTasks: true,
+		...pagination,
+		topLayerTasks: strToBool(topLayerTasks),
+		title,
 	})
-	const { tasks, pages } = tasksData
-	const pagination = {
-		page: page ? +page : 1,
-		limit: limit ? +limit : 5,
-		pages,
-	}
 
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
 			<Header />
 
 			<DashboardTable
-				data={tasks}
-				pagination={pagination}
+				data={tasksData.tasks}
+				pagination={{ ...pagination, pages: tasksData.pages }}
 			/>
 			<TaskEditor />
 		</section>
