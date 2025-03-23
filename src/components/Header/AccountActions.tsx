@@ -52,7 +52,7 @@ const AccountActions = () => {
 			if (success) {
 				setIsAuthorized(false)
 				toast.success(message)
-				router.push('/')
+				router.replace('/')
 			}
 		} catch (error) {
 			toast.error('Something went wrong!')
@@ -110,7 +110,7 @@ const AccountActions = () => {
 								<AlertDialogFooter>
 									<AlertDialogCancel>Cancel</AlertDialogCancel>
 									<AlertDialogAction
-										className='bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'
+										className='shadow-sm bg-destructive text-destructive-foreground hover:bg-destructive/90'
 										onClick={handleDeleteAccount}>
 										Continue
 									</AlertDialogAction>

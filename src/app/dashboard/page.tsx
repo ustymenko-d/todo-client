@@ -20,7 +20,7 @@ const strToBool = (value?: string): boolean =>
 const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 	const {
 		page = '1',
-		limit = '2',
+		limit = '25',
 		title,
 		topLayerTasks = 'true',
 	} = await searchParams
@@ -31,7 +31,7 @@ const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 
 	const pagination = {
 		page: +page || 1,
-		limit: +limit || 5,
+		limit: +limit || 25,
 	}
 
 	const { tasksData } = await TasksService.getTasks({
@@ -43,7 +43,6 @@ const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
 			<Header />
-
 			<DashboardTable
 				data={tasksData.tasks}
 				pagination={{ ...pagination, pages: tasksData.pages }}

@@ -10,7 +10,7 @@ import { FC } from 'react'
 
 const PaginationSelect: FC<ITableComponentProps> = ({ table }) => {
 	const pageSize = table.getState().pagination.pageSize
-	const pageSizes = [5, 10, 20, 30, 40, 50]
+	const pageSizes = [25, 50, 75, 100]
 
 	return (
 		<div className='flex items-center space-x-2'>
