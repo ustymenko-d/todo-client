@@ -23,7 +23,7 @@ const RootPage = () => {
 					Please log in to your account or create a new one to continue.
 				</p>
 
-				<div className='flex flex-wrap items-center justify-center gap-2'>
+				<div className='grid grid-cols-2 gap-2 mx-auto w-fit'>
 					<Link
 						className={buttonVariants({ variant: 'default' })}
 						href='/auth'
