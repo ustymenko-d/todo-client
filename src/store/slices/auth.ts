@@ -1,8 +1,19 @@
 export type AuthFormType = 'login' | 'signup' | 'forgotPassword'
 
+export interface IUserInfo {
+	id: string
+	email: string
+	username: string
+	createdAt: Date
+	isVerified: boolean
+}
+
 export interface AuthSlice {
 	isAuthorized: boolean
 	setIsAuthorized: (newValue: boolean) => void
+
+	userInfo: IUserInfo | null
+	setUserInfo: (newValue: IUserInfo | null) => void
 
 	authFormType: AuthFormType
 	setAuthFormType: (newValue: AuthFormType) => void
@@ -24,6 +35,9 @@ const createAuthSlice = (
 ): AuthSlice => ({
 	isAuthorized: false,
 	setIsAuthorized: (newValue) => set({ isAuthorized: newValue }),
+
+	userInfo: null,
+	setUserInfo: (newValue) => set({ userInfo: newValue }),
 
 	authFormType: 'login',
 	setAuthFormType: (newValue) => set({ authFormType: newValue }),

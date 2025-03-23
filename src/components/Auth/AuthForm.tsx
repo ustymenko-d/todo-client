@@ -69,6 +69,7 @@ const AuthForm = () => {
 	const [loading, setLoading] = useState(false)
 	const authFormType = useAppStore((state) => state.authFormType)
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
+	const setUserInfo = useAppStore((state) => state.setUserInfo)
 
 	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
 		() => formConfig[authFormType],
@@ -99,18 +100,19 @@ const AuthForm = () => {
 						return
 				}
 
-				const { success, error, message } = response
+				const { success, error, message, userInfo } = response
 				if (success) {
 					if (authFormType !== 'forgotPassword') {
 						setIsAuthorized(true)
+						setUserInfo(userInfo)
 						router.replace('/dashboard')
 					} else {
 						authForm.reset(defaultValues)
 					}
-					
+
 					if (message) toast.success(message)
 				}
-			
+
 				if (error) {
 					toast.error(message)
 				}
@@ -121,7 +123,7 @@ const AuthForm = () => {
 				setLoading(false)
 			}
 		},
-		[authForm, authFormType, defaultValues, router, setIsAuthorized]
+		[authForm, authFormType, defaultValues, router, setIsAuthorized, setUserInfo]
 	)
 
 	const onSubmit = (values: z.infer<typeof validationSchema>) => {

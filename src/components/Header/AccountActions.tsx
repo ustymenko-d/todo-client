@@ -25,9 +25,10 @@ import {
 	AlertDialogTrigger,
 } from '../ui/alert-dialog'
 import LoadingButton from '../ui/LoadingButton'
-import { CircleUser, LogOut } from 'lucide-react'
+import { BadgeAlert, BadgeCheck, CircleUser, LogOut } from 'lucide-react'
 import useAppStore from '@/store/store'
 import useBreakpoints from '@/hooks/useBreakpoints'
+import { IUserInfo } from '@/store/slices/auth'
 
 type ActionResponse = {
 	success: boolean
@@ -38,9 +39,12 @@ type ActionCallback = () => Promise<ActionResponse>
 
 const AccountActions = () => {
 	const router = useRouter()
-	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const breakpoints = useBreakpoints([639])
 	const [loading, setLoading] = useState(false)
+	const userInfo = useAppStore((state) => state.userInfo)
+	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
+	const setUserInfo = useAppStore((state) => state.setUserInfo)
+	const { email, username, isVerified } = userInfo as IUserInfo
 
 	const handleAction = async (
 		actionCallback: ActionCallback
@@ -51,6 +55,7 @@ const AccountActions = () => {
 
 			if (success) {
 				setIsAuthorized(false)
+				setUserInfo(null)
 				toast.success(message)
 				router.replace('/')
 			}
@@ -80,8 +85,41 @@ const AccountActions = () => {
 				</DialogTrigger>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Account settings</DialogTitle>
+						<DialogTitle className='text-xl'>{username}</DialogTitle>
 					</DialogHeader>
+
+					<div>
+						<div className='flex items-center gap-2 mb-2'>
+							<p className='text-lg font-medium'>
+								{isVerified
+									? 'Your account has been successfully verified'
+									: 'Your account has not been verified'}
+							</p>
+							{isVerified ? (
+								<BadgeCheck
+									strokeWidth={1.5}
+									className='w-5 h-5'
+								/>
+							) : (
+								<BadgeAlert
+									strokeWidth={1.5}
+									className='w-5 h-5'
+								/>
+							)}
+						</div>
+						{!isVerified && (
+							<>
+								<p className='mb-1'>
+									Please check the email address provided during registration (
+									{email}) for verification. If you don’t verify your email within a week, your account will be deleted.
+								</p>
+								<p className='font-normal text-muted-foreground'>
+									Restrictions: unverified users cannot create more than 10
+									tasks and more than 3 folders
+								</p>
+							</>
+						)}
+					</div>
 
 					<DialogFooter>
 						<Button
