@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useEffect, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { debounce } from 'lodash'
 import { Input } from '@/components/ui/input'
@@ -12,17 +12,24 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ITableComponentProps } from '../DashboardTable'
-import { Loader2, Settings2 } from 'lucide-react'
+import { Loader2, Plus, Settings2 } from 'lucide-react'
+import useAppStore from '@/store/store'
+import useBreakpoints from '@/hooks/useBreakpoints'
 
 const defaultColumns = ['completed', 'title', 'actions']
 
-const Header: FC<ITableComponentProps> = ({ table }) => {
+const Head = ({ table }: ITableComponentProps) => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
+	const breakpoints = useBreakpoints([639])
 	const [searchTerm, setSearchTerm] = useState<string>(
 		searchParams.get('title') || ''
 	)
 	const [isPending, startTransition] = useTransition()
+	const taskEditorSettings = useAppStore((state) => state.taskEditorSettings)
+	const setTaskEditorSettings = useAppStore(
+		(state) => state.setTaskEditorSettings
+	)
 
 	const handleSearchChange = debounce((value: string) => {
 		startTransition(() => {
@@ -61,6 +68,9 @@ const Header: FC<ITableComponentProps> = ({ table }) => {
 			))
 	}
 
+	const openTaskEditor = () =>
+		setTaskEditorSettings({ ...taskEditorSettings, open: true })
+
 	useEffect(() => {
 		setSearchTerm(searchParams.get('title') || '')
 	}, [searchParams])
@@ -85,13 +95,19 @@ const Header: FC<ITableComponentProps> = ({ table }) => {
 				)}
 			</div>
 
+			<Button onClick={openTaskEditor}>
+				<Plus />
+				<span>{!!breakpoints ? 'Add task' : 'Add'}</span>
+			</Button>
+
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button
 						variant='outline'
-						className='ml-auto'>
+						className='ml-auto min-w-9'
+						size={!!breakpoints ? 'default' : 'icon'}>
 						<Settings2 />
-						View
+						{!!breakpoints && <span className='hidden sm:block'>View</span>}
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end'>
@@ -102,4 +118,4 @@ const Header: FC<ITableComponentProps> = ({ table }) => {
 	)
 }
 
-export default Header
+export default Head

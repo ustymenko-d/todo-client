@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import TasksService from '@/services/api/tasks'
@@ -33,11 +31,10 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 	const task = row.original
 	const router = useRouter()
 	const pathname = usePathname()
-	const [menuOpen, setMenuOpen] = useState<boolean>(false)
-	const [loading, setLoading] = useState<boolean>(false)
 	const setTaskEditorSettings = useAppStore(
 		(state) => state.setTaskEditorSettings
 	)
+	const [state, setState] = useState({ menuOpen: false, loading: false })
 
 	const openTaskEditor = (mode: 'edit' | 'create'): void => {
 		setTaskEditorSettings({ open: true, mode, selectedTask: task })
@@ -45,7 +42,7 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 
 	const handleTaskAction = async (action: 'delete' | 'toggleStatus') => {
 		try {
-			setLoading(true)
+			setState((prev) => ({ ...prev, loading: true }))
 			const actionMap = {
 				delete: TasksService.deleteTask,
 				toggleStatus: TasksService.toggleStatus,
@@ -60,7 +57,7 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 						: 'Task status successfully changed'
 				)
 
-				if (pathname === '/dashboard') router.push(`?page=1&limit=5`)
+				if (pathname === '/dashboard') router.push(`?page=1&limit=25`)
 			} else {
 				toast.error('Something went wrong!')
 			}
@@ -68,14 +65,14 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 			toast.error('Something went wrong!')
 			console.error(`Error while performing task action: ${action}`)
 		} finally {
-			setLoading(false)
+			setState((prev) => ({ ...prev, loading: false }))
 		}
 	}
 
 	return (
 		<DropdownMenu
-			open={menuOpen}
-			onOpenChange={setMenuOpen}>
+			open={state.menuOpen}
+			onOpenChange={(open) => setState({ ...state, menuOpen: open })}>
 			<DropdownMenuTrigger
 				asChild
 				className='flex ml-auto'>
@@ -99,10 +96,11 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 					Toggle status
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<AlertDialog onOpenChange={setMenuOpen}>
+				<AlertDialog
+					onOpenChange={(open) => setState({ ...state, menuOpen: open })}>
 					<AlertDialogTrigger asChild>
 						<LoadingButton
-							loading={loading}
+							loading={state.loading}
 							variant='ghost'
 							className='w-full px-2 py-1.5 justify-start'>
 							Delete

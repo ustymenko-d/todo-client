@@ -5,8 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button } from '../ui/button'
-import { Loader2 } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import {
 	Form,
@@ -15,11 +13,12 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '../ui/form'
-import PasswordInput from '../ui/PasswordInput'
+} from '../../ui/form'
+import PasswordInput from '../../ui/PasswordInput'
 import AuthService from '@/services/api/auth'
 import { passwordDto } from '@/dto/auth'
 import { toast } from 'sonner'
+import LoadingButton from '@/components/ui/LoadingButton'
 
 const formConfig = {
 	validationSchema: AuthValidation.resetPasswordSchema,
@@ -47,20 +46,22 @@ const ResetPasswordForm = () => {
 		async (payload: passwordDto) => {
 			setLoading(true)
 			try {
-				const resetPasswordParam =
-					'resetToken=' + searchParams.get('resetToken')
-				const response = await AuthService.resetPassword(
+				const param = 'resetToken=' + searchParams.get('resetToken')
+				const { success, message } = await AuthService.resetPassword(
 					payload,
-					resetPasswordParam
+					param
 				)
 
-				if (response.error) {
-					setStatus('error')
-					toast.error(response.message)
-					throw new Error(response.message)
+				setStatus(success ? 'success' : 'error')
+
+				if (!success) {
+					if (message) {
+						toast.error(message)
+						throw new Error(message)
+					}
+					throw new Error()
 				}
 
-				setStatus(response.success ? 'success' : 'error')
 				toast.success('Your password has been changed successfully!', {
 					description:
 						'You will be automatically redirected to the main page in 3 seconds.',
@@ -70,9 +71,8 @@ const ResetPasswordForm = () => {
 					router.replace('/')
 				}, 3000)
 			} catch (error) {
-				setStatus('error')
 				toast.error('Something went wrong!')
-				console.error('Log in error:', error)
+				console.error('Change password error:', error)
 			} finally {
 				setLoading(false)
 			}
@@ -88,19 +88,26 @@ const ResetPasswordForm = () => {
 	)
 
 	return (
-		<>
-			<Form {...resetPasswordForm}>
-				<form onSubmit={resetPasswordForm.handleSubmit(onSubmit)}>
-					<div className='flex flex-col gap-6'>
+		<Form {...resetPasswordForm}>
+			<form onSubmit={resetPasswordForm.handleSubmit(onSubmit)}>
+				<div className='flex flex-col gap-6'>
+					{(['password', 'confirmPassword'] as const).map((element) => (
 						<FormField
+							key={`${element}-field`}
 							control={resetPasswordForm.control}
-							name='password'
+							name={element}
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
 										<PasswordInput
 											{...field}
-											labelNode={<FormLabel>Password</FormLabel>}
+											labelNode={
+												<FormLabel>
+													{element === 'password'
+														? 'Password'
+														: 'Confirm Password'}
+												</FormLabel>
+											}
 											value={field.value || ''}
 										/>
 									</FormControl>
@@ -108,41 +115,18 @@ const ResetPasswordForm = () => {
 								</FormItem>
 							)}
 						/>
+					))}
 
-						<FormField
-							control={resetPasswordForm.control}
-							name='confirmPassword'
-							render={({ field }) => (
-								<FormItem>
-									<FormControl>
-										<PasswordInput
-											{...field}
-											labelNode={<FormLabel>Confirm Password</FormLabel>}
-											value={field.value || ''}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<Button
-							disabled={loading || status === 'success'}
-							type='submit'
-							className='w-full'>
-							{loading ? (
-								<>
-									<Loader2 className='animate-spin' />
-									<span>Please wait</span>
-								</>
-							) : (
-								'Confirm'
-							)}
-						</Button>
-					</div>
-				</form>
-			</Form>
-		</>
+					<LoadingButton
+						type='submit'
+						className='w-full'
+						loading={loading}
+						disabled={status === 'success'}>
+						Confirm
+					</LoadingButton>
+				</div>
+			</form>
+		</Form>
 	)
 }
 

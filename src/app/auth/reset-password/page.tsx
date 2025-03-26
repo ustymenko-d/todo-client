@@ -1,4 +1,3 @@
-import ResetPasswordForm from '@/components/Auth/ResetPasswordForm'
 import {
 	Card,
 	CardContent,
@@ -6,20 +5,19 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import ResetPasswordForm from '@/components/routes/Auth/ResetPasswordForm'
 
 const ResetPasswordPage = () => {
 	return (
-		<>
-			<Card>
-				<CardHeader>
-					<CardTitle className='text-2xl'>Reset password</CardTitle>
-					<CardDescription>Please enter a new password</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<ResetPasswordForm />
-				</CardContent>
-			</Card>
-		</>
+		<Card className='sm:min-w-80'>
+			<CardHeader>
+				<CardTitle className='text-2xl'>Change password</CardTitle>
+				<CardDescription>Please enter a new password</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<ResetPasswordForm />
+			</CardContent>
+		</Card>
 	)
 }
 

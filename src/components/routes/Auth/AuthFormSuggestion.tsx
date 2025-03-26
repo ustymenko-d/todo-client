@@ -1,10 +1,7 @@
-'use client'
-
-import Link from 'next/link'
-import useAppStore from '@/store/store'
 import { useMemo } from 'react'
-
-type AuthFormType = 'login' | 'signup' | 'forgotPassword'
+import useAppStore from '@/store/store'
+import { AuthFormType } from '@/types/auth'
+import Link from 'next/link'
 
 const signupSuggestion = {
 	text: 'Don’t have an account?',
@@ -37,14 +34,12 @@ const AuthFormSuggestion = () => {
 	return (
 		<div className='flex flex-wrap gap-2 mt-4 text-center text-sm'>
 			<span>{suggestionText}</span>
-			{linkText && (
-				<Link
-					href='/auth'
-					className='underline underline-offset-4'
-					onClick={() => setAuthFormType(newType)}>
-					{linkText}
-				</Link>
-			)}
+			<Link
+				href='/auth'
+				className='underline underline-offset-4'
+				onClick={() => setAuthFormType(newType)}>
+				{linkText}
+			</Link>
 		</div>
 	)
 }

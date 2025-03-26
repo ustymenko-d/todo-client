@@ -5,14 +5,15 @@ import { Loader2 } from 'lucide-react'
 interface LoadingButtonProps {
 	loading: boolean
 	children: ReactNode
+	disabled?: boolean
 }
 
 const LoadingButton: FC<
 	LoadingButtonProps & React.ComponentProps<typeof Button>
-> = ({ loading, children, ...props }) => (
+> = ({ loading, children, disabled, ...props }) => (
 	<Button
 		{...props}
-		disabled={loading}>
+		disabled={loading || disabled}>
 		{loading ? (
 			<>
 				<Loader2 className='animate-spin' />

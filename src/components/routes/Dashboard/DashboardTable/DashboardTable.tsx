@@ -15,7 +15,7 @@ import {
 	VisibilityState,
 } from '@tanstack/react-table'
 import columns from './components/Columns/Columns'
-import Header from './components/Header'
+import Head from './components/Head'
 import Body from './components/Body'
 import Pagination from './components/Pagination/Pagination'
 import { ITask } from '@/types/tasks'
@@ -31,8 +31,6 @@ interface DashboardTableProps {
 
 export interface ITableComponentProps {
 	table: Table<ITask>
-	classNames?: string
-	columnVisibility?: VisibilityState
 }
 
 const DashboardTable: FC<DashboardTableProps> = ({ data, pagination }) => {
@@ -78,7 +76,7 @@ const DashboardTable: FC<DashboardTableProps> = ({ data, pagination }) => {
 
 	return (
 		<div className='container mx-auto'>
-			<Header table={table} />
+			<Head table={table} />
 			<Body table={table} />
 			<Pagination table={table} />
 		</div>

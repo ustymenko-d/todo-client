@@ -1,4 +1,4 @@
-export type AuthFormType = 'login' | 'signup' | 'forgotPassword'
+import { AuthFormType } from '@/types/auth'
 
 export interface AuthSlice {
 	isAuthorized: boolean

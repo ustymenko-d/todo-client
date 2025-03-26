@@ -1,28 +1,23 @@
-import { FC } from 'react'
 import { redirect } from 'next/navigation'
 import TasksService from '@/services/api/tasks'
-import Header from '@/components/Dashboard/Header'
+import Head from '@/components/routes/Dashboard/Head'
 import TaskEditor from '@/components/TaskEditor/TaskEditor'
-import DashboardTable from '@/components/Dashboard/DashboardTable/DashboardTable'
-
-interface DashboardPageProps {
-	searchParams: {
-		page?: string
-		limit?: string
-		title?: string
-		topLayerTasks?: string
-	}
-}
+import DashboardTable from '@/components/routes/Dashboard/DashboardTable/DashboardTable'
+import { GetTasksRequestDto } from '@/dto/tasks'
 
 const strToBool = (value?: string): boolean =>
 	value?.trim().toLowerCase() === 'true' || false
 
-const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
+const DashboardPage = async ({
+	searchParams,
+}: {
+	searchParams: GetTasksRequestDto
+}) => {
 	const {
 		page = '1',
 		limit = '25',
 		title,
-		topLayerTasks = 'true',
+		topLayerTasks = true,
 	} = await searchParams
 
 	if (!page || !limit) {
@@ -30,19 +25,22 @@ const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 	}
 
 	const pagination = {
-		page: +page || 1,
-		limit: +limit || 25,
+		page: +page,
+		limit: +limit,
 	}
 
 	const { data } = await TasksService.getTasks({
 		...pagination,
-		topLayerTasks: strToBool(topLayerTasks),
+		topLayerTasks:
+			typeof topLayerTasks === 'string'
+				? strToBool(topLayerTasks)
+				: topLayerTasks,
 		title,
 	})
 
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
-			<Header />
+			<Head />
 			<DashboardTable
 				data={data.tasks}
 				pagination={{ ...pagination, pages: data.pages }}

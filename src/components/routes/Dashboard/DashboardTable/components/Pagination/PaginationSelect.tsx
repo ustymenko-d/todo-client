@@ -6,9 +6,8 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { ITableComponentProps } from '../../DashboardTable'
-import { FC } from 'react'
 
-const PaginationSelect: FC<ITableComponentProps> = ({ table }) => {
+const PaginationSelect = ({ table }: ITableComponentProps) => {
 	const pageSize = table.getState().pagination.pageSize
 	const pageSizes = [25, 50, 75, 100]
 

@@ -14,11 +14,8 @@ import { ChevronRight, CircleCheck, Timer } from 'lucide-react'
 
 const formatValue = (value: string | null): ReactNode => {
 	if (!value) return '-'
-
 	const stringValue = String(value)
-
 	if (stringValue.length <= 30) return <p>{stringValue}</p>
-
 	return (
 		<TooltipProvider>
 			<Tooltip>

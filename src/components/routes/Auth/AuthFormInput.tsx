@@ -1,18 +1,18 @@
 import { FC } from 'react'
 import { Control } from 'react-hook-form'
-import EmailInput from '../ui/EmailInput'
+import EmailInput from '../../ui/EmailInput'
 import {
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '../ui/form'
-import PasswordInput from '../ui/PasswordInput'
-import { BaseFieldType } from './AuthForm'
+} from '../../ui/form'
+import PasswordInput from '../../ui/PasswordInput'
+import { TBaseFields } from './AuthForm'
 
 interface AuthFormInputProps {
-	name: BaseFieldType
+	name: TBaseFields
 	label: string
 	control: Control
 }

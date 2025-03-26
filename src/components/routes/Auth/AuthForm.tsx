@@ -12,24 +12,23 @@ import AuthService from '@/services/api/auth'
 import { useRouter } from 'next/navigation'
 import { baseAuthDto, emailDto } from '@/dto/auth'
 import { toast } from 'sonner'
-import LoadingButton from '../ui/LoadingButton'
-import { AuthFormType } from '@/store/slices/auth'
+import LoadingButton from '../../ui/LoadingButton'
+import { AuthFormType } from '@/types/auth'
+import { IResponseStatus } from '@/types/common'
 
-export type BaseFieldType = 'email' | 'password' | 'confirmPassword'
-type FieldType = BaseFieldType | 'rememberMe'
-
-interface IDefaultSchemaValues {
-	email?: string
-	password?: string
-	confirmPassword?: string
-	rememberMe?: boolean
-}
+export type TBaseFields = 'email' | 'password' | 'confirmPassword'
+type TFields = TBaseFields | 'rememberMe'
 
 interface IFormConfig {
-	fields: FieldType[]
+	fields: TFields[]
 	buttonText: string
 	validationSchema: ZodSchema
-	defaultValues: IDefaultSchemaValues
+	defaultValues: {
+		email: string
+		password?: string
+		confirmPassword?: string
+		rememberMe?: boolean
+	}
 }
 
 const formConfig: Record<AuthFormType, IFormConfig> = {
@@ -56,7 +55,7 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 	},
 	forgotPassword: {
 		fields: ['email'],
-		buttonText: 'Send password reset email',
+		buttonText: 'Send reset password email',
 		validationSchema: AuthValidation.emailSchema,
 		defaultValues: {
 			email: '',
@@ -66,9 +65,10 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 
 const AuthForm = () => {
 	const router = useRouter()
-	const [loading, setLoading] = useState(false)
 	const authFormType = useAppStore((state) => state.authFormType)
+	const isAuthorized = useAppStore((state) => state.isAuthorized)
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
+	const [loading, setLoading] = useState(false)
 
 	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
 		() => formConfig[authFormType],
@@ -80,8 +80,27 @@ const AuthForm = () => {
 		defaultValues,
 	})
 
+	const processResponse = useCallback(
+		(response: IResponseStatus) => {
+			const { success, message } = response
+
+			if (success) {
+				if (authFormType !== 'forgotPassword') {
+					setIsAuthorized(true)
+					router.replace('/dashboard')
+				} else {
+					authForm.reset(defaultValues)
+				}
+				toast.success(message)
+			} else {
+				toast.error(message)
+			}
+		},
+		[authForm, authFormType, defaultValues, router, setIsAuthorized]
+	)
+
 	const handleAuthAction = useCallback(
-		async (payload: baseAuthDto | emailDto) => {
+		async (payload: baseAuthDto | emailDto): Promise<void> => {
 			setLoading(true)
 			try {
 				let response
@@ -98,20 +117,7 @@ const AuthForm = () => {
 					default:
 						return
 				}
-
-				const { success, message } = response
-				if (success) {
-					if (authFormType !== 'forgotPassword') {
-						setIsAuthorized(true)
-						router.replace('/dashboard')
-					} else {
-						authForm.reset(defaultValues)
-					}
-
-					toast.success(message)
-				} else {
-					toast.error(message)
-				}
+				processResponse(response)
 			} catch (error) {
 				toast.error('Something went wrong!')
 				console.error(`${authFormType} error:`, error)
@@ -119,7 +125,7 @@ const AuthForm = () => {
 				setLoading(false)
 			}
 		},
-		[authForm, authFormType, defaultValues, router, setIsAuthorized]
+		[authFormType, processResponse]
 	)
 
 	const onSubmit = (values: z.infer<typeof validationSchema>) => {
@@ -128,7 +134,7 @@ const AuthForm = () => {
 				? { email: values.email }
 				: {
 						email: values.email,
-						password: values.password || '',
+						password: values.password,
 						rememberMe: values.rememberMe,
 				  }
 		handleAuthAction(payload)
@@ -159,9 +165,10 @@ const AuthForm = () => {
 					)}
 
 					<LoadingButton
+						type='submit'
 						loading={loading}
-						type='submit'>
-						<span>{buttonText}</span>
+						disabled={isAuthorized}>
+						{buttonText}
 					</LoadingButton>
 				</div>
 				<AuthFormSuggestion />
