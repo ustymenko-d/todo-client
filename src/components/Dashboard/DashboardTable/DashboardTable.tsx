@@ -18,7 +18,7 @@ import columns from './components/Columns/Columns'
 import Header from './components/Header'
 import Body from './components/Body'
 import Pagination from './components/Pagination/Pagination'
-import { ITask } from '@/types/task.types'
+import { ITask } from '@/types/tasks'
 
 interface DashboardTableProps {
 	data: ITask[] | []

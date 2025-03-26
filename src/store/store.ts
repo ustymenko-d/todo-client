@@ -9,8 +9,8 @@ interface AppStore extends TaskSlice, AuthSlice {}
 export const useAppStore = create<AppStore>()(
 	devtools(
 		persist(
-			(set, get) => ({
-				...createAuthSlice(set, get),
+			(set) => ({
+				...createAuthSlice(set),
 				...createTaskSlice(set),
 			}),
 			{

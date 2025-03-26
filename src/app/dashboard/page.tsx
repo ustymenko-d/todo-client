@@ -34,7 +34,7 @@ const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 		limit: +limit || 25,
 	}
 
-	const { tasksData } = await TasksService.getTasks({
+	const { data } = await TasksService.getTasks({
 		...pagination,
 		topLayerTasks: strToBool(topLayerTasks),
 		title,
@@ -44,8 +44,8 @@ const DashboardPage: FC<DashboardPageProps> = async ({ searchParams }) => {
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
 			<Header />
 			<DashboardTable
-				data={tasksData.tasks}
-				pagination={{ ...pagination, pages: tasksData.pages }}
+				data={data.tasks}
+				pagination={{ ...pagination, pages: data.pages }}
 			/>
 			<TaskEditor />
 		</section>

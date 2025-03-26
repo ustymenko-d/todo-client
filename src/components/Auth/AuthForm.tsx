@@ -99,7 +99,7 @@ const AuthForm = () => {
 						return
 				}
 
-				const { success, error, message } = response
+				const { success, message } = response
 				if (success) {
 					if (authFormType !== 'forgotPassword') {
 						setIsAuthorized(true)
@@ -107,11 +107,9 @@ const AuthForm = () => {
 					} else {
 						authForm.reset(defaultValues)
 					}
-					
-					if (message) toast.success(message)
-				}
-			
-				if (error) {
+
+					toast.success(message)
+				} else {
 					toast.error(message)
 				}
 			} catch (error) {

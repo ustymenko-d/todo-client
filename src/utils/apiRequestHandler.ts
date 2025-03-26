@@ -4,16 +4,16 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
 type Method = 'post' | 'get' | 'delete' | 'patch' | 'put'
 
-const createUrl = (apiUrl: string, endpoint: string, param?: string) =>
-	param ? `${apiUrl}/${endpoint}?${param}` : `${apiUrl}/${endpoint}`
+const createUrl = (endpoint: string, param?: string): string =>
+	param ? `${endpoint}?${param}` : endpoint
 
 const getAxiosInstance = async (): Promise<AxiosInstance> =>
 	typeof window === 'undefined' ? await getServerAxios() : Axios
 
-const handleRequest = async (
+const handleRequest = async <R>(
 	axiosInstance: AxiosInstance,
 	config: AxiosRequestConfig
-) => {
+): Promise<R> => {
 	try {
 		const response = await axiosInstance.request(config)
 		return response.data
@@ -42,21 +42,20 @@ const handleUnauthorizedError = async (
 	}
 }
 
-const apiRequestHandler = async <T>(
-	apiUrl: string,
-	method: Method,
+const apiRequestHandler = async <R, T = undefined>(
 	endpoint: string,
+	method: Method,
 	payload?: T,
 	param?: string
-) => {
-	const url = createUrl(apiUrl, endpoint, param)
+): Promise<R> => {
+	const url = createUrl(endpoint, param)
 	const config: AxiosRequestConfig = {
 		url,
 		method,
 		...(payload ? { data: payload } : {}),
 	}
 	const axiosInstance = await getAxiosInstance()
-	return await handleRequest(axiosInstance, config)
+	return await handleRequest<R>(axiosInstance, config)
 }
 
 export default apiRequestHandler

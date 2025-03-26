@@ -22,8 +22,7 @@ const createTaskSlice = (
 	set: (partial: Partial<TaskSlice>) => void
 ): TaskSlice => ({
 	taskEditorSettings: defaultTaskEditorSettings,
-	setTaskEditorSettings: (newValue: TaskEditorSettings) =>
-		set({ taskEditorSettings: newValue }),
+	setTaskEditorSettings: (taskEditorSettings) => set({ taskEditorSettings }),
 	closeTaskEditor: () => set({ taskEditorSettings: defaultTaskEditorSettings }),
 })
 

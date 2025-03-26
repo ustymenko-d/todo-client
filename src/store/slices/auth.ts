@@ -6,9 +6,6 @@ export interface AuthSlice {
 
 	authFormType: AuthFormType
 	setAuthFormType: (newValue: AuthFormType) => void
-
-	isRememberUser: boolean
-	toggleIsRememberUser: () => void
 }
 
 const persistStorage = {
@@ -19,25 +16,13 @@ const persistStorage = {
 }
 
 const createAuthSlice = (
-	set: (partial: Partial<AuthSlice>) => void,
-	get: () => AuthSlice
+	set: (partial: Partial<AuthSlice>) => void
 ): AuthSlice => ({
 	isAuthorized: false,
-	setIsAuthorized: (newValue) => set({ isAuthorized: newValue }),
+	setIsAuthorized: (isAuthorized) => set({ isAuthorized }),
 
 	authFormType: 'login',
-	setAuthFormType: (newValue) => set({ authFormType: newValue }),
-
-	isRememberUser: false,
-	toggleIsRememberUser: () => {
-		if (typeof window !== 'undefined') {
-			const newValue = !get().isRememberUser
-			set({ isRememberUser: newValue })
-			persistStorage.setStorage(
-				newValue ? window.localStorage : window.sessionStorage
-			)
-		}
-	},
+	setAuthFormType: (authFormType) => set({ authFormType }),
 })
 
 export default createAuthSlice
