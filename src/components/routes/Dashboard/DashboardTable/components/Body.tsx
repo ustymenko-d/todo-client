@@ -15,9 +15,13 @@ const Body = ({ table }: ITableComponentProps) => {
 
 	const renderHeaders = () =>
 		table.getHeaderGroups().map((headerGroup) => (
-			<TableRow key={headerGroup.id}>
+			<TableRow
+				key={headerGroup.id}
+				className='bg-muted'>
 				{headerGroup.headers.map((header) => (
-					<TableHead key={header.id}>
+					<TableHead
+						key={header.id}
+						className='border-r last:border-none text-center'>
 						{!header.isPlaceholder &&
 							flexRender(header.column.columnDef.header, header.getContext())}
 					</TableHead>
@@ -29,7 +33,9 @@ const Body = ({ table }: ITableComponentProps) => {
 		rows.map((row) => (
 			<TableRow key={row.id}>
 				{row.getVisibleCells().map((cell) => (
-					<TableCell key={cell.id}>
+					<TableCell
+						key={cell.id}
+						className='border-r last:border-none'>
 						{flexRender(cell.column.columnDef.cell, cell.getContext())}
 					</TableCell>
 				))}

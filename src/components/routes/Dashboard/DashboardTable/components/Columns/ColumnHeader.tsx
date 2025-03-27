@@ -31,29 +31,27 @@ const ColumnHeader = <TData, TValue>({
 	}
 
 	return (
-		<div className={cn('flex items-center space-x-2', className)}>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button
-						variant='ghost'
-						size='sm'
-						className='-ml-3 h-8 data-[state=open]:bg-accent'>
-						<span>{title}</span>
-						{getSortingIcon(column.getIsSorted())}
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align='start'>
-					<DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-						<ArrowUp className='h-3.5 w-3.5 text-muted-foreground/70' />
-						Asc
-					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-						<ArrowDown className='h-3.5 w-3.5 text-muted-foreground/70' />
-						Desc
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		</div>
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button
+					variant='ghost'
+					size='sm'
+					className='w-full data-[state=open]:bg-accent'>
+					<span>{title}</span>
+					{getSortingIcon(column.getIsSorted())}
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align='start'>
+				<DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+					<ArrowUp className='h-3.5 w-3.5 text-muted-foreground/70' />
+					Asc
+				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+					<ArrowDown className='h-3.5 w-3.5 text-muted-foreground/70' />
+					Desc
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	)
 }
 

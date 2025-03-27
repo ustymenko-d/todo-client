@@ -10,7 +10,7 @@ import {
 import { ReactNode } from 'react'
 import Actions from './ActionMenu'
 import { Button } from '@/components/ui/button'
-import { ChevronRight, CircleCheck, Timer } from 'lucide-react'
+import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
 
 const formatValue = (value: string | null): ReactNode => {
 	if (!value) return '-'
@@ -57,6 +57,7 @@ const columns: ColumnDef<TaskDto>[] = [
 				<div
 					style={{ marginLeft: row.depth * 9 }}
 					className='flex items-center gap-2'>
+					{formatValue(row.original.title)}
 					{canExpand && (
 						<Button
 							variant='ghost'
@@ -72,9 +73,6 @@ const columns: ColumnDef<TaskDto>[] = [
 							</span>
 						</Button>
 					)}
-					<div className={canExpand ? '' : 'ml-10'}>
-						{formatValue(row.original.title)}
-					</div>
 				</div>
 			)
 		},
@@ -93,15 +91,15 @@ const columns: ColumnDef<TaskDto>[] = [
 			return (
 				<div className='flex items-center gap-2'>
 					{completed ? (
-						<CircleCheck
+						<CircleCheckBig
 							className='text-muted-foreground'
 							size={18}
 							strokeWidth={1}
 						/>
 					) : (
-						<Timer
+						<Hourglass
 							className='text-muted-foreground'
-							size={20}
+							size={18}
 							strokeWidth={1}
 						/>
 					)}
