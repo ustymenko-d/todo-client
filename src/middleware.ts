@@ -22,7 +22,7 @@ export async function middleware(request: NextRequest) {
 	if (pathname === '/' || pathname.startsWith('/auth')) {
 		if (accessToken && !isValid) {
 			if (refreshToken) {
-				refreshTokens(accessToken.value, refreshToken.value, request)
+				return refreshTokens(accessToken.value, refreshToken.value, request)
 			}
 		}
 		if (accessToken && isValid) return redirectTo('/dashboard', request)

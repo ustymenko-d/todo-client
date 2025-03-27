@@ -1,7 +1,7 @@
 import apiRequestHandler from '@/utils/apiRequestHandler'
 import { baseAuthDto, emailDto, passwordDto } from '@/dto/auth'
+import { IAuthResponse, IUserInfo } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
-import { IAuthResponse } from '@/types/auth'
 
 const API_URL = '/auth'
 
@@ -27,6 +27,9 @@ const AuthService = {
 			'post',
 			payload
 		),
+
+	accountInfo: (): Promise<IUserInfo> =>
+		apiRequestHandler<IUserInfo>(`${API_URL}/account-info`, 'get'),
 
 	logout: (): Promise<IResponseStatus> =>
 		apiRequestHandler<IResponseStatus>(`${API_URL}/logout`, 'post'),

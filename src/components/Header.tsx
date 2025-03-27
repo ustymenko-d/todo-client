@@ -2,12 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import ThemeToggle from './Theme/ThemeToggle'
 import { buttonVariants } from './ui/button'
+import ThemeToggle from './Theme/ThemeToggle'
+import AccountActions from './Account/AccountActions'
 import { ChevronLeft } from 'lucide-react'
+import useAppStore from '@/store/store'
 
 const Header = () => {
 	const pathname = usePathname()
+	const isAuthorized = useAppStore((state) => state.isAuthorized)
 
 	return (
 		<header className='border-b border-dashed'>
@@ -24,6 +27,7 @@ const Header = () => {
 					</Link>
 				)}
 				<ThemeToggle />
+				{isAuthorized && <AccountActions />}
 			</div>
 		</header>
 	)

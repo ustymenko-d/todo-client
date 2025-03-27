@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
 import ThemeProviderWrapper from '@/components/Theme/ThemeProviderWrapper'
+import AccountProvider from '@/components/Account/AccountProvider'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Toaster } from 'sonner'
@@ -32,17 +33,19 @@ const RootLayout = ({
 		<html lang='en'>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-dvh flex flex-col`}>
-				<ThemeProviderWrapper>
-					<Header />
-					<main className='container flex flex-col items-center justify-center p-2 mx-auto border-dashed grow sm:border-x lg:p-4'>
-						{children}
-					</main>
-					<Footer />
-					<Toaster
-						position='top-center'
-						richColors
-					/>
-				</ThemeProviderWrapper>
+				<AccountProvider>
+					<ThemeProviderWrapper>
+						<Header />
+						<main className='container flex flex-col items-center justify-center p-2 mx-auto border-dashed grow sm:border-x lg:p-4'>
+							{children}
+						</main>
+						<Footer />
+						<Toaster
+							position='top-center'
+							richColors
+						/>
+					</ThemeProviderWrapper>
+				</AccountProvider>
 			</body>
 		</html>
 	)

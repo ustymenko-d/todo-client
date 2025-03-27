@@ -2,7 +2,7 @@ import { IResponseStatus } from './common'
 
 export type AuthFormType = 'login' | 'signup' | 'forgotPassword'
 
-interface IUserInfo {
+export interface IUserInfo {
 	id: string
 	email: string
 	username: string
