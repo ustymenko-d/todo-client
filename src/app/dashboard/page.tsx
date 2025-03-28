@@ -3,16 +3,21 @@ import TasksService from '@/services/api/tasks'
 import Head from '@/components/routes/Dashboard/Head'
 import TaskEditor from '@/components/TaskEditor/TaskEditor'
 import DashboardTable from '@/components/routes/Dashboard/DashboardTable/DashboardTable'
-import { GetTasksRequestDto } from '@/dto/tasks'
+import { PageProps } from '../../../.next/types/app/dashboard/page'
+
+interface DashboardPageProps extends PageProps {
+	searchParams: Promise<{
+			limit?: string;
+			page?: string;
+			title?: string;
+			topLayerTasks?: string;
+	}>;
+}
 
 const strToBool = (value?: string): boolean =>
 	value?.trim().toLowerCase() === 'true' || false
 
-const DashboardPage = async ({
-	searchParams,
-}: {
-	searchParams: GetTasksRequestDto
-}) => {
+const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 	const {
 		page = '1',
 		limit = '25',
