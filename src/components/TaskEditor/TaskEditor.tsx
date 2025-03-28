@@ -17,10 +17,11 @@ import useAppStore from '@/store/store'
 const TaskEditor = () => {
 	const router = useRouter()
 	const pathname = usePathname()
-	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
-	const taskEditorSettings = useAppStore((state) => state.taskEditorSettings)
 
-	const { open, mode, selectedTask } = taskEditorSettings
+	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
+	const { open, mode, selectedTask } = useAppStore(
+		(state) => state.taskEditorSettings
+	)
 
 	const handleTaskAction = async (taskData: TaskBaseDto | TaskDto) => {
 		const payload = { ...selectedTask, ...taskData }
@@ -32,7 +33,7 @@ const TaskEditor = () => {
 					? await TasksService.createTask(payload)
 					: await TasksService.editTask(payload)
 
-			const { success, message } = response
+			const { success } = response
 
 			if (success) {
 				toast.success(
@@ -41,9 +42,9 @@ const TaskEditor = () => {
 						: 'Task successfully edited'
 				)
 				closeTaskEditor()
-				if (pathname === '/dashboard') router.push(`?page=1&limit=5`)
+				if (pathname === '/dashboard') router.push(`?page=1&limit=25`)
 			} else {
-				toast.error(message || 'Failed to process task')
+				toast.error('Failed to process task')
 			}
 		} catch (error) {
 			toast.error('Something went wrong!')

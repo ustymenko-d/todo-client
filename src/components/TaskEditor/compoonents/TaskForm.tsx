@@ -1,6 +1,6 @@
 'use client'
 
-import { ElementType, FC, useState } from 'react'
+import { ElementType, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TasksValidation, { TaskFormSchema } from '@/schemas/tasksSchema'
@@ -23,23 +23,28 @@ interface TaskFormProps {
 	handleTaskAction: (payload: TaskBaseDto) => void
 }
 
-const TaskForm: FC<TaskFormProps> = ({ handleTaskAction }) => {
+const TaskForm = ({ handleTaskAction }: TaskFormProps) => {
 	const { mode, selectedTask } = useAppStore(
 		(state) => state.taskEditorSettings
 	)
 	const [loading, setLoading] = useState<boolean>(false)
+	const isEditing = mode === 'edit'
 
-	const defaultValues: TaskFormSchema = {
-		title: mode === 'edit' ? selectedTask?.title : '',
-		description: mode === 'edit' ? selectedTask?.description : null,
-		parentTaskId:
-			mode === 'edit' ? selectedTask?.parentTaskId : selectedTask?.id || null,
-		expiresAt:
-			mode === 'edit' && selectedTask.expiresAt
-				? new Date(selectedTask.expiresAt)
-				: null,
-		folderId: mode === 'edit' ? selectedTask?.folderId : null,
-	}
+	const defaultValues = useMemo<TaskFormSchema>(
+		() => ({
+			title: isEditing ? selectedTask?.title || '' : '',
+			description: isEditing ? selectedTask?.description || '' : '',
+			parentTaskId: isEditing
+				? selectedTask?.parentTaskId
+				: selectedTask?.id || null,
+			expiresAt:
+				isEditing && selectedTask.expiresAt
+					? new Date(selectedTask.expiresAt)
+					: null,
+			folderId: isEditing ? selectedTask?.folderId || null : null,
+		}),
+		[isEditing, selectedTask]
+	)
 
 	const taskForm = useForm<TaskFormSchema>({
 		resolver: zodResolver(TasksValidation.taskFormSchema),
@@ -51,7 +56,7 @@ const TaskForm: FC<TaskFormProps> = ({ handleTaskAction }) => {
 		try {
 			const payload: TaskBaseDto = {
 				...values,
-				completed: mode === 'create' ? false : selectedTask?.completed,
+				completed: !isEditing ? false : selectedTask?.completed,
 				expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
 			}
 			handleTaskAction(payload)

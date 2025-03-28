@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { Control } from 'react-hook-form'
 import EmailInput from '../../ui/EmailInput'
 import {
@@ -17,7 +16,7 @@ interface AuthFormInputProps {
 	control: Control
 }
 
-const AuthFormInput: FC<AuthFormInputProps> = ({ name, label, control }) => (
+const AuthFormInput = ({ name, label, control }: AuthFormInputProps) => (
 	<FormField
 		control={control}
 		name={name}

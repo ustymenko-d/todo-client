@@ -1,6 +1,5 @@
 'use client'
 
-import { FC } from 'react'
 import { addDays, format } from 'date-fns'
 import {
 	Popover,
@@ -25,7 +24,7 @@ interface FormDatePickerProps {
 	field: ControllerRenderProps<TaskFormSchema, 'expiresAt'>
 }
 
-const FormDatePicker: FC<FormDatePickerProps> = ({ field }) => {
+const FormDatePicker = ({ field }: FormDatePickerProps) => {
 	return (
 		<Popover>
 			<PopoverTrigger asChild>

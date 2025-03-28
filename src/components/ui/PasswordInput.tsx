@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, InputHTMLAttributes, ReactNode, useState } from 'react'
+import { InputHTMLAttributes, ReactNode, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
 import {
@@ -17,11 +17,11 @@ interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	forgotBtn?: boolean
 }
 
-const PasswordInput: FC<PasswordInputProps> = ({
+const PasswordInput = ({
 	labelNode,
 	forgotBtn = false,
 	...props
-}) => {
+}: PasswordInputProps) => {
 	const [showPassword, setShowPassword] = useState(false)
 	const authFormType = useAppStore((state) => state.authFormType)
 	const setAuthFormType = useAppStore((state) => state.setAuthFormType)

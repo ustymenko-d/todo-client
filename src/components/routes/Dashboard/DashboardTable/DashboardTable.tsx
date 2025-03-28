@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
 	ColumnFiltersState,
@@ -33,7 +33,7 @@ export interface ITableComponentProps {
 	table: Table<ITask>
 }
 
-const DashboardTable: FC<DashboardTableProps> = ({ data, pagination }) => {
+const DashboardTable = ({ data, pagination }: DashboardTableProps) => {
 	const router = useRouter()
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
