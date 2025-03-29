@@ -50,7 +50,7 @@ const AccountActions = () => {
 						variant='outline'
 						size={breakpoints ? 'default' : 'icon'}>
 						<CircleUser />
-						{breakpoints && <span className='hidden sm:block'>Account</span>}
+						{!!breakpoints && <span className='hidden sm:block'>Account</span>}
 					</Button>
 				</DialogTrigger>
 				<AccountDialogContent
@@ -66,7 +66,7 @@ const AccountActions = () => {
 				onClick={() => handleAction('logout')}
 				size={breakpoints ? 'default' : 'icon'}>
 				<LogOut />
-				{breakpoints && <span className='hidden sm:block'>Log out</span>}
+				{!!breakpoints && <span className='hidden sm:block'>Log out</span>}
 			</LoadingButton>
 		</div>
 	)
