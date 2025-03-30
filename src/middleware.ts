@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { refreshTokens, verifyToken } from './utils/token'
+import { verifyToken } from './utils/token'
 import AuthService from './services/api/auth'
 
 export const redirectTo = (url: string, request: NextRequest) => {
@@ -20,22 +20,13 @@ export async function middleware(request: NextRequest) {
 		await AuthService.verifyEmail(`verificationToken=${verificationToken}`)
 
 	if (pathname === '/' || pathname.startsWith('/auth')) {
-		if (accessToken && !isValid) {
-			if (refreshToken) {
-				return refreshTokens(accessToken.value, refreshToken.value, request)
-			}
-		}
-		if (accessToken && isValid) return redirectTo('/dashboard', request)
+		if (accessToken)
+			if (isValid || refreshToken) return redirectTo('/dashboard', request)
 	}
 
-	if (pathname.startsWith('/dashboard')) {
-		if (!accessToken) return redirectTo('/', request)
-
-		if (accessToken && !isValid)
-			return refreshToken
-				? refreshTokens(accessToken.value, refreshToken.value, request)
-				: redirectTo('/', request)
-	}
+	if (pathname.startsWith('/dashboard'))
+		if (!accessToken || (!isValid && !refreshToken))
+			return redirectTo('/', request)
 
 	if (pathname === '/auth/reset-password' && !resetPasswordToken)
 		return redirectTo('/', request)

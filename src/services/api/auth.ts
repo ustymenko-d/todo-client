@@ -57,6 +57,9 @@ const AuthService = {
 			payload,
 			param
 		),
+
+	clearAuthCookies: (): Promise<IResponseStatus> =>
+		apiRequestHandler<IResponseStatus>(`${API_URL}/clear-auth-cookies`, 'get'),
 }
 
 export default AuthService

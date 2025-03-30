@@ -36,7 +36,7 @@ const AccountDialogContent = ({
 	return (
 		<DialogContent>
 			<DialogHeader>
-				<DialogTitle className='flex gap-2 items-center'>
+				<DialogTitle className='flex items-center gap-2'>
 					{accountInfo?.username ? (
 						<>
 							<span>{accountInfo.username}</span>
