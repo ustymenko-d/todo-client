@@ -28,8 +28,8 @@ const AuthService = {
 			payload
 		),
 
-	accountInfo: (): Promise<IUserInfo> =>
-		apiRequestHandler<IUserInfo>(`${API_URL}/account-info`, 'get'),
+	checkAuth: (): Promise<IUserInfo> =>
+		apiRequestHandler<IUserInfo>(`${API_URL}/check`, 'get'),
 
 	logout: (): Promise<IResponseStatus> =>
 		apiRequestHandler<IResponseStatus>(`${API_URL}/logout`, 'post'),
