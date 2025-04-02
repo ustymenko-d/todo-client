@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const baseConfig = {
-	baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+	// baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+	baseURL: '/api',
 	withCredentials: true,
 	timeout: 5000,
 }
