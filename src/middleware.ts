@@ -11,7 +11,6 @@ export async function middleware(request: NextRequest) {
 	const url = request.nextUrl
 	const { pathname } = url
 	const accessToken = request.cookies.get('access_token')
-	const refreshToken = request.cookies.get('refresh_token')
 	const resetPasswordToken = url.searchParams.get('resetToken')
 	const verificationToken = url.searchParams.get('verificationToken')
 	const isValid = accessToken ? verifyToken(accessToken.value) : false
@@ -20,13 +19,11 @@ export async function middleware(request: NextRequest) {
 		await AuthService.verifyEmail(`verificationToken=${verificationToken}`)
 
 	if (pathname === '/' || pathname.startsWith('/auth')) {
-		if (accessToken)
-			if (isValid || refreshToken) return redirectTo('/dashboard', request)
+		if (isValid) return redirectTo('/dashboard', request)
 	}
 
 	if (pathname.startsWith('/dashboard'))
-		if (!accessToken || (!isValid && !refreshToken))
-			return redirectTo('/', request)
+		if (!isValid) return redirectTo('/', request)
 
 	if (pathname === '/auth/reset-password' && !resetPasswordToken)
 		return redirectTo('/', request)
