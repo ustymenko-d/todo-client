@@ -32,7 +32,7 @@ const AuthService = {
 		apiRequestHandler<IUserInfo>(`${API_URL}/account-info`, 'get'),
 
 	logout: (): Promise<IResponseStatus> =>
-		apiRequestHandler<IResponseStatus>(`${API_URL}/logout`, 'post'),
+		apiRequestHandler<IResponseStatus>(`${API_URL}/logout`, 'get'),
 
 	refreshToken: (): Promise<IResponseStatus> =>
 		apiRequestHandler<IResponseStatus>(
@@ -60,6 +60,9 @@ const AuthService = {
 			payload,
 			param
 		),
+
+	clearAuthCookies: (): Promise<IResponseStatus> =>
+		apiRequestHandler<IResponseStatus>(`${API_URL}/cookies/clear-auth-cookies`, 'get'),
 }
 
 export default AuthService

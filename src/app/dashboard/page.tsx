@@ -1,17 +1,16 @@
-import { redirect } from 'next/navigation'
-import Head from '@/components/routes/Dashboard/Head'
+import Head from '@/components/dashboard/Head'
 import TaskEditor from '@/components/TaskEditor/TaskEditor'
-import DashboardTable from '@/components/routes/Dashboard/DashboardTable/DashboardTable'
+import DashboardTable from '@/components/dashboard/DashboardTable/DashboardTable'
 import { PageProps } from '../../../.next/types/app/dashboard/page'
 import TasksService from '@/services/tasks.service'
 
 interface DashboardPageProps extends PageProps {
 	searchParams: Promise<{
-			limit?: string;
-			page?: string;
-			title?: string;
-			topLayerTasks?: string;
-	}>;
+		limit?: string
+		page?: string
+		title?: string
+		topLayerTasks?: string
+	}>
 }
 
 const strToBool = (value?: string): boolean =>
@@ -24,10 +23,6 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 		title,
 		topLayerTasks = true,
 	} = await searchParams
-
-	if (!page || !limit) {
-		redirect(`/dashboard?page=1&limit=5&topLayerTasks=true`)
-	}
 
 	const pagination = {
 		page: +page,

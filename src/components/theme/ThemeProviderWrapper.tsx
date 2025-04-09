@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ThemeProvider } from "@/components/Theme/ThemeProvider"
+import { ThemeProvider } from "@/components/theme/ThemeProvider"
 
 export default function ThemeProviderWrapper({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)

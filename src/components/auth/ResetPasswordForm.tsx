@@ -13,8 +13,8 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '../../ui/form'
-import PasswordInput from '../../ui/PasswordInput'
+} from '../ui/form'
+import PasswordInput from '../ui/PasswordInput'
 import { passwordDto } from '@/dto/auth'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'

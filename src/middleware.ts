@@ -8,32 +8,36 @@ export const redirectTo = (url: string, request: NextRequest) => {
 }
 
 export async function middleware(request: NextRequest) {
-	const url = request.nextUrl
-	const { pathname } = url
-	const accessToken = request.cookies.get('access_token')
-	const refreshToken = request.cookies.get('refresh_token')
-	const resetPasswordToken = url.searchParams.get('resetToken')
-	const verificationToken = url.searchParams.get('verificationToken')
-	const isValid = accessToken ? verifyToken(accessToken.value) : false
+	const { nextUrl: url, cookies } = request
+	const { pathname, searchParams } = url
 
-	if (verificationToken)
+	const accessToken = cookies.get('access_token')?.value
+	const refreshToken = cookies.get('refresh_token')?.value
+	const resetPasswordToken = searchParams.get('resetToken')
+	const verificationToken = searchParams.get('verificationToken')
+	const isValidAccess = accessToken && verifyToken(accessToken)
+
+	if (verificationToken) {
 		await AuthService.verifyEmail(`verificationToken=${verificationToken}`)
+	}
 
 	if (pathname === '/' || pathname.startsWith('/auth')) {
-		if (accessToken && !isValid) {
+		if (accessToken) {
+			if (isValidAccess) {
+				return redirectTo('/dashboard', request)
+			}
 			if (refreshToken) {
-				return refreshTokens(accessToken.value, refreshToken.value, request)
+				return refreshTokens(accessToken, refreshToken, request)
 			}
 		}
-		if (accessToken && isValid) return redirectTo('/dashboard', request)
 	}
 
 	if (pathname.startsWith('/dashboard')) {
 		if (!accessToken) return redirectTo('/', request)
 
-		if (accessToken && !isValid)
+		if (!isValidAccess)
 			return refreshToken
-				? refreshTokens(accessToken.value, refreshToken.value, request)
+				? refreshTokens(accessToken, refreshToken, request)
 				: redirectTo('/', request)
 	}
 

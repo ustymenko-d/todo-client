@@ -42,7 +42,7 @@ const TaskEditor = () => {
 						: 'Task successfully edited'
 				)
 				closeTaskEditor()
-				if (pathname === '/dashboard') router.push(`?page=1&limit=25`)
+				if (pathname === '/dashboard') router.replace(`?page=1&limit=25`)
 			} else {
 				toast.error('Failed to process task')
 			}

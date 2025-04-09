@@ -1,4 +1,4 @@
-import AuthCard from '@/components/routes/Auth/AuthCard'
+import AuthCard from '@/components/auth/AuthCard'
 
 const AuthPage = () => (
 	<div className='w-full max-w-sm'>

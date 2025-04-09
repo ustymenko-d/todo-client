@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
-import ThemeProviderWrapper from '@/components/Theme/ThemeProviderWrapper'
-import AccountProvider from '@/components/Account/AccountProvider'
-import Header from '@/components/Header'
+import ThemeProviderWrapper from '@/components/theme/ThemeProviderWrapper'
+import AuthProvider from '@/components/AuthProvider'
+import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer'
 import { Toaster } from 'sonner'
 
@@ -33,8 +33,8 @@ const RootLayout = ({
 		<html lang='en'>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-dvh flex flex-col`}>
-				<AccountProvider>
-					<ThemeProviderWrapper>
+				<ThemeProviderWrapper>
+					<AuthProvider>
 						<Header />
 						<main className='container flex flex-col items-center justify-center p-2 mx-auto border-dashed grow sm:border-x lg:p-4'>
 							{children}
@@ -44,8 +44,8 @@ const RootLayout = ({
 							position='top-center'
 							richColors
 						/>
-					</ThemeProviderWrapper>
-				</AccountProvider>
+					</AuthProvider>
+				</ThemeProviderWrapper>
 			</body>
 		</html>
 	)

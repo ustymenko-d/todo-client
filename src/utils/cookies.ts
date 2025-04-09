@@ -8,7 +8,6 @@ export const setCookies = (
 		response.cookies.set(name, value, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
-			path: '/',
 		})
 	)
 }

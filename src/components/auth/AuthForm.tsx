@@ -5,16 +5,16 @@ import { z, ZodSchema } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import AuthValidation from '@/schemas/authFormSchema'
 import { Form } from '@/components/ui/form'
-import RememberMeCheckbox from '@/components/ui/RememberMeCheckbox'
 import AuthFormSuggestion from './AuthFormSuggestion'
 import AuthFormInput from './AuthFormInput'
 import { useRouter } from 'next/navigation'
 import { baseAuthDto, emailDto } from '@/dto/auth'
 import { toast } from 'sonner'
-import LoadingButton from '../../ui/LoadingButton'
+import LoadingButton from '../ui/LoadingButton'
 import { AuthFormType } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
 import AuthService from '@/services/auth.service'
+import RememberMe from '@/components/ui/RememberMe'
 
 export type TBaseFields = 'email' | 'password' | 'confirmPassword'
 type TFields = TBaseFields | 'rememberMe'
@@ -150,7 +150,7 @@ const AuthForm = () => {
 				<div className='flex flex-col gap-6'>
 					{fields.map((field) =>
 						field === 'rememberMe' ? (
-							<RememberMeCheckbox
+							<RememberMe
 								key={field}
 								control={authForm.control}
 							/>

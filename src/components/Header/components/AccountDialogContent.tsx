@@ -7,7 +7,6 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import useAppStore from '@/store/store'
-import VerificationBadge from './VerificationBadge'
 import { Button } from '@/components/ui/button'
 import {
 	AlertDialog,
@@ -21,6 +20,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import LoadingButton from '@/components/ui/LoadingButton'
+import VerificationBadge from './VerificationBadge'
 import UnverifiedInfo from './UnverifiedInfo'
 
 const AccountDialogContent = ({

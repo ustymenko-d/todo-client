@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import ResetPasswordForm from '@/components/routes/Auth/ResetPasswordForm'
+import ResetPasswordForm from '@/components/auth/ResetPasswordForm'
 
 const ResetPasswordPage = () => {
 	return (
