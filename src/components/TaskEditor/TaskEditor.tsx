@@ -1,7 +1,6 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
-import TasksService from '@/services/api/tasks'
 import { TaskBaseDto, TaskDto } from '@/dto/tasks'
 import { toast } from 'sonner'
 import {
@@ -13,6 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import TaskForm from './compoonents/TaskForm'
 import useAppStore from '@/store/store'
+import TasksService from '@/services/tasks.service'
 
 const TaskEditor = () => {
 	const router = useRouter()

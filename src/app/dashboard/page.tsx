@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation'
-import TasksService from '@/services/api/tasks'
 import Head from '@/components/routes/Dashboard/Head'
 import TaskEditor from '@/components/TaskEditor/TaskEditor'
 import DashboardTable from '@/components/routes/Dashboard/DashboardTable/DashboardTable'
 import { PageProps } from '../../../.next/types/app/dashboard/page'
+import TasksService from '@/services/tasks.service'
 
 interface DashboardPageProps extends PageProps {
 	searchParams: Promise<{

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import TasksService from '@/services/api/tasks'
 import { toast } from 'sonner'
 import {
 	AlertDialog,
@@ -26,6 +25,7 @@ import { MoreHorizontal } from 'lucide-react'
 import { TaskDto } from '@/dto/tasks'
 import useAppStore from '@/store/store'
 import { Row } from '@tanstack/react-table'
+import TasksService from '@/services/tasks.service'
 
 const Actions = ({ row }: { row: Row<TaskDto> }) => {
 	const task = row.original

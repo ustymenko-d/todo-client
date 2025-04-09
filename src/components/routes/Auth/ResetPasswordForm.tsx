@@ -15,10 +15,10 @@ import {
 	FormMessage,
 } from '../../ui/form'
 import PasswordInput from '../../ui/PasswordInput'
-import AuthService from '@/services/api/auth'
 import { passwordDto } from '@/dto/auth'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
+import AuthService from '@/services/auth.service'
 
 const formConfig = {
 	validationSchema: AuthValidation.resetPasswordSchema,

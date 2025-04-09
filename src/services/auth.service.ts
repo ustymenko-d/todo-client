@@ -1,7 +1,7 @@
-import apiRequestHandler from '@/utils/apiRequestHandler'
 import { baseAuthDto, emailDto, passwordDto } from '@/dto/auth'
 import { IAuthResponse, IUserInfo } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
+import apiRequestHandler from '@/utils/apiRequestHandler'
 
 const API_URL = '/auth'
 
@@ -15,7 +15,7 @@ const AuthService = {
 
 	verifyEmail: (param: string): Promise<IResponseStatus> =>
 		apiRequestHandler<IResponseStatus, string>(
-			`${API_URL}/verification`,
+			`${API_URL}/email-verification`,
 			'get',
 			undefined,
 			param
@@ -28,21 +28,24 @@ const AuthService = {
 			payload
 		),
 
-	accountInfo: (): Promise<IUserInfo> =>
+	getAccountInfo: (): Promise<IUserInfo> =>
 		apiRequestHandler<IUserInfo>(`${API_URL}/account-info`, 'get'),
 
 	logout: (): Promise<IResponseStatus> =>
 		apiRequestHandler<IResponseStatus>(`${API_URL}/logout`, 'post'),
 
 	refreshToken: (): Promise<IResponseStatus> =>
-		apiRequestHandler<IResponseStatus>(`${API_URL}/refresh`, 'get'),
+		apiRequestHandler<IResponseStatus>(
+			`${API_URL}/tokens/refresh-tokens`,
+			'get'
+		),
 
 	deleteAccount: (): Promise<IResponseStatus> =>
-		apiRequestHandler<IResponseStatus>(`${API_URL}/delete`, 'delete'),
+		apiRequestHandler<IResponseStatus>(`${API_URL}/delete-account`, 'delete'),
 
 	forgotPassword: (payload: emailDto): Promise<IResponseStatus> =>
 		apiRequestHandler<IResponseStatus, emailDto>(
-			`${API_URL}/forgot-password`,
+			`${API_URL}/password/forgot-password`,
 			'post',
 			payload
 		),
@@ -52,7 +55,7 @@ const AuthService = {
 		param: string
 	): Promise<IResponseStatus> =>
 		apiRequestHandler<IResponseStatus, passwordDto>(
-			`${API_URL}/reset-password`,
+			`${API_URL}/password/reset-password`,
 			'patch',
 			payload,
 			param

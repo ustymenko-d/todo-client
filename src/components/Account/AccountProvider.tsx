@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import AuthService from '@/services/api/auth'
 import useAppStore from '@/store/store'
+import AuthService from '@/services/auth.service'
 
 const AccountProvider = ({
 	children,
@@ -19,7 +19,7 @@ const AccountProvider = ({
 	const fetchAccountInfo = useCallback(async () => {
 		if (pathname.startsWith('/dashboard')) {
 			if (!isAuthorized) setIsAuthorized(true)
-			if (!accountInfo) setAccountInfo(await AuthService.accountInfo())
+			if (!accountInfo) setAccountInfo(await AuthService.getAccountInfo())
 		} else {
 			if (isAuthorized) setIsAuthorized(false)
 			if (accountInfo) setAccountInfo(null)

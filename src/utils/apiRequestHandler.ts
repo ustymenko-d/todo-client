@@ -1,4 +1,4 @@
-import AuthService from '@/services/api/auth'
+import AuthService from '@/services/auth.service'
 import Axios, { getServerAxios } from '@/services/Axios'
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 

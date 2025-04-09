@@ -14,7 +14,7 @@ export const verifyToken = (accessToken: string): boolean => {
 	}
 }
 
-const fetchRefreshedTokens = async (
+const fetchRefreshTokens = async (
 	accessToken: string,
 	refreshToken: string
 ): Promise<Record<string, string> | null> => {
@@ -53,7 +53,7 @@ export const refreshTokens = async (
 	request: NextRequest
 ) => {
 	try {
-		const cookies = await fetchRefreshedTokens(accessToken, refreshToken)
+		const cookies = await fetchRefreshTokens(accessToken, refreshToken)
 		if (cookies) {
 			const nextResponse = NextResponse.next()
 			setCookies(nextResponse, cookies)
