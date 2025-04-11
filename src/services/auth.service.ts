@@ -3,6 +3,7 @@ import { IAuthResponse, IUserInfo } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
 import apiRequestHandler from '@/utils/apiRequestHandler'
 import { AxiosResponse } from 'axios'
+import { ApiAxios } from './Axios'
 
 const API_URL = '/auth'
 
@@ -23,11 +24,7 @@ const AuthService = {
 		),
 
 	login: (payload: baseAuthDto): Promise<AxiosResponse<IAuthResponse>> =>
-		apiRequestHandler<IAuthResponse, baseAuthDto>(
-			`${API_URL}/login`,
-			'post',
-			payload
-		),
+		ApiAxios.post(`${API_URL}/login`, payload),
 
 	getAccountInfo: (): Promise<AxiosResponse<IUserInfo>> =>
 		apiRequestHandler<IUserInfo>(`${API_URL}/account-info`, 'get'),
@@ -36,10 +33,7 @@ const AuthService = {
 		apiRequestHandler<IResponseStatus>(`${API_URL}/logout`, 'get'),
 
 	refreshToken: (): Promise<AxiosResponse<IResponseStatus>> =>
-		apiRequestHandler<IResponseStatus>(
-			`${API_URL}/tokens/refresh-tokens`,
-			'get'
-		),
+		ApiAxios.get(`${API_URL}/tokens/refresh-tokens`),
 
 	deleteAccount: (): Promise<AxiosResponse<IResponseStatus>> =>
 		apiRequestHandler<IResponseStatus>(`${API_URL}/delete-account`, 'delete'),

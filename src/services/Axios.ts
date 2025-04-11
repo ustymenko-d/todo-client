@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 
 const baseConfig = {
 	baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -6,9 +6,11 @@ const baseConfig = {
 	timeout: 5000,
 }
 
-const Axios = axios.create(baseConfig)
-
-export default Axios
+export const Axios: AxiosInstance = axios.create(baseConfig)
+export const ApiAxios: AxiosInstance = axios.create({
+	...baseConfig,
+	baseURL: '/api',
+})
 
 export const getServerAxios = async () => {
 	const { cookies } = await import('next/headers')
