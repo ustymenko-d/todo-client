@@ -19,7 +19,7 @@ const fetchRefreshTokens = async (
 	refreshToken: string
 ): Promise<Record<string, string> | null> => {
 	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/auth/tokens/refresh-tokens`,
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/tokens/refresh-tokens`,
 		{
 			headers: {
 				'Content-Type': 'application/json',
