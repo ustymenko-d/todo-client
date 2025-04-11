@@ -117,7 +117,8 @@ const AuthForm = () => {
 					default:
 						return
 				}
-				processResponse(response)
+				const { data } = response
+				processResponse(data)
 			} catch (error) {
 				toast.error('Something went wrong!')
 				console.error(`${authFormType} error:`, error)

@@ -47,10 +47,8 @@ const ResetPasswordForm = () => {
 			setLoading(true)
 			try {
 				const param = 'resetToken=' + searchParams.get('resetToken')
-				const { success, message } = await AuthService.resetPassword(
-					payload,
-					param
-				)
+				const { data } = await AuthService.resetPassword(payload, param)
+				const { success, message } = data
 
 				setStatus(success ? 'success' : 'error')
 

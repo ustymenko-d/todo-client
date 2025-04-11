@@ -28,12 +28,12 @@ const TaskEditor = () => {
 		delete payload.subtasks
 
 		try {
-			const response =
+			const { data } =
 				mode === 'create'
 					? await TasksService.createTask(payload)
 					: await TasksService.editTask(payload)
 
-			const { success } = response
+			const { success } = data
 
 			if (success) {
 				toast.success(

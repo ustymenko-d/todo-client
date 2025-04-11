@@ -2,18 +2,19 @@ import { baseAuthDto, emailDto, passwordDto } from '@/dto/auth'
 import { IAuthResponse, IUserInfo } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
 import apiRequestHandler from '@/utils/apiRequestHandler'
+import { AxiosResponse } from 'axios'
 
 const API_URL = '/auth'
 
 const AuthService = {
-	signup: (payload: baseAuthDto): Promise<IAuthResponse> =>
+	signup: (payload: baseAuthDto): Promise<AxiosResponse<IAuthResponse>> =>
 		apiRequestHandler<IAuthResponse, baseAuthDto>(
 			`${API_URL}/signup`,
 			'post',
 			payload
 		),
 
-	verifyEmail: (param: string): Promise<IResponseStatus> =>
+	verifyEmail: (param: string): Promise<AxiosResponse<IResponseStatus>> =>
 		apiRequestHandler<IResponseStatus, string>(
 			`${API_URL}/email-verification`,
 			'get',
@@ -21,29 +22,31 @@ const AuthService = {
 			param
 		),
 
-	login: (payload: baseAuthDto): Promise<IAuthResponse> =>
+	login: (payload: baseAuthDto): Promise<AxiosResponse<IAuthResponse>> =>
 		apiRequestHandler<IAuthResponse, baseAuthDto>(
 			`${API_URL}/login`,
 			'post',
 			payload
 		),
 
-	getAccountInfo: (): Promise<IUserInfo> =>
+	getAccountInfo: (): Promise<AxiosResponse<IUserInfo>> =>
 		apiRequestHandler<IUserInfo>(`${API_URL}/account-info`, 'get'),
 
-	logout: (): Promise<IResponseStatus> =>
+	logout: (): Promise<AxiosResponse<IResponseStatus>> =>
 		apiRequestHandler<IResponseStatus>(`${API_URL}/logout`, 'get'),
 
-	refreshToken: (): Promise<IResponseStatus> =>
+	refreshToken: (): Promise<AxiosResponse<IResponseStatus>> =>
 		apiRequestHandler<IResponseStatus>(
 			`${API_URL}/tokens/refresh-tokens`,
 			'get'
 		),
 
-	deleteAccount: (): Promise<IResponseStatus> =>
+	deleteAccount: (): Promise<AxiosResponse<IResponseStatus>> =>
 		apiRequestHandler<IResponseStatus>(`${API_URL}/delete-account`, 'delete'),
 
-	forgotPassword: (payload: emailDto): Promise<IResponseStatus> =>
+	forgotPassword: (
+		payload: emailDto
+	): Promise<AxiosResponse<IResponseStatus>> =>
 		apiRequestHandler<IResponseStatus, emailDto>(
 			`${API_URL}/password/forgot-password`,
 			'post',
@@ -53,7 +56,7 @@ const AuthService = {
 	resetPassword: (
 		payload: passwordDto,
 		param: string
-	): Promise<IResponseStatus> =>
+	): Promise<AxiosResponse<IResponseStatus>> =>
 		apiRequestHandler<IResponseStatus, passwordDto>(
 			`${API_URL}/password/reset-password`,
 			'patch',
@@ -61,8 +64,11 @@ const AuthService = {
 			param
 		),
 
-	clearAuthCookies: (): Promise<IResponseStatus> =>
-		apiRequestHandler<IResponseStatus>(`${API_URL}/cookies/clear-auth-cookies`, 'get'),
+	clearAuthCookies: (): Promise<AxiosResponse<IResponseStatus>> =>
+		apiRequestHandler<IResponseStatus>(
+			`${API_URL}/cookies/clear-auth-cookies`,
+			'get'
+		),
 }
 
 export default AuthService

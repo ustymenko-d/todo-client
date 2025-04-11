@@ -15,7 +15,7 @@ const useAuthentication = () => {
 	const fetchAccountInfo = useCallback(async () => {
 		try {
 			if (!accountInfo) {
-				const accountInfo = await AuthService.getAccountInfo()
+				const { data: accountInfo } = await AuthService.getAccountInfo()
 				if (accountInfo) {
 					setAccountInfo(accountInfo)
 					if (!isAuthorized) setIsAuthorized(true)

@@ -1,6 +1,6 @@
 import AuthService from '@/services/auth.service'
 import Axios, { getServerAxios } from '@/services/Axios'
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 type Method = 'post' | 'get' | 'delete' | 'patch' | 'put'
 
@@ -13,29 +13,27 @@ const getAxiosInstance = async (): Promise<AxiosInstance> =>
 const handleRequest = async <R>(
 	axiosInstance: AxiosInstance,
 	config: AxiosRequestConfig
-): Promise<R> => {
+): Promise<AxiosResponse<R>> => {
 	try {
-		const response = await axiosInstance.request(config)
-		return response.data
+		return await axiosInstance.request(config)
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response?.status === 401) {
-			return await handleUnauthorizedError(axiosInstance, config)
+			return await refreshAndRetry<R>(axiosInstance, config)
 		}
 		console.error('API Request Error:', error)
 		throw error
 	}
 }
 
-const handleUnauthorizedError = async (
+const refreshAndRetry = async <R>(
 	axiosInstance: AxiosInstance,
 	config: AxiosRequestConfig
-) => {
+): Promise<AxiosResponse<R>> => {
 	try {
-		const { success } = await AuthService.refreshToken()
-		if (success) {
-			const { data } = await axiosInstance.request(config)
-			return data
-		}
+		const { data } = await AuthService.refreshToken()
+		const { success } = data
+		if (success) return await axiosInstance.request(config)
+		throw new Error('Refresh token failed')
 	} catch (refreshError) {
 		console.error('Token refresh failed:', refreshError)
 		throw refreshError
@@ -47,7 +45,7 @@ const apiRequestHandler = async <R, T = undefined>(
 	method: Method,
 	payload?: T,
 	param?: string
-): Promise<R> => {
+): Promise<AxiosResponse<R>> => {
 	const url = createUrl(endpoint, param)
 	const config: AxiosRequestConfig = {
 		url,

@@ -47,9 +47,8 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 				delete: TasksService.deleteTask,
 				toggleStatus: TasksService.toggleStatus,
 			}
-
-			const { success } = await actionMap[action](task.id)
-
+			const { data } = await actionMap[action](task.id)
+			const { success } = data
 			if (success) {
 				toast.success(
 					action === 'delete'

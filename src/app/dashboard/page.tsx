@@ -29,7 +29,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 		limit: +limit,
 	}
 
-	const { data } = await TasksService.getTasks({
+	const { data: axiosData } = await TasksService.getTasks({
 		...pagination,
 		topLayerTasks:
 			typeof topLayerTasks === 'string'
@@ -37,6 +37,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 				: topLayerTasks,
 		title,
 	})
+	const { data } = axiosData
 
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>

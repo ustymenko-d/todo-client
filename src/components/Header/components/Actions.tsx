@@ -27,9 +27,8 @@ const Actions = () => {
 				delete: AuthService.deleteAccount,
 				logout: AuthService.logout,
 			}
-
-			const { success, message } = await actionMap[action]()
-
+			const { data } = await actionMap[action]()
+			const { success, message } = data
 			if (success) {
 				setIsAuthorized(false)
 				toast.success(message)
