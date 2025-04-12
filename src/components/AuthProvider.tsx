@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import useAppStore from '@/store/store'
-import AuthService from '@/services/auth.service'
+import AuthService from '@/services/Axios/auth.service'
 
 const useAuthentication = () => {
 	const router = useRouter()

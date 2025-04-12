@@ -1,10 +1,9 @@
 import Head from '@/components/dashboard/Head'
 import TaskEditor from '@/components/TaskEditor/TaskEditor'
 import DashboardTable from '@/components/dashboard/DashboardTable/DashboardTable'
-import { PageProps } from '../../../.next/types/app/dashboard/page'
-import TasksService from '@/services/tasks.service'
+import TasksService from '@/services/Axios/tasks.service'
 
-interface DashboardPageProps extends PageProps {
+interface DashboardPageProps {
 	searchParams: Promise<{
 		limit?: string
 		page?: string
@@ -42,10 +41,12 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
 			<Head />
-			<DashboardTable
-				data={data.tasks}
-				pagination={{ ...pagination, pages: data.pages }}
-			/>
+			{data && (
+				<DashboardTable
+					data={data.tasks}
+					pagination={{ ...pagination, pages: data.pages }}
+				/>
+			)}
 			<TaskEditor />
 		</section>
 	)

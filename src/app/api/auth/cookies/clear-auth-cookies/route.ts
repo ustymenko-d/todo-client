@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET(): Promise<NextResponse> {
 	return RequestHandler.routeRequest<IResponseStatus>(
-		'/auth/tokens/refresh-tokens',
+		'/auth/cookies/clear-auth-cookies',
 		'get'
 	)
 }

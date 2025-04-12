@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { refreshTokens, verifyToken } from './utils/tokens'
-import AuthService from './services/auth.service'
+import AuthService from './services/Axios/auth.service'
 
 export const redirectTo = (url: string, request: NextRequest) => {
 	return NextResponse.redirect(new URL(url, request.url))
@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
 	const isValidAccess = accessToken && verifyToken(accessToken)
 
 	if (verificationToken) {
-		await AuthService.verifyEmail(`verificationToken=${verificationToken}`)
+		await AuthService.verifyEmail(verificationToken)
 	}
 
 	if (pathname === '/' || pathname.startsWith('/auth')) {

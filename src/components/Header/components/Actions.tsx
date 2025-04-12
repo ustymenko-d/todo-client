@@ -11,7 +11,7 @@ import LoadingButton from '@/components/ui/LoadingButton'
 import { useState } from 'react'
 import AccountDialogContent from './AccountDialogContent'
 import { toast } from 'sonner'
-import AuthService from '@/services/auth.service'
+import AuthService from '@/services/Axios/auth.service'
 
 const Actions = () => {
 	const router = useRouter()

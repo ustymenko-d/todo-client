@@ -9,7 +9,7 @@ const baseConfig = {
 export const Axios: AxiosInstance = axios.create(baseConfig)
 export const ApiAxios: AxiosInstance = axios.create({
 	...baseConfig,
-	baseURL: '/api',
+	baseURL: new URL('/api', process.env.NEXT_PUBLIC_FRONTEND_URL).toString(),
 })
 
 export const getServerAxios = async () => {

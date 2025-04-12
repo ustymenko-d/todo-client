@@ -12,15 +12,17 @@ import {
 } from '@/components/ui/dialog'
 import TaskForm from './compoonents/TaskForm'
 import useAppStore from '@/store/store'
-import TasksService from '@/services/tasks.service'
+import TasksService from '@/services/Axios/tasks.service'
 
 const TaskEditor = () => {
 	const router = useRouter()
 	const pathname = usePathname()
 
 	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
-	const { open, mode, selectedTask } = useAppStore(
-		(state) => state.taskEditorSettings
+	const open = useAppStore((state) => state.taskEditorSettings.open)
+	const mode = useAppStore((state) => state.taskEditorSettings.mode)
+	const selectedTask = useAppStore(
+		(state) => state.taskEditorSettings.selectedTask
 	)
 
 	const handleTaskAction = async (taskData: TaskBaseDto | TaskDto) => {
@@ -42,7 +44,7 @@ const TaskEditor = () => {
 						: 'Task successfully edited'
 				)
 				closeTaskEditor()
-				if (pathname === '/dashboard') router.replace(`?page=1&limit=25`)
+				if (pathname === '/dashboard') router.push(`?page=1&limit=25`)
 			} else {
 				toast.error('Failed to process task')
 			}

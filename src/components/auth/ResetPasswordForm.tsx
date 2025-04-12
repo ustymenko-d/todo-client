@@ -18,7 +18,7 @@ import PasswordInput from '../ui/PasswordInput'
 import { passwordDto } from '@/dto/auth'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
-import AuthService from '@/services/auth.service'
+import AuthService from '@/services/Axios/auth.service'
 
 const formConfig = {
 	validationSchema: AuthValidation.resetPasswordSchema,
@@ -46,8 +46,8 @@ const ResetPasswordForm = () => {
 		async (payload: passwordDto) => {
 			setLoading(true)
 			try {
-				const param = 'resetToken=' + searchParams.get('resetToken')
-				const { data } = await AuthService.resetPassword(payload, param)
+				const resetToken = searchParams.get('resetToken')
+				const { data } = await AuthService.resetPassword(payload, resetToken)
 				const { success, message } = data
 
 				setStatus(success ? 'success' : 'error')
@@ -64,7 +64,7 @@ const ResetPasswordForm = () => {
 					description:
 						'You will be automatically redirected to the main page in 3 seconds.',
 				})
-
+				resetPasswordForm.reset(defaultValues)
 				setTimeout(() => {
 					router.replace('/')
 				}, 3000)
@@ -75,7 +75,7 @@ const ResetPasswordForm = () => {
 				setLoading(false)
 			}
 		},
-		[router, searchParams]
+		[defaultValues, resetPasswordForm, router, searchParams]
 	)
 
 	const onSubmit = useCallback(
