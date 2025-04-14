@@ -4,17 +4,13 @@ import useAppStore from '@/store/store'
 
 const UnverifiedInfo = () => {
 	const accountInfo = useAppStore((state) => state.accountInfo)
-	const creationDate = accountInfo?.createdAt
-		? new Date(accountInfo.createdAt)
-		: null
 
 	return (
 		<div className='flex flex-col gap-1'>
 			<p className='text-base'>
 				To verify your account, check the email specified during registration (
-				{accountInfo?.email}). An unverified account will be deleted a week
-				after registration
-				{creationDate ? ` (${creationDate.toLocaleDateString()})` : ''}.
+				{accountInfo?.email}). An unverified account will be deleted three
+				days after registration.
 			</p>
 			<ul
 				className='list-with-title text-muted-foreground list-disc'
