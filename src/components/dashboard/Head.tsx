@@ -8,7 +8,7 @@ const Head = () => {
 	return (
 		<div className='flex flex-wrap items-center justify-between gap-4 pt-2'>
 			<div className='flex flex-col'>
-				<h1 className='text-2xl font-semibold tracking-tight'>
+				<h1 className='text-xl font-semibold tracking-tight'>
 					Welcome back
 					{accountInfo?.username ? `, ${accountInfo?.username}!` : '!'}
 				</h1>

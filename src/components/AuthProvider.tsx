@@ -21,7 +21,7 @@ const useAuthentication = () => {
 					if (!isAuthorized) setIsAuthorized(true)
 				} else {
 					await AuthService.clearAuthCookies()
-					router.replace('/')
+					router.push('/')
 				}
 			}
 		} catch (error) {

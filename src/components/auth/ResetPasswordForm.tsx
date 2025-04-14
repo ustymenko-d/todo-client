@@ -66,7 +66,7 @@ const ResetPasswordForm = () => {
 				})
 				resetPasswordForm.reset(defaultValues)
 				setTimeout(() => {
-					router.replace('/')
+					router.push('/')
 				}, 3000)
 			} catch (error) {
 				toast.error('Something went wrong!')

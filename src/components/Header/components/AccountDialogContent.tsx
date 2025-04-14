@@ -7,7 +7,6 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import useAppStore from '@/store/store'
-import { Button } from '@/components/ui/button'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -49,18 +48,13 @@ const AccountDialogContent = ({
 			</DialogHeader>
 			{!accountInfo?.isVerified && <UnverifiedInfo />}
 			<DialogFooter>
-				<Button
-					variant='outline'
-					disabled>
-					Edit
-				</Button>
 				<AlertDialog>
 					<AlertDialogTrigger asChild>
 						<LoadingButton
 							loading={loading}
 							disabled={!isAuthorized}
 							variant='destructive'>
-							<span className='hidden sm:block'>Delete account</span>
+							<span>Delete account</span>
 						</LoadingButton>
 					</AlertDialogTrigger>
 					<AlertDialogContent>

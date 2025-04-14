@@ -16,13 +16,13 @@ interface AuthFormInputProps {
 	control: Control
 }
 
-const AuthFormInput = ({ name, label, control }: AuthFormInputProps) => (
+const AuthFormInput = ({ name, control }: AuthFormInputProps) => (
 	<FormField
 		control={control}
 		name={name}
 		render={({ field }) => (
 			<FormItem>
-				{name === 'email' && <FormLabel>{label}</FormLabel>}
+				{name === 'email' && <FormLabel>Email</FormLabel>}
 				<FormControl>
 					{name === 'email' ? (
 						<EmailInput
@@ -33,7 +33,13 @@ const AuthFormInput = ({ name, label, control }: AuthFormInputProps) => (
 						<PasswordInput
 							{...field}
 							forgotBtn={name === 'password'}
-							labelNode={<FormLabel>{label}</FormLabel>}
+							labelNode={
+								name === 'password' ? (
+									<FormLabel>Password</FormLabel>
+								) : (
+									<FormLabel>Confirm Password</FormLabel>
+								)
+							}
 							value={field.value || ''}
 						/>
 					)}

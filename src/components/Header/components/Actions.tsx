@@ -4,10 +4,9 @@ import useAppStore from '@/store/store'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button, buttonVariants } from '../../ui/button'
-import { ChevronLeft, CircleUser, LogOut } from 'lucide-react'
+import { ChevronLeft, CircleUser, Loader2, LogOut } from 'lucide-react'
 import ThemeToggle from '../../theme/ThemeToggle'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import LoadingButton from '@/components/ui/LoadingButton'
 import { useState } from 'react'
 import AccountDialogContent from './AccountDialogContent'
 import { toast } from 'sonner'
@@ -32,7 +31,7 @@ const Actions = () => {
 			if (success) {
 				setIsAuthorized(false)
 				toast.success(message)
-				router.replace('/')
+				router.push('/')
 			}
 		} catch (error) {
 			toast.error('Something went wrong!')
@@ -50,8 +49,7 @@ const Actions = () => {
 						variant: 'outline',
 						size: 'icon',
 					})}
-					href='/'
-					replace>
+					href='/'>
 					<ChevronLeft />
 				</Link>
 			)}
@@ -72,14 +70,13 @@ const Actions = () => {
 						/>
 					</Dialog>
 
-					<LoadingButton
+					<Button
+						size='icon'
 						variant='outline'
-						loading={loading}
-						disabled={!isAuthorized}
-						onClick={() => handleAction('logout')}
-						size='icon'>
-						<LogOut />
-					</LoadingButton>
+						disabled={loading || !isAuthorized}
+						onClick={() => handleAction('logout')}>
+						{loading ? <Loader2 className='animate-spin' /> : <LogOut />}
+					</Button>
 				</>
 			)}
 		</>
