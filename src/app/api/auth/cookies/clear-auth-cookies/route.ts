@@ -5,6 +5,8 @@ import { NextResponse } from 'next/server'
 export async function GET(): Promise<NextResponse> {
 	return RequestHandler.routeRequest<IResponseStatus>(
 		'/auth/cookies/clear-auth-cookies',
-		'get'
+		'get',
+		undefined,
+		{ skipRefresh: true }
 	)
 }

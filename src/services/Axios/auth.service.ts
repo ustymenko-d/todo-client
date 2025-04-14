@@ -16,7 +16,9 @@ const AuthService = {
 	): Promise<AxiosResponse<IResponseStatus>> =>
 		RequestHandler.request<IResponseStatus, string>(
 			`${AUTH_API_URL}/email-verification?verificationToken=${verificationToken}`,
-			'get'
+			'get',
+			undefined,
+			{ skipRefresh: true }
 		),
 
 	login: (payload: baseAuthDto): Promise<AxiosResponse<IAuthResponse>> =>

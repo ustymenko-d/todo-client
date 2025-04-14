@@ -9,16 +9,22 @@ import axios, {
 } from 'axios'
 import { NextResponse } from 'next/server'
 
+interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+	skipRefresh?: boolean
+}
+
 class RequestHandler {
 	static async request<R, T = undefined>(
 		url: string,
 		method: Method,
-		payload?: T
+		payload?: T,
+		extraConfig?: CustomAxiosRequestConfig
 	): Promise<AxiosResponse<R>> {
-		const config: AxiosRequestConfig = {
+		const config: CustomAxiosRequestConfig = {
 			url,
 			method,
 			...(payload && { data: payload }),
+			skipRefresh: extraConfig?.skipRefresh,
 		}
 		const axiosInstance = await this.getAxiosInstance()
 		return await this.sendRequest<R>(axiosInstance, config)
@@ -27,13 +33,15 @@ class RequestHandler {
 	static async routeRequest<TResponse, TPayload = undefined>(
 		url: string,
 		method: Method,
-		payload?: TPayload
+		payload?: TPayload,
+		extraConfig?: CustomAxiosRequestConfig
 	): Promise<NextResponse> {
 		try {
 			const response = await this.request<TResponse, TPayload>(
 				url,
 				method,
-				payload
+				payload,
+				extraConfig
 			)
 
 			const { data, status, headers } = response
@@ -73,12 +81,16 @@ class RequestHandler {
 
 	private static async sendRequest<R>(
 		axiosInstance: AxiosInstance,
-		config: AxiosRequestConfig
+		config: CustomAxiosRequestConfig
 	): Promise<AxiosResponse<R>> {
 		try {
 			return await axiosInstance.request(config)
 		} catch (error) {
-			if (axios.isAxiosError(error) && error.response?.status === 401) {
+			if (
+				axios.isAxiosError(error) &&
+				error.response?.status === 401 &&
+				!config.skipRefresh
+			) {
 				return await this.refreshAndRetry<R>(axiosInstance, config)
 			}
 			console.error('API Request Error:', error)

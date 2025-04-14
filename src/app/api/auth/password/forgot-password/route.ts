@@ -8,6 +8,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	return RequestHandler.routeRequest<IAuthResponse, emailDto>(
 		'/auth/password/forgot-password',
 		'post',
-		body
+		body,
+		{ skipRefresh: true }
 	)
 }

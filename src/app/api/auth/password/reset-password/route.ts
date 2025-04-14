@@ -9,6 +9,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 	return RequestHandler.routeRequest<IAuthResponse, passwordDto>(
 		`/auth/password/reset-password?${searchParams}`,
 		'patch',
-		body
+		body,
+		{ skipRefresh: true }
 	)
 }

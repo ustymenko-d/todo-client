@@ -87,8 +87,7 @@ const AuthForm = () => {
 			if (success) {
 				if (authFormType !== 'forgotPassword') {
 					setIsAuthorized(true)
-					router.replace('/dashboard')
-				} else {
+					router.push('/dashboard')
 					authForm.reset(defaultValues)
 				}
 				toast.success(message)

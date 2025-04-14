@@ -8,6 +8,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	return RequestHandler.routeRequest<IAuthResponse, baseAuthDto>(
 		'/auth/login',
 		'post',
-		body
+		body,
+		{ skipRefresh: true }
 	)
 }
