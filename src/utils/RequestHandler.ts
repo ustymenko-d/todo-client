@@ -9,8 +9,14 @@ import axios, {
 } from 'axios'
 import { NextResponse } from 'next/server'
 
-interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+interface ICustomAxiosRequestConfig extends AxiosRequestConfig {
 	skipRefresh?: boolean
+}
+
+interface IErrorType {
+	message: 'Invalid credentials'
+	error: 'Unauthorized'
+	statusCode: number
 }
 
 class RequestHandler {
@@ -18,9 +24,9 @@ class RequestHandler {
 		url: string,
 		method: Method,
 		payload?: T,
-		extraConfig?: CustomAxiosRequestConfig
+		extraConfig?: ICustomAxiosRequestConfig
 	): Promise<AxiosResponse<R>> {
-		const config: CustomAxiosRequestConfig = {
+		const config: ICustomAxiosRequestConfig = {
 			url,
 			method,
 			...(payload && { data: payload }),
@@ -34,7 +40,7 @@ class RequestHandler {
 		url: string,
 		method: Method,
 		payload?: TPayload,
-		extraConfig?: CustomAxiosRequestConfig
+		extraConfig?: ICustomAxiosRequestConfig
 	): Promise<NextResponse> {
 		try {
 			const response = await this.request<TResponse, TPayload>(
@@ -62,8 +68,9 @@ class RequestHandler {
 
 			if (axios.isAxiosError(error)) {
 				const err = error as AxiosError
-				const status = err.response?.status || 500
-				const message = err.response?.data || { error: 'Request failed' }
+				const status = (err.response?.data as IErrorType)?.statusCode || 500
+				const message =
+					(err.response?.data as IErrorType)?.message || 'Request failed'
 
 				return NextResponse.json(message, { status })
 			}
@@ -81,7 +88,7 @@ class RequestHandler {
 
 	private static async sendRequest<R>(
 		axiosInstance: AxiosInstance,
-		config: CustomAxiosRequestConfig
+		config: ICustomAxiosRequestConfig
 	): Promise<AxiosResponse<R>> {
 		try {
 			return await axiosInstance.request(config)

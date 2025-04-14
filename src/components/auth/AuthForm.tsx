@@ -15,6 +15,7 @@ import { AuthFormType } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
 import AuthService from '@/services/Axios/auth.service'
 import RememberMe from '@/components/ui/RememberMe'
+import { AxiosError } from 'axios'
 
 export type TBaseFields = 'email' | 'password' | 'confirmPassword'
 type TFields = TBaseFields | 'rememberMe'
@@ -119,7 +120,14 @@ const AuthForm = () => {
 				const { data } = response
 				processResponse(data)
 			} catch (error) {
-				toast.error('Something went wrong!')
+				const axiosError = error as AxiosError
+				const message =
+					(axiosError.response?.data as { message?: string })?.message ||
+					axiosError.response?.data ||
+					'Something went wrong'
+				toast.error(
+					typeof message === 'string' ? message : JSON.stringify(message)
+				)
 				console.error(`${authFormType} error:`, error)
 			} finally {
 				setLoading(false)
