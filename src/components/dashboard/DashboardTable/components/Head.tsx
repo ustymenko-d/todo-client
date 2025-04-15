@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useMemo, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { debounce } from 'lodash'
 import { Input } from '@/components/ui/input'
@@ -22,28 +22,31 @@ const Head = ({ table }: ITableComponentProps) => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 	const breakpoints = useBreakpoints([639])
-	const [searchTerm, setSearchTerm] = useState<string>(
-		searchParams.get('title') || ''
-	)
 	const [isPending, startTransition] = useTransition()
 	const taskEditorSettings = useAppStore((state) => state.taskEditorSettings)
+	const searchTerm = useAppStore((state) => state.searchTerm)
+	const setSearchTerm = useAppStore((state) => state.setSearchTerm)
 	const setTaskEditorSettings = useAppStore(
 		(state) => state.setTaskEditorSettings
 	)
 
-	const handleSearchChange = debounce((value: string) => {
-		startTransition(() => {
-			const params = new URLSearchParams()
-			if (value) {
-				params.set('title', value)
-				params.set('page', '1')
-				params.set('topLayerTasks', 'false')
-			} else {
-				params.set('topLayerTasks', 'true')
-			}
-			router.push(`?${params.toString()}`, { scroll: false })
-		})
-	}, 300)
+	const handleSearchChange = useMemo(
+		() =>
+			debounce((value: string) => {
+				startTransition(() => {
+					const params = new URLSearchParams()
+					if (value) {
+						params.set('title', value)
+						params.set('page', '1')
+						params.set('topLayerTasks', 'false')
+					} else {
+						params.set('topLayerTasks', 'true')
+					}
+					router.push(`?${params.toString()}`, { scroll: false })
+				})
+			}, 1000),
+		[router]
+	)
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value
@@ -73,7 +76,13 @@ const Head = ({ table }: ITableComponentProps) => {
 
 	useEffect(() => {
 		setSearchTerm(searchParams.get('title') || '')
-	}, [searchParams])
+	}, [searchParams, setSearchTerm])
+
+	useEffect(() => {
+		return () => {
+			handleSearchChange.cancel()
+		}
+	}, [handleSearchChange])
 
 	return (
 		<div className='flex items-center gap-4 py-4'>

@@ -10,6 +10,9 @@ export interface TaskSlice {
 	taskEditorSettings: TaskEditorSettings
 	setTaskEditorSettings: (newValue: TaskEditorSettings) => void
 	closeTaskEditor: () => void
+
+	searchTerm: string
+	setSearchTerm: (newValue: string) => void
 }
 
 const defaultTaskEditorSettings: TaskEditorSettings = {
@@ -24,6 +27,9 @@ const createTaskSlice = (
 	taskEditorSettings: defaultTaskEditorSettings,
 	setTaskEditorSettings: (taskEditorSettings) => set({ taskEditorSettings }),
 	closeTaskEditor: () => set({ taskEditorSettings: defaultTaskEditorSettings }),
+
+	searchTerm: '',
+	setSearchTerm: (searchTerm) => set({ searchTerm }),
 })
 
 export default createTaskSlice
