@@ -52,25 +52,20 @@ const AuthProvider = ({
 	} = useAuthentication()
 	const pathname = usePathname()
 	const isHomePage = pathname === '/' || pathname.startsWith('/auth')
+	const isDashboardPage = pathname.startsWith('/dashboard')
 
 	useEffect(() => {
 		if (isHomePage) {
 			if (isAuthorized) setIsAuthorized(false)
 			if (accountInfo) setAccountInfo(null)
-		} else {
+		}
+	
+		if (isDashboardPage) {
 			if (!isAuthorized || !accountInfo) {
 				fetchAccountInfo()
 			}
 		}
-	}, [
-		accountInfo,
-		fetchAccountInfo,
-		isAuthorized,
-		isHomePage,
-		pathname,
-		setAccountInfo,
-		setIsAuthorized,
-	])
+	}, [accountInfo, fetchAccountInfo, isAuthorized, isDashboardPage, isHomePage, pathname, setAccountInfo, setIsAuthorized])
 
 	return <>{children}</>
 }
