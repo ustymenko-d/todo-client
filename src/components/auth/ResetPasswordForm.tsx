@@ -19,6 +19,7 @@ import { passwordDto } from '@/dto/auth'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
 import AuthService from '@/services/Axios/auth.service'
+import { TResponseStatus } from '@/types/common'
 
 const formConfig = {
 	validationSchema: AuthValidation.resetPasswordSchema,
@@ -28,13 +29,10 @@ const formConfig = {
 	},
 }
 
-type ResponseStatus = 'pending' | 'success' | 'error'
-
 const ResetPasswordForm = () => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
-	const [loading, setLoading] = useState(false)
-	const [status, setStatus] = useState<ResponseStatus>('pending')
+	const [status, setStatus] = useState<TResponseStatus>('default')
 	const { validationSchema, defaultValues } = formConfig
 
 	const resetPasswordForm = useForm<z.infer<typeof validationSchema>>({
@@ -44,8 +42,8 @@ const ResetPasswordForm = () => {
 
 	const handleResetPassword = useCallback(
 		async (payload: passwordDto) => {
-			setLoading(true)
 			try {
+				setStatus('pending')
 				const resetToken = searchParams.get('resetToken')
 				const { data } = await AuthService.resetPassword(payload, resetToken)
 				const { success, message } = data
@@ -72,7 +70,7 @@ const ResetPasswordForm = () => {
 				toast.error('Something went wrong!')
 				console.error('Change password error:', error)
 			} finally {
-				setLoading(false)
+				setStatus('default')
 			}
 		},
 		[defaultValues, resetPasswordForm, router, searchParams]
@@ -118,7 +116,7 @@ const ResetPasswordForm = () => {
 					<LoadingButton
 						type='submit'
 						className='w-full'
-						loading={loading}
+						loading={status === 'pending'}
 						disabled={status === 'success'}>
 						Confirm
 					</LoadingButton>

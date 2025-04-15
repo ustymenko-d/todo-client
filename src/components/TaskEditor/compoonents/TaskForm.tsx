@@ -1,10 +1,10 @@
 'use client'
 
-import { ElementType, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TasksValidation, { TaskFormSchema } from '@/schemas/tasksSchema'
-import { TaskBaseDto } from '@/dto/tasks'
+import { TaskBaseDto, TaskDto } from '@/dto/tasks'
 import {
 	Form,
 	FormControl,
@@ -18,18 +18,22 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import LoadingButton from '@/components/ui/LoadingButton'
 import useAppStore from '@/store/store'
+import { TResponseStatus } from '@/types/common'
+import { usePathname, useRouter } from 'next/navigation'
+import TasksService from '@/services/Axios/tasks.service'
+import { toast } from 'sonner'
+import Field from './Field'
 
-interface TaskFormProps {
-	handleTaskAction: (payload: TaskBaseDto) => void
-}
-
-const TaskForm = ({ handleTaskAction }: TaskFormProps) => {
-	const { mode, selectedTask } = useAppStore(
-		(state) => state.taskEditorSettings
+const TaskForm = () => {
+	const router = useRouter()
+	const pathname = usePathname()
+	const mode = useAppStore((state) => state.taskEditorSettings.mode)
+	const selectedTask = useAppStore(
+		(state) => state.taskEditorSettings.selectedTask
 	)
-	const [loading, setLoading] = useState<boolean>(false)
+	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
+	const [status, setStatus] = useState<TResponseStatus>('default')
 	const isEditing = mode === 'edit'
-
 	const defaultValues = useMemo<TaskFormSchema>(
 		() => ({
 			title: isEditing ? selectedTask?.title || '' : '',
@@ -51,58 +55,61 @@ const TaskForm = ({ handleTaskAction }: TaskFormProps) => {
 		defaultValues,
 	})
 
-	const onSubmit = async (values: TaskFormSchema) => {
-		setLoading(true)
+	const handleTaskAction = async (taskData: TaskBaseDto | TaskDto) => {
 		try {
-			const payload: TaskBaseDto = {
-				...values,
-				completed: !isEditing ? false : selectedTask?.completed,
-				expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
+			setStatus('pending')
+			const payload = { ...selectedTask, ...taskData }
+			delete payload.subtasks
+			const { data } =
+				mode === 'create'
+					? await TasksService.createTask(payload)
+					: await TasksService.editTask(payload)
+
+			const { success } = data
+
+			if (success) {
+				setStatus('success')
+				toast.success(
+					mode === 'create'
+						? 'Task successfully created'
+						: 'Task successfully edited'
+				)
+				closeTaskEditor()
+				if (pathname === '/dashboard') router.push(`?page=1&limit=25`)
+			} else {
+				toast.error('Failed to process task')
 			}
-			handleTaskAction(payload)
-		} finally {
-			setLoading(false)
+		} catch (error) {
+			toast.error('Something went wrong!')
+			console.error(`Error while creating a task: ${error}`)
 		}
 	}
 
-	const renderFormField = (
-		name: keyof TaskFormSchema,
-		label: string,
-		placeholder: string,
-		Component: ElementType
-	) => {
-		return (
-			<FormField
-				control={taskForm.control}
-				name={name}
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>{label}</FormLabel>
-						<FormControl>
-							<Component
-								{...field}
-								placeholder={placeholder}
-								value={field.value || ''}
-							/>
-						</FormControl>
-						<FormMessage />
-					</FormItem>
-				)}
-			/>
-		)
+	const onSubmit = (values: TaskFormSchema) => {
+		const payload: TaskBaseDto = {
+			...values,
+			completed: !isEditing ? false : selectedTask?.completed,
+			expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
+		}
+		handleTaskAction(payload)
 	}
 
 	return (
 		<Form {...taskForm}>
 			<form onSubmit={taskForm.handleSubmit(onSubmit)}>
 				<div className='flex flex-col gap-6'>
-					{renderFormField('title', 'Title', 'Title of the task *', Input)}
-					{renderFormField(
-						'description',
-						'Description',
-						'Add some description',
-						Textarea
-					)}
+					<Field
+						taskForm={taskForm}
+						name='title'
+						Component={Input}
+						placeholder='Title of the task *'
+					/>
+					<Field
+						taskForm={taskForm}
+						name='description'
+						Component={Textarea}
+						placeholder='Add some description'
+					/>
 					<FormField
 						control={taskForm.control}
 						name='expiresAt'
@@ -118,7 +125,8 @@ const TaskForm = ({ handleTaskAction }: TaskFormProps) => {
 					/>
 
 					<LoadingButton
-						loading={loading}
+						loading={status === 'pending'}
+						disabled={status === 'success'}
 						type='submit'>
 						<span>{mode === 'create' ? 'Create task' : 'Edit task'}</span>
 					</LoadingButton>

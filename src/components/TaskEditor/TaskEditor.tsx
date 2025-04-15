@@ -1,8 +1,5 @@
 'use client'
 
-import { usePathname, useRouter } from 'next/navigation'
-import { TaskBaseDto, TaskDto } from '@/dto/tasks'
-import { toast } from 'sonner'
 import {
 	Dialog,
 	DialogContent,
@@ -12,47 +9,11 @@ import {
 } from '@/components/ui/dialog'
 import TaskForm from './compoonents/TaskForm'
 import useAppStore from '@/store/store'
-import TasksService from '@/services/Axios/tasks.service'
 
 const TaskEditor = () => {
-	const router = useRouter()
-	const pathname = usePathname()
-
 	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
 	const open = useAppStore((state) => state.taskEditorSettings.open)
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
-	const selectedTask = useAppStore(
-		(state) => state.taskEditorSettings.selectedTask
-	)
-
-	const handleTaskAction = async (taskData: TaskBaseDto | TaskDto) => {
-		const payload = { ...selectedTask, ...taskData }
-		delete payload.subtasks
-
-		try {
-			const { data } =
-				mode === 'create'
-					? await TasksService.createTask(payload)
-					: await TasksService.editTask(payload)
-
-			const { success } = data
-
-			if (success) {
-				toast.success(
-					mode === 'create'
-						? 'Task successfully created'
-						: 'Task successfully edited'
-				)
-				closeTaskEditor()
-				if (pathname === '/dashboard') router.push(`?page=1&limit=25`)
-			} else {
-				toast.error('Failed to process task')
-			}
-		} catch (error) {
-			toast.error('Something went wrong!')
-			console.error(`Error while creating a task: ${error}`)
-		}
-	}
 
 	return (
 		<Dialog
@@ -66,7 +27,7 @@ const TaskEditor = () => {
 					<DialogDescription>* indicates required fields</DialogDescription>
 				</DialogHeader>
 				<div className='grid gap-4 py-4'>
-					<TaskForm handleTaskAction={handleTaskAction} />
+					<TaskForm />
 				</div>
 			</DialogContent>
 		</Dialog>

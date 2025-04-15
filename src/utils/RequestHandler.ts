@@ -72,7 +72,7 @@ class RequestHandler {
 				const message =
 					(err.response?.data as IErrorType)?.message || 'Request failed'
 
-				return NextResponse.json(message, { status })
+				return NextResponse.json({ message }, { status })
 			}
 
 			return NextResponse.json(
@@ -88,7 +88,8 @@ class RequestHandler {
 
 	private static async sendRequest<R>(
 		axiosInstance: AxiosInstance,
-		config: ICustomAxiosRequestConfig
+		config: ICustomAxiosRequestConfig,
+		isRetry: boolean = false
 	): Promise<AxiosResponse<R>> {
 		try {
 			return await axiosInstance.request(config)
@@ -96,7 +97,8 @@ class RequestHandler {
 			if (
 				axios.isAxiosError(error) &&
 				error.response?.status === 401 &&
-				!config.skipRefresh
+				!config.skipRefresh &&
+				!isRetry
 			) {
 				return await this.refreshAndRetry<R>(axiosInstance, config)
 			}
@@ -112,7 +114,7 @@ class RequestHandler {
 		try {
 			const { data } = await AuthService.refreshToken()
 			if (data.success) {
-				return await axiosInstance.request(config)
+				return await this.sendRequest(axiosInstance, config, true)
 			}
 			throw new Error('Refresh token failed')
 		} catch (refreshError) {
