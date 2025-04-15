@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {
@@ -31,47 +31,58 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 	const task = row.original
 	const router = useRouter()
 	const pathname = usePathname()
+	const [menuOpen, setMenuOpen] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const setTaskEditorSettings = useAppStore(
 		(state) => state.setTaskEditorSettings
 	)
-	const [state, setState] = useState({ menuOpen: false, loading: false })
 
-	const openTaskEditor = (mode: 'edit' | 'create'): void => {
-		setTaskEditorSettings({ open: true, mode, selectedTask: task })
-	}
+	const openTaskEditor = useCallback(
+		(mode: 'edit' | 'create') => {
+			setTaskEditorSettings({ open: true, mode, selectedTask: task })
+		},
+		[setTaskEditorSettings, task]
+	)
 
-	const handleTaskAction = async (action: 'delete' | 'toggleStatus') => {
-		try {
-			setState((prev) => ({ ...prev, loading: true }))
-			const actionMap = {
-				delete: TasksService.deleteTask,
-				toggleStatus: TasksService.toggleStatus,
-			}
-			const { data } = await actionMap[action](task.id)
-			const { success } = data
-			if (success) {
-				toast.success(
+	const handleTaskAction = useCallback(
+		async (action: 'delete' | 'toggleStatus') => {
+			try {
+				setLoading(true)
+
+				const actionFn =
 					action === 'delete'
-						? 'Task successfully deleted'
-						: 'Task status successfully changed'
-				)
+						? TasksService.deleteTask
+						: TasksService.toggleStatus
 
-				if (pathname === '/dashboard') router.push(`?page=1&limit=25`)
-			} else {
+				const { data } = await actionFn(task.id)
+
+				if (data.success) {
+					toast.success(
+						action === 'delete'
+							? 'Task successfully deleted'
+							: 'Task status successfully changed'
+					)
+
+					if (pathname === '/dashboard') {
+						router.push(`?page=1&limit=25`)
+					}
+				} else {
+					toast.error('Something went wrong!')
+				}
+			} catch (error) {
+				console.error(`Error while performing task action: ${action}`, error)
 				toast.error('Something went wrong!')
+			} finally {
+				setLoading(false)
 			}
-		} catch {
-			toast.error('Something went wrong!')
-			console.error(`Error while performing task action: ${action}`)
-		} finally {
-			setState((prev) => ({ ...prev, loading: false }))
-		}
-	}
+		},
+		[task.id, pathname, router]
+	)
 
 	return (
 		<DropdownMenu
-			open={state.menuOpen}
-			onOpenChange={(open) => setState({ ...state, menuOpen: open })}>
+			open={menuOpen}
+			onOpenChange={setMenuOpen}>
 			<DropdownMenuTrigger
 				asChild
 				className='flex ml-auto'>
@@ -84,7 +95,6 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 			</DropdownMenuTrigger>
 
 			<DropdownMenuContent align='end'>
-				<DropdownMenuItem disabled>Details</DropdownMenuItem>
 				<DropdownMenuItem onClick={() => openTaskEditor('edit')}>
 					Edit task
 				</DropdownMenuItem>
@@ -95,11 +105,10 @@ const Actions = ({ row }: { row: Row<TaskDto> }) => {
 					Toggle status
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<AlertDialog
-					onOpenChange={(open) => setState({ ...state, menuOpen: open })}>
+				<AlertDialog onOpenChange={setMenuOpen}>
 					<AlertDialogTrigger asChild>
 						<LoadingButton
-							loading={state.loading}
+							loading={loading}
 							variant='ghost'
 							className='w-full px-2 py-1.5 justify-start'>
 							Delete

@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/table'
 import { flexRender } from '@tanstack/react-table'
 import columns from './Columns/Columns'
+import RowElement from './RowElement'
 
 const Body = ({ table }: ITableComponentProps) => {
 	const rows = table.getRowModel().rows
@@ -31,15 +32,10 @@ const Body = ({ table }: ITableComponentProps) => {
 
 	const renderRows = () =>
 		rows.map((row) => (
-			<TableRow key={row.id}>
-				{row.getVisibleCells().map((cell) => (
-					<TableCell
-						key={cell.id}
-						className='border-r last:border-none'>
-						{flexRender(cell.column.columnDef.cell, cell.getContext())}
-					</TableCell>
-				))}
-			</TableRow>
+			<RowElement
+				key={row.id}
+				row={row}
+			/>
 		))
 
 	if (rows.length === 0) {
