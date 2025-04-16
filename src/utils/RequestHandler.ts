@@ -49,8 +49,9 @@ class RequestHandler {
 			}
 
 			return NextResponse.json(
-				{ error: 'Unexpected server error' },
-				{ status: 500 }
+				axios.isAxiosError(error) && error.response?.data
+					? error.response.data
+					: 'Unexpected server error'
 			)
 		}
 	}
