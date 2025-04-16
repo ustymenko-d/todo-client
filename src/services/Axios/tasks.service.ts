@@ -8,25 +8,32 @@ const TASKS_API_URL = '/tasks'
 
 const TasksService = {
 	getTasks: (
-		payload: GetTasksRequestDto
+		payload: GetTasksRequestDto,
+		config = {}
 	): Promise<AxiosResponse<IGetTasksResponse>> =>
-		RequestHandler.request<IGetTasksResponse, GetTasksRequestDto>(
-			`${TASKS_API_URL}/get`,
-			'post',
-			payload
+		RequestHandler.handleRequest(() =>
+			ApiAxios.post(`${TASKS_API_URL}/get`, payload, config)
 		),
 
 	createTask: (payload: TaskBaseDto): Promise<AxiosResponse<ITaskResponse>> =>
-		ApiAxios.post(`${TASKS_API_URL}/create`, payload),
+		RequestHandler.handleRequest(() =>
+			ApiAxios.post(`${TASKS_API_URL}/create`, payload)
+		),
 
 	editTask: (payload: TaskDto): Promise<AxiosResponse<ITaskResponse>> =>
-		ApiAxios.put(`${TASKS_API_URL}`, payload),
+		RequestHandler.handleRequest(() =>
+			ApiAxios.put(`${TASKS_API_URL}`, payload)
+		),
 
 	toggleStatus: (taskId: string): Promise<AxiosResponse<ITaskResponse>> =>
-		ApiAxios.patch(`${TASKS_API_URL}/${taskId}`),
+		RequestHandler.handleRequest(() =>
+			ApiAxios.patch(`${TASKS_API_URL}/${taskId}`)
+		),
 
 	deleteTask: (taskId: string): Promise<AxiosResponse<ITaskResponse>> =>
-		ApiAxios.delete(`${TASKS_API_URL}/${taskId}`),
+		RequestHandler.handleRequest(() =>
+			ApiAxios.delete(`${TASKS_API_URL}/${taskId}`)
+		),
 }
 
 export default TasksService
