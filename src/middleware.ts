@@ -9,11 +9,12 @@ export const redirectTo = (url: string, request: NextRequest) =>
 export async function middleware(request: NextRequest) {
 	const { nextUrl, cookies } = request
 	const { pathname, searchParams } = nextUrl
+
 	const accessToken = cookies.get('access_token')?.value
 	const refreshToken = cookies.get('refresh_token')?.value
-	const isRefreshing = cookies.get('is_refreshing')?.value === 'true'
 	const resetPasswordToken = searchParams.get('resetToken')
 	const verificationToken = searchParams.get('verificationToken')
+
 	const isAuthPage = pathname === '/' || pathname.startsWith('/auth')
 	const isDashboardPage = pathname.startsWith('/dashboard')
 
@@ -34,44 +35,17 @@ export async function middleware(request: NextRequest) {
 
 	if (isAuthPage) {
 		if (accessToken) {
-			if (verifyToken(accessToken)) {
+			if (verifyToken(accessToken) || refreshToken) {
 				return redirectTo('/dashboard', request)
-			} else if (refreshToken && !isRefreshing) {
-				const refreshUrl = new URL(
-					'/api/auth/tokens/refresh-tokens',
-					request.url
-				)
-				refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
-
-				return NextResponse.redirect(refreshUrl)
 			}
 		}
-		return NextResponse.next()
 	}
 
 	if (isDashboardPage) {
-		if (!accessToken) {
+		if (!accessToken || (!verifyToken(accessToken) && !refreshToken)) {
 			return redirectTo('/', request)
 		}
-
-		if (!verifyToken(accessToken)) {
-			if (refreshToken && !isRefreshing) {
-				const refreshUrl = new URL(
-					'/api/auth/tokens/refresh-tokens',
-					request.url
-				)
-				refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
-
-				return NextResponse.redirect(refreshUrl)
-			} else if (!refreshToken) {
-				return redirectTo('/', request)
-			}
-		}
 	}
 
-	const response = NextResponse.next()
-	if (isRefreshing) {
-		response.cookies.set('is_refreshing', '', { maxAge: 0 })
-	}
 	return NextResponse.next()
 }
