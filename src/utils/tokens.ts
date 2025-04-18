@@ -42,8 +42,8 @@ const fetchRefreshTokens = async (
 			access_token: accessTokenMatch[1],
 			refresh_token: refreshTokenMatch[1],
 		}
-	} catch (err) {
-		console.error('Token fetch failed', err)
+	} catch (error) {
+		console.error('Token fetch failed', error)
 		return null
 	}
 }
@@ -56,9 +56,8 @@ export const refreshTokens = async (
 	const tokens = await fetchRefreshTokens(accessToken, refreshToken)
 
 	if (tokens) {
-		const url = new URL(request.nextUrl)
-		url.searchParams.set('isRefreshing', 'true')
-		const response = NextResponse.redirect(url)
+		const cleanUrl = new URL(request.url)
+		const response = NextResponse.redirect(cleanUrl)
 		setCookies(response, tokens)
 		return response
 	} else {
