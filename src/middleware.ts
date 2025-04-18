@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { refreshTokens, verifyToken } from './utils/tokens'
+import { verifyToken } from './utils/tokens'
 import AuthService from './services/Axios/auth.service'
 
 export const redirectTo = (url: string, request: NextRequest) =>
@@ -37,12 +37,13 @@ export async function middleware(request: NextRequest) {
 			if (verifyToken(accessToken)) {
 				return redirectTo('/dashboard', request)
 			} else if (refreshToken && !isRefreshing) {
-				const response = await refreshTokens(accessToken, refreshToken, request)
+				const refreshUrl = new URL(
+					'/api/auth/tokens/refresh-tokens',
+					request.url
+				)
+				refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
 
-				if (response) {
-					response.cookies.set('is_refreshing', 'true', { maxAge: 5 })
-					return response
-				}
+				return NextResponse.redirect(refreshUrl)
 			}
 		}
 		return NextResponse.next()
@@ -55,11 +56,13 @@ export async function middleware(request: NextRequest) {
 
 		if (!verifyToken(accessToken)) {
 			if (refreshToken && !isRefreshing) {
-				const response = await refreshTokens(accessToken, refreshToken, request)
-				if (response) {
-					response.cookies.set('is_refreshing', 'true', { maxAge: 5 })
-					return response
-				}
+				const refreshUrl = new URL(
+					'/api/auth/tokens/refresh-tokens',
+					request.url
+				)
+				refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
+
+				return NextResponse.redirect(refreshUrl)
 			} else if (!refreshToken) {
 				return redirectTo('/', request)
 			}
