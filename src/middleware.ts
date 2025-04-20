@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from './utils/tokens'
 import AuthService from './services/Axios/auth.service'
 
@@ -11,7 +10,7 @@ export async function middleware(request: NextRequest) {
 	const { pathname, searchParams } = nextUrl
 	const accessToken = cookies.get('access_token')?.value
 	const refreshToken = cookies.get('refresh_token')?.value
-	const isRefreshing = cookies.get('is_refreshing')?.value === 'true'
+	const wasRefreshed = searchParams.get('refreshed') === 'true'
 	const resetPasswordToken = searchParams.get('resetToken')
 	const verificationToken = searchParams.get('verificationToken')
 	const isAuthPage = pathname === '/' || pathname.startsWith('/auth')
@@ -20,8 +19,8 @@ export async function middleware(request: NextRequest) {
 	if (verificationToken) {
 		try {
 			await AuthService.verifyEmail(verificationToken)
-		} catch (e) {
-			console.error('Email verification failed:', e)
+		} catch (error) {
+			console.error('Email verification failed:', error)
 		}
 		const cleanUrl = new URL(request.url)
 		cleanUrl.searchParams.delete('verificationToken')
@@ -33,20 +32,20 @@ export async function middleware(request: NextRequest) {
 	}
 
 	if (isAuthPage) {
-		if (accessToken) {
-			if (verifyToken(accessToken)) {
-				return redirectTo('/dashboard', request)
-			} else if (refreshToken && !isRefreshing) {
-				const refreshUrl = new URL(
-					'/api/auth/tokens/refresh-tokens',
-					request.url
-				)
-				refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
-
-				return NextResponse.redirect(refreshUrl)
-			}
+		if (accessToken && verifyToken(accessToken)) {
+			return redirectTo('/dashboard', request)
 		}
-		return NextResponse.next()
+
+		if (refreshToken && !wasRefreshed) {
+			const refreshUrl = new URL('/api/auth/tokens/refresh-tokens', request.url)
+			refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
+
+			return NextResponse.redirect(refreshUrl)
+		}
+
+		return NextResponse.next({
+			headers: { 'Cache-Control': 'no-store' },
+		})
 	}
 
 	if (isDashboardPage) {
@@ -55,23 +54,20 @@ export async function middleware(request: NextRequest) {
 		}
 
 		if (!verifyToken(accessToken)) {
-			if (refreshToken && !isRefreshing) {
+			if (refreshToken && !wasRefreshed) {
 				const refreshUrl = new URL(
 					'/api/auth/tokens/refresh-tokens',
 					request.url
 				)
-				refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
-
+				refreshUrl.searchParams.set('redirect', pathname)
 				return NextResponse.redirect(refreshUrl)
-			} else if (!refreshToken) {
-				return redirectTo('/', request)
 			}
+
+			return redirectTo('/', request)
 		}
 	}
 
-	const response = NextResponse.next()
-	if (isRefreshing) {
-		response.cookies.set('is_refreshing', '', { maxAge: 0 })
-	}
-	return NextResponse.next()
+	return NextResponse.next({
+		headers: { 'Cache-Control': 'no-store' },
+	})
 }
