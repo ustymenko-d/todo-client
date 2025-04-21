@@ -7,7 +7,13 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react'
+import {
+	ArrowDown,
+	ArrowDownUp,
+	ArrowDownWideNarrow,
+	ArrowUp,
+	ArrowUpNarrowWide,
+} from 'lucide-react'
 
 interface ColumnHeaderProps<TData, TValue>
 	extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,9 +22,9 @@ interface ColumnHeaderProps<TData, TValue>
 }
 
 const getSortingIcon = (sortState: string | false) => {
-	if (sortState === 'desc') return <ArrowDown />
-	if (sortState === 'asc') return <ArrowUp />
-	return <ChevronsUpDown />
+	if (sortState === 'desc') return <ArrowDownWideNarrow />
+	if (sortState === 'asc') return <ArrowUpNarrowWide />
+	return <ArrowDownUp />
 }
 
 const ColumnHeader = <TData, TValue>({
