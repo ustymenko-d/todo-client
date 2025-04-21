@@ -23,12 +23,9 @@ const Head = ({ table }: ITableComponentProps) => {
 	const searchParams = useSearchParams()
 	const breakpoints = useBreakpoints([639])
 	const [isPending, startTransition] = useTransition()
-	const taskEditorSettings = useAppStore((state) => state.taskEditorSettings)
 	const searchTerm = useAppStore((state) => state.searchTerm)
 	const setSearchTerm = useAppStore((state) => state.setSearchTerm)
-	const setTaskEditorSettings = useAppStore(
-		(state) => state.setTaskEditorSettings
-	)
+	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
 
 	const handleSearchChange = useMemo(
 		() =>
@@ -71,9 +68,6 @@ const Head = ({ table }: ITableComponentProps) => {
 			))
 	}
 
-	const openTaskEditor = () =>
-		setTaskEditorSettings({ ...taskEditorSettings, open: true })
-
 	useEffect(() => {
 		setSearchTerm(searchParams.get('title') || '')
 	}, [searchParams, setSearchTerm])
@@ -104,7 +98,7 @@ const Head = ({ table }: ITableComponentProps) => {
 				)}
 			</div>
 
-			<Button onClick={openTaskEditor}>
+			<Button onClick={() => openTaskEditor('create', null)}>
 				<Plus />
 				<span>{!!breakpoints ? 'Add task' : 'Add'}</span>
 			</Button>

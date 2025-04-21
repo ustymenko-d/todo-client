@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode'
 
-export const verifyToken = (accessToken: string): boolean => {
+const verifyToken = (accessToken: string): boolean => {
 	try {
 		const { exp }: { exp: number } = jwtDecode(accessToken)
 		const now = Math.floor(Date.now() / 1000)
@@ -9,3 +9,5 @@ export const verifyToken = (accessToken: string): boolean => {
 		return false
 	}
 }
+
+export default verifyToken

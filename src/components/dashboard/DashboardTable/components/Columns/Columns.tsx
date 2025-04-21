@@ -8,9 +8,9 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { ReactNode } from 'react'
-// import Actions from './ActionMenu'
 import { Button } from '@/components/ui/button'
 import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
+import formatDate from '@/utils/formatDate'
 
 const formatValue = (value: string | null): ReactNode => {
 	if (!value) return '-'
@@ -28,16 +28,6 @@ const formatValue = (value: string | null): ReactNode => {
 			</Tooltip>
 		</TooltipProvider>
 	)
-}
-
-const formatDate = (dateString?: string): string => {
-	if (!dateString) return '-'
-	const date = new Date(dateString)
-	return date.toLocaleDateString(undefined, {
-		year: 'numeric',
-		month: '2-digit',
-		day: 'numeric',
-	})
 }
 
 const columns: ColumnDef<TaskDto>[] = [
@@ -63,7 +53,10 @@ const columns: ColumnDef<TaskDto>[] = [
 							size='icon'
 							variant='ghost'
 							className='w-7 h-7'
-							onClick={row.getToggleExpandedHandler()}>
+							onClick={(e) => {
+								e.stopPropagation()
+								row.getToggleExpandedHandler()?.()
+							}}>
 							<ChevronRight
 								className={`duration-200 text-muted-foreground ${
 									isExpanded ? 'rotate-90' : ''
@@ -134,10 +127,6 @@ const columns: ColumnDef<TaskDto>[] = [
 		),
 		cell: ({ row }) => formatDate(row.original.expiresAt),
 	},
-	// {
-	// 	id: 'actions',
-	// 	cell: ({ row }) => <Actions row={row} />,
-	// },
 ]
 
 export default columns

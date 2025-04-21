@@ -10,7 +10,7 @@ import {
 import TaskForm from './compoonents/TaskForm'
 import useAppStore from '@/store/store'
 
-const TaskEditor = () => {
+const Editor = () => {
 	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
 	const open = useAppStore((state) => state.taskEditorSettings.open)
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
@@ -34,4 +34,4 @@ const TaskEditor = () => {
 	)
 }
 
-export default TaskEditor
+export default Editor

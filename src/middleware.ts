@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken } from './utils/tokens'
+import verifyToken from './utils/tokens'
 import AuthService from './services/Axios/auth.service'
 
 export const redirectTo = (url: string, request: NextRequest) =>

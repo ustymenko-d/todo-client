@@ -8,7 +8,10 @@ interface TaskEditorSettings {
 
 export interface TaskSlice {
 	taskEditorSettings: TaskEditorSettings
-	setTaskEditorSettings: (newValue: TaskEditorSettings) => void
+	openTaskEditor: (
+		mode: 'edit' | 'create',
+		selectedTask: TaskDto | null
+	) => void
 	closeTaskEditor: () => void
 
 	searchTerm: string
@@ -25,7 +28,8 @@ const createTaskSlice = (
 	set: (partial: Partial<TaskSlice>) => void
 ): TaskSlice => ({
 	taskEditorSettings: defaultTaskEditorSettings,
-	setTaskEditorSettings: (taskEditorSettings) => set({ taskEditorSettings }),
+	openTaskEditor: (mode, selectedTask) =>
+		set({ taskEditorSettings: { open: true, mode, selectedTask } }),
 	closeTaskEditor: () => set({ taskEditorSettings: defaultTaskEditorSettings }),
 
 	searchTerm: '',

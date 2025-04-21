@@ -7,16 +7,7 @@ import {
 	ContextMenuSeparator,
 	ContextMenuTrigger,
 } from '@/components/ui/context-menu'
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Cell, flexRender, Row } from '@tanstack/react-table'
 import { useCallback, useState } from 'react'
@@ -25,7 +16,8 @@ import { toast } from 'sonner'
 import { usePathname, useRouter } from 'next/navigation'
 import { ITask } from '@/types/tasks'
 import useAppStore from '@/store/store'
-import LoadingButton from '@/components/ui/LoadingButton'
+import TaskDetails from '@/components/Task/Details/Details'
+import DeleteDialog from '@/components/Task/DeleteDialog'
 
 const RowElement = ({ row }: { row: Row<ITask> }) => {
 	const task = row.original
@@ -35,17 +27,7 @@ const RowElement = ({ row }: { row: Row<ITask> }) => {
 		openAlert: false,
 		loading: false,
 	})
-
-	const setTaskEditorSettings = useAppStore(
-		(state) => state.setTaskEditorSettings
-	)
-
-	const openTaskEditor = useCallback(
-		(mode: 'edit' | 'create') => {
-			setTaskEditorSettings({ open: true, mode, selectedTask: task })
-		},
-		[setTaskEditorSettings, task]
-	)
+	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
 
 	const handleTaskAction = useCallback(
 		async (action: 'delete' | 'toggleStatus') => {
@@ -86,56 +68,41 @@ const RowElement = ({ row }: { row: Row<ITask> }) => {
 
 	return (
 		<>
-			<AlertDialog
+			<DeleteDialog
+				handleDelete={() => handleTaskAction('delete')}
+				loading={dialogState.loading}
 				open={dialogState.openAlert}
-				onOpenChange={(open) =>
+				onOpenChange={(open: boolean) =>
 					setDialogState({ ...dialogState, openAlert: open })
-				}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>
-							Are you sure you want to delete this task?
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							This action cannot be undone. This will permanently delete your
-							task.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							asChild
-							onClick={() => handleTaskAction('delete')}>
-							<LoadingButton
-								className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
-								loading={dialogState.loading}
-								variant='destructive'>
-								Delete
-							</LoadingButton>
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+				}
+			/>
 
 			<ContextMenu>
-				<ContextMenuTrigger asChild>
-					<TableRow>
-						{row.getVisibleCells().map((cell: Cell<ITask, unknown>) => (
-							<TableCell
-								key={cell.id}
-								className='border-r last:border-none'>
-								{flexRender(cell.column.columnDef.cell, cell.getContext())}
-							</TableCell>
-						))}
-					</TableRow>
-				</ContextMenuTrigger>
+				<Dialog>
+					<DialogTrigger asChild>
+						<ContextMenuTrigger asChild>
+							<TableRow>
+								{row.getVisibleCells().map((cell: Cell<ITask, unknown>) => (
+									<TableCell
+										key={cell.id}
+										className='border-r cursor-pointer last:border-none'>
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</TableCell>
+								))}
+							</TableRow>
+						</ContextMenuTrigger>
+					</DialogTrigger>
+					<TaskDetails task={row.original} />
+				</Dialog>
 				<ContextMenuContent>
 					<ContextMenuItem
-						onSelect={() => setTimeout(() => openTaskEditor('edit'), 0)}>
+						onSelect={() => setTimeout(() => openTaskEditor('edit', task), 0)}>
 						Edit task
 					</ContextMenuItem>
 					<ContextMenuItem
-						onSelect={() => setTimeout(() => openTaskEditor('create'), 0)}>
+						onSelect={() =>
+							setTimeout(() => openTaskEditor('create', task), 0)
+						}>
 						Add Subtask
 					</ContextMenuItem>
 					<ContextMenuItem onClick={() => handleTaskAction('toggleStatus')}>
