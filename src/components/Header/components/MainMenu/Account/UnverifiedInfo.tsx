@@ -1,5 +1,3 @@
-'use client'
-
 import useAppStore from '@/store/store'
 
 const UnverifiedInfo = () => {
@@ -9,8 +7,8 @@ const UnverifiedInfo = () => {
 		<div className='flex flex-col gap-1'>
 			<p className='text-base'>
 				To verify your account, check the email specified during registration (
-				{accountInfo?.email}). An unverified account will be deleted three
-				days after registration.
+				{accountInfo?.email}). An unverified account will be deleted three days
+				after registration.
 			</p>
 			<ul
 				className='list-with-title text-muted-foreground list-disc'
