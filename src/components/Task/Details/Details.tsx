@@ -147,7 +147,7 @@ const Details = ({ task }: { task: ITask }) => {
 				</div>
 			</div>
 
-			<DialogFooter>
+			<DialogFooter className='gap-2 sm:space-x-0'>
 				<Button
 					variant='outline'
 					onClick={() => openTaskEditor('create', task)}>
