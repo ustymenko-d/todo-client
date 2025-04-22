@@ -85,7 +85,7 @@ const RowElement = ({ row }: { row: Row<ITask> }) => {
 								{row.getVisibleCells().map((cell: Cell<ITask, unknown>) => (
 									<TableCell
 										key={cell.id}
-										className='border-r cursor-pointer last:border-none'>
+										className='border-r cursor-pointer last:border-none select-none'>
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
 									</TableCell>
 								))}
