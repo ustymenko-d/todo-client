@@ -1,34 +1,11 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { TaskDto } from '@/dto/tasks'
 import ColumnHeader from './ColumnHeader'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
 import formatDate from '@/utils/formatDate'
-
-const formatValue = (value: string | null): ReactNode => {
-	if (!value) return '-'
-	const stringValue = String(value)
-	if (stringValue.length <= 30) return <p>{stringValue}</p>
-	return (
-		<TooltipProvider>
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<p>{stringValue.slice(0, 30) + '…'}</p>
-				</TooltipTrigger>
-				<TooltipContent>
-					<p>{stringValue}</p>
-				</TooltipContent>
-			</Tooltip>
-		</TooltipProvider>
-	)
-}
+import FolderCell from './FolderCell'
+import formatValue from '@/utils/formatValue'
 
 const columns: ColumnDef<TaskDto>[] = [
 	{
@@ -105,7 +82,7 @@ const columns: ColumnDef<TaskDto>[] = [
 	{
 		accessorKey: 'folderId',
 		header: 'Folder',
-		cell: ({ row }) => formatValue(row.original.folderId),
+		cell: ({ row }) => <FolderCell id={row.original.folderId} />,
 	},
 	{
 		accessorKey: 'createdAt',

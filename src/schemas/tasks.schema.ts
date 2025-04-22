@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { paginationSchema } from './commonSchema'
+import { paginationSchema } from './common.schema'
 
 const getTasksRequestSchema = paginationSchema.extend({
 	title: z

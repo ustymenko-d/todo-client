@@ -26,9 +26,7 @@ const Editor = () => {
 					</DialogTitle>
 					<DialogDescription>* indicates required fields</DialogDescription>
 				</DialogHeader>
-				<div className='grid gap-4 py-4'>
-					<TaskForm />
-				</div>
+				<TaskForm />
 			</DialogContent>
 		</Dialog>
 	)

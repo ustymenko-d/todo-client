@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import TasksValidation from '@/schemas/tasksSchema'
+import TasksValidation from '@/schemas/tasks.schema'
 
 export type GetTasksRequestDto = z.infer<
 	typeof TasksValidation.getTasksRequestSchema

@@ -2,13 +2,14 @@
 
 import {
 	DialogContent,
+	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
 import { ITask } from '@/types/tasks'
 import formatDate from '@/utils/formatDate'
-import { Button } from '../../ui/button'
 import { useCallback, useState } from 'react'
 import useAppStore from '@/store/store'
 import { toast } from 'sonner'
@@ -19,11 +20,10 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { Label } from '../../ui/label'
+import { Button } from '@/components/ui/button'
 import DeleteDialog from '../DeleteDialog'
 
 const Details = ({ task }: { task: ITask }) => {
@@ -32,6 +32,9 @@ const Details = ({ task }: { task: ITask }) => {
 	const [deleting, setDeleting] = useState(false)
 	const [toggling, setToggling] = useState(false)
 	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
+	const folders = useAppStore((state) => state.folders)
+	const { title, description, completed, createdAt, folderId, expiresAt } = task
+	const folder = folders?.find((f) => f.id === folderId)
 
 	const handleTaskAction = useCallback(
 		async (action: 'delete' | 'toggleStatus') => {
@@ -73,22 +76,52 @@ const Details = ({ task }: { task: ITask }) => {
 		[task.id, pathname, router]
 	)
 
-	const { title, description, completed, createdAt, expiresAt } = task
-
 	return (
-		<DialogContent className='sm:max-w-[425px]'>
+		<DialogContent aria-describedby='task-description'>
 			<DialogHeader>
 				<DialogTitle>{title}</DialogTitle>
 			</DialogHeader>
 
 			<div className='pt-4 flex flex-col gap-3'>
 				<div className='flex flex-col gap-1'>
+					<Label className='text-muted-foreground'>Description:</Label>
+					<DialogDescription className='text-current'>
+						{description || 'No description provided.'}
+					</DialogDescription>
+				</div>
+
+				<div
+					role='group'
+					aria-labelledby='status-label'
+					className='flex flex-col gap-2'>
 					<Label
-						htmlFor='description'
+						htmlFor='status-label'
 						className='text-muted-foreground'>
-						Description:
+						Status:
 					</Label>
-					<p id='description'>{description}</p>
+					<Select
+						disabled={toggling}
+						onValueChange={() => handleTaskAction('toggleStatus')}
+						value={completed ? 'completed' : 'in-progress'}>
+						<SelectTrigger className='w-[180px]'>
+							<SelectValue placeholder='Select status' />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								<SelectItem
+									disabled={completed}
+									value='completed'>
+									Completed
+								</SelectItem>
+
+								<SelectItem
+									disabled={!completed}
+									value='in-progress'>
+									In Progress
+								</SelectItem>
+							</SelectGroup>
+						</SelectContent>
+					</Select>
 				</div>
 
 				<div className='flex flex-col gap-1'>
@@ -111,40 +144,16 @@ const Details = ({ task }: { task: ITask }) => {
 					</div>
 				)}
 
-				<div
-					role='group'
-					aria-labelledby='status-label'
-					className='flex flex-col gap-2'>
-					<Label
-						htmlFor='status-label'
-						className='text-muted-foreground'>
-						Status:
-					</Label>
-					<Select
-						disabled={toggling}
-						onValueChange={() => handleTaskAction('toggleStatus')}
-						value={completed ? 'completed' : 'in-progress'}>
-						<SelectTrigger className='w-[180px]'>
-							<SelectValue placeholder='Select status' />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectGroup>
-								<SelectLabel>Status</SelectLabel>
-								<SelectItem
-									disabled={completed}
-									value='completed'>
-									Completed
-								</SelectItem>
-
-								<SelectItem
-									disabled={!completed}
-									value='in-progress'>
-									In Progress
-								</SelectItem>
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</div>
+				{folderId && (
+					<div className='flex flex-col gap-1'>
+						<Label
+							htmlFor='folder'
+							className='text-muted-foreground'>
+							Folder:
+						</Label>
+						<span id='folder'>{folder?.name}</span>
+					</div>
+				)}
 			</div>
 
 			<DialogFooter className='gap-2 sm:space-x-0'>

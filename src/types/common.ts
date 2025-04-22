@@ -4,3 +4,13 @@ export interface IResponseStatus {
 }
 
 export type TResponseStatus = 'default' | 'pending' | 'success' | 'error'
+
+export interface IPagination {
+	page: number
+	limit: number
+}
+
+export interface IGetResponse extends IPagination {
+	pages: number
+	total: number
+}

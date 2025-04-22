@@ -5,7 +5,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import { TaskFormSchema } from '@/schemas/tasksSchema'
+import { TaskFormSchema } from '@/schemas/tasks.schema'
 import { ElementType } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -18,14 +18,14 @@ interface IFieldProps {
 
 const Field = ({ taskForm, name, Component, placeholder }: IFieldProps) => {
 	const label = name.charAt(0).toUpperCase() + name.slice(1)
-	
+
 	return (
 		<FormField
 			control={taskForm.control}
 			name={name}
 			render={({ field }) => (
 				<FormItem>
-					<FormLabel>{label}</FormLabel>
+					<FormLabel className='text-muted-foreground'>{label}:</FormLabel>
 					<FormControl>
 						<Component
 							{...field}

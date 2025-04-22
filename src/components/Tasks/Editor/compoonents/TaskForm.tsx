@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import TasksValidation, { TaskFormSchema } from '@/schemas/tasksSchema'
+import TasksValidation, { TaskFormSchema } from '@/schemas/tasks.schema'
 import { TaskBaseDto, TaskDto } from '@/dto/tasks'
 import {
 	Form,
@@ -23,6 +23,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import TasksService from '@/services/Axios/tasks.service'
 import { toast } from 'sonner'
 import Field from './Field'
+import FormSelect from './FormSelect'
 
 const TaskForm = () => {
 	const router = useRouter()
@@ -91,13 +92,14 @@ const TaskForm = () => {
 			completed: !isEditing ? false : selectedTask?.completed,
 			expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
 		}
+
 		handleTaskAction(payload)
 	}
 
 	return (
 		<Form {...taskForm}>
 			<form onSubmit={taskForm.handleSubmit(onSubmit)}>
-				<div className='flex flex-col gap-6'>
+				<div className='flex flex-col gap-4'>
 					<Field
 						taskForm={taskForm}
 						name='title'
@@ -110,19 +112,37 @@ const TaskForm = () => {
 						Component={Textarea}
 						placeholder='Add some description'
 					/>
-					<FormField
-						control={taskForm.control}
-						name='expiresAt'
-						render={({ field }) => (
-							<FormItem className='flex flex-col gap-1'>
-								<FormLabel>Set expires date</FormLabel>
-								<FormControl>
-									<FormDatePicker field={field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+
+					<div className='grid grid-cols-2 gap-3'>
+						<FormField
+							control={taskForm.control}
+							name='expiresAt'
+							render={({ field }) => (
+								<FormItem className='flex flex-col gap-1'>
+									<FormLabel className='text-muted-foreground'>
+										Set expires date:
+									</FormLabel>
+									<FormControl>
+										<FormDatePicker field={field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={taskForm.control}
+							name='folderId'
+							render={({ field }) => (
+								<FormItem className='flex flex-col gap-1'>
+									<FormLabel className='text-muted-foreground'>
+										Folder:
+									</FormLabel>
+									<FormSelect field={field} />
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
 
 					<LoadingButton
 						loading={status === 'pending'}

@@ -1,5 +1,6 @@
 import {
 	DialogContent,
+	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -17,18 +18,38 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import LoadingButton from '@/components/ui/LoadingButton'
+import { Label } from '@/components/ui/label'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import AuthService from '@/services/Axios/auth.service'
+import { useRouter } from 'next/navigation'
 import VerificationBadge from './VerificationBadge'
 import UnverifiedInfo from './UnverifiedInfo'
 
-const AccountDialogContent = ({
-	loading,
-	action,
-}: {
-	loading: boolean
-	action: () => void
-}) => {
+const AccountDialogContent = () => {
+	const router = useRouter()
 	const isAuthorized = useAppStore((state) => state.isAuthorized)
+	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const accountInfo = useAppStore((state) => state.accountInfo)
+	const [loading, setLoading] = useState<boolean>(false)
+
+	const handleDeleteAccount = async (): Promise<void> => {
+		try {
+			setLoading(true)
+			const { data } = await AuthService.deleteAccount()
+			const { success, message } = data
+			if (success) {
+				setIsAuthorized(false)
+				toast.success(message)
+				router.push('/')
+			}
+		} catch (error) {
+			toast.error('Something went wrong!')
+			console.error('Error:', error)
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	return (
 		<DialogContent>
@@ -43,8 +64,23 @@ const AccountDialogContent = ({
 						'Account settings'
 					)}
 				</DialogTitle>
+				<DialogDescription>
+					This dialog displays your account information. You can also delete the
+					account using the &quot;Delete account&quot; button.
+				</DialogDescription>
 			</DialogHeader>
+
+			<div className='flex flex-col'>
+				<Label
+					htmlFor='account-email'
+					className='text-muted-foreground'>
+					Email:
+				</Label>
+				<span id='account-email'>{accountInfo?.email}</span>
+			</div>
+
 			{!accountInfo?.isVerified && <UnverifiedInfo />}
+
 			<DialogFooter>
 				<AlertDialog>
 					<AlertDialogTrigger asChild>
@@ -69,7 +105,7 @@ const AccountDialogContent = ({
 							<AlertDialogCancel>Cancel</AlertDialogCancel>
 							<AlertDialogAction
 								className='shadow-sm bg-destructive text-destructive-foreground hover:bg-destructive/90'
-								onClick={action}>
+								onClick={handleDeleteAccount}>
 								Continue
 							</AlertDialogAction>
 						</AlertDialogFooter>

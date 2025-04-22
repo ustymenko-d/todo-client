@@ -16,8 +16,8 @@ import { toast } from 'sonner'
 import { usePathname, useRouter } from 'next/navigation'
 import { ITask } from '@/types/tasks'
 import useAppStore from '@/store/store'
-import TaskDetails from '@/components/Task/Details/Details'
-import DeleteDialog from '@/components/Task/DeleteDialog'
+import Details from '@/components/Tasks/Details'
+import DeleteDialog from '@/components/DeleteDialog'
 
 const RowElement = ({ row }: { row: Row<ITask> }) => {
 	const task = row.original
@@ -92,7 +92,7 @@ const RowElement = ({ row }: { row: Row<ITask> }) => {
 							</TableRow>
 						</ContextMenuTrigger>
 					</DialogTrigger>
-					<TaskDetails task={row.original} />
+					<Details task={row.original} />
 				</Dialog>
 				<ContextMenuContent>
 					<ContextMenuItem

@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { ControllerRenderProps } from 'react-hook-form'
-import { TaskFormSchema } from '@/schemas/tasksSchema'
+import { TaskFormSchema } from '@/schemas/tasks.schema'
 import { CalendarIcon } from 'lucide-react'
 
 interface FormDatePickerProps {
@@ -31,7 +31,7 @@ const FormDatePicker = ({ field }: FormDatePickerProps) => {
 				<Button
 					variant={'outline'}
 					className={cn(
-						'w-[240px] justify-start text-left font-normal',
+						'justify-start text-left font-normal',
 						!field.value && 'text-muted-foreground'
 					)}>
 					<CalendarIcon />

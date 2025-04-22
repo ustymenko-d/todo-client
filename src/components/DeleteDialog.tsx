@@ -9,7 +9,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import LoadingButton from '../ui/LoadingButton'
+import LoadingButton from './ui/LoadingButton'
 import { ComponentProps } from 'react'
 
 interface DeleteDialogProps extends ComponentProps<typeof AlertDialog> {
@@ -20,8 +20,8 @@ interface DeleteDialogProps extends ComponentProps<typeof AlertDialog> {
 
 const DeleteDialog = ({
 	handleDelete,
-	needTrigger,
 	loading,
+	needTrigger,
 	...props
 }: DeleteDialogProps) => {
 	return (

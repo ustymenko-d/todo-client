@@ -9,6 +9,9 @@ export interface AuthSlice {
 
 	authFormType: AuthFormType
 	setAuthFormType: (newValue: AuthFormType) => void
+
+	isOpenAccountDialog: boolean
+	setIsOpenAccountDialog: (newValue: boolean) => void
 }
 
 const persistStorage = {
@@ -29,6 +32,9 @@ const createAuthSlice = (
 
 	authFormType: 'login',
 	setAuthFormType: (authFormType) => set({ authFormType }),
+
+	isOpenAccountDialog: false,
+	setIsOpenAccountDialog: (isOpenAccountDialog) => set({ isOpenAccountDialog }),
 })
 
 export default createAuthSlice

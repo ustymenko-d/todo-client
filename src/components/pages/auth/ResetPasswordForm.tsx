@@ -1,6 +1,6 @@
 'use client'
 
-import AuthValidation from '@/schemas/authFormSchema'
+import AuthValidation from '@/schemas/authForm.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
