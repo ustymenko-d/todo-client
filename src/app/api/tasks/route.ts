@@ -1,7 +1,7 @@
-import RequestHandler from '@/utils/RequestHandler'
 import { NextRequest, NextResponse } from 'next/server'
+import RequestHandler from '@/utils/RequestHandler'
 
-export async function PUT(request: NextRequest): Promise<NextResponse> {
+export const PUT = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
 	return RequestHandler.request('/tasks', 'put', body)
 }

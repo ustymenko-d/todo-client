@@ -69,7 +69,10 @@ const MainMenu = () => {
 					onClick={handleLogout}
 					className='flex items-center gap-2'>
 					{loading ? (
-						<Loader2 className='animate-spin opacity-60' />
+						<Loader2
+							strokeWidth={1.5}
+							className='animate-spin opacity-60'
+						/>
 					) : (
 						<LogOut className='opacity-60' />
 					)}

@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
-
+import { Toaster } from 'sonner'
 import ThemeProviderWrapper from '@/components/theme/ThemeProviderWrapper'
 import AuthProvider from '@/components/AuthProvider'
 import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer'
-import { Toaster } from 'sonner'
+import './globals.css'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -30,27 +29,25 @@ const RootLayout = ({
 	children,
 }: Readonly<{
 	children: React.ReactNode
-}>) => {
-	return (
-		<html lang='en'>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-dvh flex flex-col`}>
-				<ThemeProviderWrapper>
-					<AuthProvider>
-						<Header />
-						<main className='container flex flex-col items-center justify-center p-2 mx-auto border-dashed grow sm:border-x lg:p-4'>
-							{children}
-						</main>
-						<Footer />
-						<Toaster
-							position='top-center'
-							richColors
-						/>
-					</AuthProvider>
-				</ThemeProviderWrapper>
-			</body>
-		</html>
-	)
-}
+}>) => (
+	<html lang='en'>
+		<body
+			className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-dvh flex flex-col`}>
+			<ThemeProviderWrapper>
+				<AuthProvider>
+					<Header />
+					<main className='container flex flex-col items-center justify-center p-2 mx-auto border-dashed grow sm:border-x lg:p-4'>
+						{children}
+					</main>
+					<Footer />
+					<Toaster
+						position='top-center'
+						richColors
+					/>
+				</AuthProvider>
+			</ThemeProviderWrapper>
+		</body>
+	</html>
+)
 
 export default RootLayout

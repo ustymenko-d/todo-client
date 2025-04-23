@@ -1,21 +1,16 @@
-import RequestHandler from '@/utils/RequestHandler'
 import { NextRequest, NextResponse } from 'next/server'
+import getIdFromRequest from '@/utils/getIdFromRequest'
+import RequestHandler from '@/utils/RequestHandler'
 
-function getFolderIdFromRequest(request: NextRequest): string | null {
-	const pathname = request.nextUrl.pathname
-	const match = pathname.match(/\/api\/folder\/([^\/]+)/)
-	return match ? match[1] : null
-}
-
-export async function PATCH(request: NextRequest): Promise<NextResponse> {
+export const PATCH = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
-	const id = getFolderIdFromRequest(request)
+	const id = getIdFromRequest(request, 'folder')
 	if (!id) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
 	return RequestHandler.request(`/folder/${id}`, 'patch', body)
 }
 
-export async function DELETE(request: NextRequest): Promise<NextResponse> {
-	const id = getFolderIdFromRequest(request)
+export const DELETE = async (request: NextRequest): Promise<NextResponse> => {
+	const id = getIdFromRequest(request, 'folder')
 	if (!id) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
 	return RequestHandler.request(`/folder/${id}`, 'delete')
 }

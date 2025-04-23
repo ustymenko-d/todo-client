@@ -1,6 +1,5 @@
-import RequestHandler from '@/utils/RequestHandler'
 import { NextResponse } from 'next/server'
+import RequestHandler from '@/utils/RequestHandler'
 
-export async function GET(): Promise<NextResponse> {
-	return RequestHandler.request('/auth/logout', 'get')
-}
+export const GET = async (): Promise<NextResponse> =>
+	RequestHandler.request('/auth/logout', 'get')

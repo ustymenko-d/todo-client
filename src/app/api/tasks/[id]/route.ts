@@ -1,20 +1,15 @@
-import RequestHandler from '@/utils/RequestHandler'
 import { NextRequest, NextResponse } from 'next/server'
+import getIdFromRequest from '@/utils/getIdFromRequest'
+import RequestHandler from '@/utils/RequestHandler'
 
-function getTaskIdFromRequest(request: NextRequest): string | null {
-	const pathname = request.nextUrl.pathname
-	const match = pathname.match(/\/api\/tasks\/([^\/]+)/)
-	return match ? match[1] : null
-}
-
-export async function PATCH(request: NextRequest): Promise<NextResponse> {
-	const id = getTaskIdFromRequest(request)
+export const PATCH = async (request: NextRequest): Promise<NextResponse> => {
+	const id = getIdFromRequest(request, 'tasks')
 	if (!id) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
 	return RequestHandler.request(`/tasks/${id}`, 'patch')
 }
 
-export async function DELETE(request: NextRequest): Promise<NextResponse> {
-	const id = getTaskIdFromRequest(request)
+export const DELETE = async (request: NextRequest): Promise<NextResponse> => {
+	const id = getIdFromRequest(request, 'tasks')
 	if (!id) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
 	return RequestHandler.request(`/tasks/${id}`, 'delete')
 }

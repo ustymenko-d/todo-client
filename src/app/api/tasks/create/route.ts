@@ -1,8 +1,8 @@
-import { TTaskBase } from '@/types/tasks'
-import RequestHandler from '@/utils/RequestHandler'
 import { NextRequest, NextResponse } from 'next/server'
+import RequestHandler from '@/utils/RequestHandler'
+import { TTaskBase } from '@/types/tasks'
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export const POST = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
 	return RequestHandler.request<TTaskBase>('/tasks/create', 'post', body)
 }

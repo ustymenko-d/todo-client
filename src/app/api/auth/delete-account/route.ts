@@ -1,6 +1,5 @@
-import RequestHandler from '@/utils/RequestHandler'
 import { NextResponse } from 'next/server'
+import RequestHandler from '@/utils/RequestHandler'
 
-export async function DELETE(): Promise<NextResponse> {
-	return RequestHandler.request('/auth/delete-account', 'delete')
-}
+export const DELETE = async (): Promise<NextResponse> =>
+	RequestHandler.request('/auth/delete-account', 'delete')

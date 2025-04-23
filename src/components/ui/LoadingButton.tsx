@@ -16,7 +16,10 @@ const LoadingButton: FC<
 		disabled={loading || disabled}>
 		{loading ? (
 			<>
-				<Loader2 className='animate-spin' />
+				<Loader2
+					strokeWidth={1.5}
+					className='animate-spin'
+				/>
 				<span>Please wait</span>
 			</>
 		) : (

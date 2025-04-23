@@ -1,12 +1,12 @@
-import RequestHandler from '@/utils/RequestHandler'
 import { NextRequest, NextResponse } from 'next/server'
+import RequestHandler from '@/utils/RequestHandler'
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export const POST = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
 	return RequestHandler.request('/folder', 'post', body)
 }
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
+export const GET = async (request: NextRequest): Promise<NextResponse> => {
 	const searchParams = request.nextUrl.searchParams.toString()
 	return RequestHandler.request(`/folder?${searchParams}`, 'get')
 }

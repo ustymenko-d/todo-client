@@ -1,11 +1,9 @@
-import RequestHandler from '@/utils/RequestHandler'
 import { NextRequest, NextResponse } from 'next/server'
+import RequestHandler from '@/utils/RequestHandler'
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
-	const redirectBackTo =
-		request.nextUrl.searchParams.get('redirect') || '/dashboard'
-	const redirectUrl = new URL(redirectBackTo, request.nextUrl.origin)
-	redirectUrl.searchParams.set('refreshed', 'true')
+export const GET = async (request: NextRequest): Promise<NextResponse> => {
+	const redirectBackTo = getRedirectPath(request)
+	const redirectUrl = buildRedirectUrl(request, redirectBackTo)
 
 	try {
 		const response = await RequestHandler.request(
@@ -16,18 +14,38 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 		const setCookie = response.headers.get('set-cookie')
 
-		if (setCookie) {
-			const redirectResponse = NextResponse.redirect(redirectUrl)
-			redirectResponse.headers.set('set-cookie', setCookie)
-			return redirectResponse
-		}
+		if (setCookie) return buildRedirectResponse(redirectUrl, setCookie)
 	} catch (error) {
-		console.error('Token refresh failed:', error)
+		console.error('[Token refresh failed]', {
+			error,
+			requestUrl: request.nextUrl.href,
+		})
 	}
 
-	const fallbackUrl = new URL('/', request.nextUrl.origin).toString()
-	const errorResponse = NextResponse.redirect(fallbackUrl)
-	errorResponse.cookies.set('access_token', '', { maxAge: 0, path: '/' })
-	errorResponse.cookies.set('refresh_token', '', { maxAge: 0, path: '/' })
-	return errorResponse
+	return buildFallbackResponse(request)
+}
+
+const getRedirectPath = (request: NextRequest): string =>
+	request.nextUrl.searchParams.get('redirect') || '/dashboard'
+
+const buildRedirectUrl = (request: NextRequest, path: string): URL => {
+	const url = new URL(path, request.nextUrl.origin)
+	url.searchParams.set('refreshed', 'true')
+	return url
+}
+
+const buildRedirectResponse = (url: URL, setCookie: string): NextResponse => {
+	const response = NextResponse.redirect(url)
+	response.headers.set('set-cookie', setCookie)
+	return response
+}
+
+const buildFallbackResponse = (request: NextRequest): NextResponse => {
+	const fallbackUrl = new URL('/', request.nextUrl.origin)
+	const response = NextResponse.redirect(fallbackUrl)
+
+	response.cookies.set('access_token', '', { maxAge: 0, path: '/' })
+	response.cookies.set('refresh_token', '', { maxAge: 0, path: '/' })
+
+	return response
 }
