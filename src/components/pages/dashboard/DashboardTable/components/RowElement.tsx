@@ -14,12 +14,12 @@ import { useCallback, useState } from 'react'
 import TasksService from '@/services/Axios/tasks.service'
 import { toast } from 'sonner'
 import { usePathname, useRouter } from 'next/navigation'
-import { ITask } from '@/types/tasks'
 import useAppStore from '@/store/store'
 import Details from '@/components/Tasks/Details'
 import DeleteDialog from '@/components/DeleteDialog'
+import { TTask } from '@/types/tasks'
 
-const RowElement = ({ row }: { row: Row<ITask> }) => {
+const RowElement = ({ row }: { row: Row<TTask> }) => {
 	const task = row.original
 	const router = useRouter()
 	const pathname = usePathname()
@@ -82,7 +82,7 @@ const RowElement = ({ row }: { row: Row<ITask> }) => {
 					<DialogTrigger asChild>
 						<ContextMenuTrigger asChild>
 							<TableRow>
-								{row.getVisibleCells().map((cell: Cell<ITask, unknown>) => (
+								{row.getVisibleCells().map((cell: Cell<TTask, unknown>) => (
 									<TableCell
 										key={cell.id}
 										className='border-r cursor-pointer last:border-none select-none'>

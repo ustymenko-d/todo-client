@@ -1,21 +1,14 @@
-interface ITaskBase {
-	id: string
-	title: string
-	description: string | null
-	completed: boolean
-	createdAt: Date
-	expiresAt: Date | null
-	folderId: string | null
-	subtasks: ITask[] | []
-}
+import { z } from 'zod'
+import TasksValidation from '@/schemas/tasks.schema'
 
-export interface ITask extends ITaskBase {
-	parentTaskId: string | null
-}
+export type TGetTasksRequest = z.infer<typeof TasksValidation.getTasksRequest>
+export type TTaskBase = z.infer<typeof TasksValidation.taskBase>
+export type TTaskPayload = z.infer<typeof TasksValidation.taskPayload>
+export type TTask = z.infer<typeof TasksValidation.task>
 
 export interface ITaskResponse {
 	success: boolean
-	task: ITask
+	task: TTask
 }
 
 export interface IGetTasksResponse {
@@ -23,6 +16,6 @@ export interface IGetTasksResponse {
 	data: {
 		pages: number
 		total: number
-		tasks: ITask[]
+		tasks: TTask[]
 	}
 }

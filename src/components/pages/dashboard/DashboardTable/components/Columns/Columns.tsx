@@ -1,12 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { TaskDto } from '@/dto/tasks'
 import ColumnHeader from './ColumnHeader'
 import { Button } from '@/components/ui/button'
 import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
 import FolderCell from './FolderCell'
 import { formatDate, formatValue } from '@/utils/formatting'
+import { TTask } from '@/types/tasks'
 
-const columns: ColumnDef<TaskDto>[] = [
+const columns: ColumnDef<TTask>[] = [
 	{
 		accessorKey: 'title',
 		header: ({ column }) => (

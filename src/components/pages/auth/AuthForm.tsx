@@ -8,10 +8,9 @@ import { Form } from '@/components/ui/form'
 import AuthFormSuggestion from './AuthFormSuggestion'
 import AuthFormInput from './AuthFormInput'
 import { useRouter } from 'next/navigation'
-import { baseAuthDto, emailDto } from '@/dto/auth'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
-import { AuthFormType } from '@/types/auth'
+import { TAuthFormType, TBaseAuth, TEmail } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
 import AuthService from '@/services/Axios/auth.service'
 import RememberMe from '@/components/ui/RememberMe'
@@ -32,11 +31,11 @@ interface IFormConfig {
 	}
 }
 
-const formConfig: Record<AuthFormType, IFormConfig> = {
+const formConfig: Record<TAuthFormType, IFormConfig> = {
 	login: {
 		fields: ['email', 'password', 'rememberMe'],
 		buttonText: 'Log in',
-		validationSchema: AuthValidation.loginSchema,
+		validationSchema: AuthValidation.login,
 		defaultValues: {
 			email: '',
 			password: '',
@@ -46,7 +45,7 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 	signup: {
 		fields: ['email', 'password', 'confirmPassword', 'rememberMe'],
 		buttonText: 'Sign up',
-		validationSchema: AuthValidation.signupSchema,
+		validationSchema: AuthValidation.signup,
 		defaultValues: {
 			email: '',
 			password: '',
@@ -57,7 +56,7 @@ const formConfig: Record<AuthFormType, IFormConfig> = {
 	forgotPassword: {
 		fields: ['email'],
 		buttonText: 'Send reset password email',
-		validationSchema: AuthValidation.emailSchema,
+		validationSchema: AuthValidation.email,
 		defaultValues: {
 			email: '',
 		},
@@ -100,19 +99,19 @@ const AuthForm = () => {
 	)
 
 	const handleAuthAction = useCallback(
-		async (payload: baseAuthDto | emailDto): Promise<void> => {
+		async (payload: TBaseAuth | TEmail): Promise<void> => {
 			setLoading(true)
 			try {
 				let response
 				switch (authFormType) {
 					case 'signup':
-						response = await AuthService.signup(payload as baseAuthDto)
+						response = await AuthService.signup(payload as TBaseAuth)
 						break
 					case 'login':
-						response = await AuthService.login(payload as baseAuthDto)
+						response = await AuthService.login(payload as TBaseAuth)
 						break
 					case 'forgotPassword':
-						response = await AuthService.forgotPassword(payload as emailDto)
+						response = await AuthService.forgotPassword(payload as TEmail)
 						break
 					default:
 						return
@@ -137,7 +136,7 @@ const AuthForm = () => {
 	)
 
 	const onSubmit = (values: z.infer<typeof validationSchema>) => {
-		const payload: baseAuthDto | emailDto =
+		const payload: TBaseAuth | TEmail =
 			authFormType === 'forgotPassword'
 				? { email: values.email }
 				: {

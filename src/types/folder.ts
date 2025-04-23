@@ -1,20 +1,17 @@
-import { FolderNameSchema } from '@/schemas/folder.schema'
+import FolderValidation from '@/schemas/folder.schema'
 import { IGetResponse, IPagination, IResponseStatus } from './common'
 import { z } from 'zod'
 
-export type TFolderName = z.infer<typeof FolderNameSchema>
+export type TFolderName = z.infer<typeof FolderValidation.folderName>
 
-export interface ICreateFolderPayload {
+export interface IFolder {
+	id: string
 	name: string
 	userId: string
 }
 
-export interface IFolder extends ICreateFolderPayload {
-	id: string
-}
-
-export type IGetFolderRequest = IPagination & {
-	name?: z.infer<typeof FolderNameSchema>
+export interface IGetFoldersRequest extends IPagination {
+	name?: z.infer<typeof FolderValidation.folderName>
 }
 
 export interface IFolderResponse extends IResponseStatus {

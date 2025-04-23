@@ -18,10 +18,10 @@ import columns from './components/Columns/Columns'
 import Head from './components/Head'
 import Body from './components/Body'
 import Pagination from './components/Pagination/Pagination'
-import { ITask } from '@/types/tasks'
+import { TTask } from '@/types/tasks'
 
 interface DashboardTableProps {
-	data: ITask[] | []
+	data: TTask[] | []
 	pagination: {
 		page: number
 		limit: number
@@ -30,7 +30,7 @@ interface DashboardTableProps {
 }
 
 export interface ITableComponentProps {
-	table: Table<ITask>
+	table: Table<TTask>
 }
 
 const DashboardTable = ({ data, pagination }: DashboardTableProps) => {

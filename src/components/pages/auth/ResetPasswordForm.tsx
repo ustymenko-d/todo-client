@@ -13,16 +13,16 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '../ui/form'
-import PasswordInput from '../ui/PasswordInput'
-import { passwordDto } from '@/dto/auth'
+} from '@/components/ui/form'
+import PasswordInput from '@/components/ui/PasswordInput'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
 import AuthService from '@/services/Axios/auth.service'
-import { TResponseStatus } from '@/types/common'
+import { TResponseState } from '@/types/common'
+import { TPassword } from '@/types/auth'
 
 const formConfig = {
-	validationSchema: AuthValidation.resetPasswordSchema,
+	validationSchema: AuthValidation.resetPassword,
 	defaultValues: {
 		password: '',
 		confirmPassword: '',
@@ -32,7 +32,7 @@ const formConfig = {
 const ResetPasswordForm = () => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
-	const [status, setStatus] = useState<TResponseStatus>('default')
+	const [status, setStatus] = useState<TResponseState>('default')
 	const { validationSchema, defaultValues } = formConfig
 
 	const resetPasswordForm = useForm<z.infer<typeof validationSchema>>({
@@ -41,7 +41,7 @@ const ResetPasswordForm = () => {
 	})
 
 	const handleResetPassword = useCallback(
-		async (payload: passwordDto) => {
+		async (payload: TPassword) => {
 			try {
 				setStatus('pending')
 				const resetToken = searchParams.get('resetToken')

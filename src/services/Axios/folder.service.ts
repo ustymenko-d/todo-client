@@ -3,7 +3,7 @@ import { ApiAxios } from './Axios'
 import RequestHandler from '@/utils/RequestHandler'
 import {
 	IFolderResponse,
-	IGetFolderRequest,
+	IGetFoldersRequest,
 	IGetFolderResponse,
 	TFolderName,
 } from '@/types/folder'
@@ -19,7 +19,7 @@ const FolderService = {
 		),
 
 	getFolders: (
-		searchParams: IGetFolderRequest
+		searchParams: IGetFoldersRequest
 	): Promise<AxiosResponse<IGetFolderResponse>> => {
 		const params = new URLSearchParams(
 			searchParams as unknown as Record<string, string>

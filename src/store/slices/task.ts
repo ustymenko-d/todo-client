@@ -1,17 +1,17 @@
 import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 import { IEditorSettings } from '@/types/common'
-import { ITask } from '@/types/tasks'
+import { TTask } from '@/types/tasks'
 
 export interface TaskSlice {
-	taskEditorSettings: IEditorSettings<ITask>
-	openTaskEditor: (mode: 'edit' | 'create', target: ITask | null) => void
+	taskEditorSettings: IEditorSettings<TTask>
+	openTaskEditor: (mode: 'edit' | 'create', target: TTask | null) => void
 	closeTaskEditor: () => void
 
 	searchTerm: string
 	setSearchTerm: (newValue: string) => void
 }
 
-const taskEditorSettings = getDefaultEditorSettings<ITask>()
+const taskEditorSettings = getDefaultEditorSettings<TTask>()
 
 const createTaskSlice = (
 	set: (partial: Partial<TaskSlice>) => void

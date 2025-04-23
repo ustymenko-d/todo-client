@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
 import useAppStore from '@/store/store'
-import { AuthFormType } from '@/types/auth'
 import Link from 'next/link'
+import { TAuthFormType } from '@/types/auth'
 
 const signupSuggestion = {
 	text: 'Don’t have an account?',
 	linkText: 'Sign up',
-	newType: 'signup' as AuthFormType,
+	newType: 'signup' as TAuthFormType,
 }
 
 const suggestionConfig: Record<
-	AuthFormType,
-	{ text: string; linkText: string; newType: AuthFormType }
+	TAuthFormType,
+	{ text: string; linkText: string; newType: TAuthFormType }
 > = {
 	login: signupSuggestion,
 	forgotPassword: signupSuggestion,

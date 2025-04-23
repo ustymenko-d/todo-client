@@ -3,8 +3,7 @@
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import TasksValidation, { TaskFormSchema } from '@/schemas/tasks.schema'
-import { TaskBaseDto, TaskDto } from '@/dto/tasks'
+import TasksValidation from '@/schemas/tasks.schema'
 import {
 	Form,
 	FormControl,
@@ -18,12 +17,13 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import LoadingButton from '@/components/ui/LoadingButton'
 import useAppStore from '@/store/store'
-import { TResponseStatus } from '@/types/common'
+import { TResponseState } from '@/types/common'
 import { usePathname, useRouter } from 'next/navigation'
 import TasksService from '@/services/Axios/tasks.service'
 import { toast } from 'sonner'
 import Field from './Field'
 import FormSelect from './FormSelect'
+import { TTask, TTaskBase, TTaskPayload } from '@/types/tasks'
 
 const TaskForm = () => {
 	const router = useRouter()
@@ -31,9 +31,9 @@ const TaskForm = () => {
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
 	const selectedTask = useAppStore((state) => state.taskEditorSettings.target)
 	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
-	const [status, setStatus] = useState<TResponseStatus>('default')
+	const [status, setStatus] = useState<TResponseState>('default')
 	const isEditing = mode === 'edit'
-	const defaultValues = useMemo<TaskFormSchema>(
+	const defaultValues = useMemo<TTaskPayload>(
 		() => ({
 			title: isEditing ? selectedTask?.title || '' : '',
 			description: isEditing ? selectedTask?.description || '' : '',
@@ -49,12 +49,12 @@ const TaskForm = () => {
 		[isEditing, selectedTask]
 	)
 
-	const taskForm = useForm<TaskFormSchema>({
-		resolver: zodResolver(TasksValidation.taskFormSchema),
+	const taskForm = useForm<TTaskPayload>({
+		resolver: zodResolver(TasksValidation.taskPayload),
 		defaultValues,
 	})
 
-	const handleTaskAction = async (taskData: TaskBaseDto | TaskDto) => {
+	const handleTaskAction = async (taskData: TTaskBase | TTask) => {
 		try {
 			setStatus('pending')
 			const payload = { ...selectedTask, ...taskData }
@@ -84,11 +84,11 @@ const TaskForm = () => {
 		}
 	}
 
-	const onSubmit = (values: TaskFormSchema) => {
-		const payload: TaskBaseDto = {
+	const onSubmit = (values: TTaskPayload) => {
+		const payload: TTaskBase = {
 			...values,
 			completed: !isEditing ? false : selectedTask?.completed ?? false,
-			expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
+			expiresAt: values.expiresAt ? new Date(values.expiresAt) : null,
 		}
 
 		handleTaskAction(payload)

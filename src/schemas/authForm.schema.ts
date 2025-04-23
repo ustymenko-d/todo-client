@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const passwordBaseSchema = z
+const passwordBase = z
 	.string()
 	.min(8, { message: 'The password must be at least 8 characters long.' })
 	.max(64, { message: 'The password must not exceed 64 characters.' })
@@ -20,27 +20,27 @@ const passwordBaseSchema = z
 		message: 'The password must not contain spaces.',
 	})
 
-const passwordSchema = z.object({
-	password: passwordBaseSchema,
+const password = z.object({
+	password: passwordBase,
 })
 
-const emailBaseSchema = z.string().email({ message: 'Invalid email address.' })
+const emailBase = z.string().email({ message: 'Invalid email address.' })
 
-const emailSchema = z.object({
-	email: emailBaseSchema,
+const email = z.object({
+	email: emailBase,
 })
 
-const loginSchema = z.object({
-	email: emailBaseSchema,
-	password: passwordBaseSchema,
+const login = z.object({
+	email: emailBase,
+	password: passwordBase,
 	rememberMe: z.boolean(),
 })
 
-const signupSchema = z
+const signup = z
 	.object({
-		email: emailBaseSchema,
-		password: passwordBaseSchema,
-		confirmPassword: passwordBaseSchema,
+		email: emailBase,
+		password: passwordBase,
+		confirmPassword: passwordBase,
 		rememberMe: z.boolean(),
 	})
 	.refine(({ password, confirmPassword }) => password === confirmPassword, {
@@ -48,10 +48,10 @@ const signupSchema = z
 		path: ['confirmPassword'],
 	})
 
-const resetPasswordSchema = z
+const resetPassword = z
 	.object({
-		password: passwordBaseSchema,
-		confirmPassword: passwordBaseSchema,
+		password: passwordBase,
+		confirmPassword: passwordBase,
 	})
 	.refine(({ password, confirmPassword }) => password === confirmPassword, {
 		message: 'Passwords do not match.',
@@ -59,11 +59,11 @@ const resetPasswordSchema = z
 	})
 
 const AuthValidation = {
-	emailSchema,
-	passwordSchema,
-	loginSchema,
-	signupSchema,
-	resetPasswordSchema,
+	email,
+	password,
+	login,
+	signup,
+	resetPassword,
 }
 
 export default AuthValidation

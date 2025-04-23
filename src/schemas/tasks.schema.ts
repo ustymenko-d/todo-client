@@ -1,7 +1,18 @@
 import { z } from 'zod'
-import { paginationSchema } from './common.schema'
 
-const getTasksRequestSchema = paginationSchema.extend({
+const getTasksRequest = z.object({
+	page: z
+		.number()
+		.int({ message: 'Must be an integer.' })
+		.positive({ message: 'Must be a positive number greater than zero.' })
+		.min(1, { message: 'Must be at least 1.' }),
+
+	limit: z
+		.number()
+		.int({ message: 'Must be an integer.' })
+		.positive({ message: 'Must be a positive number greater than zero.' })
+		.min(1, { message: 'Must be at least 1.' }),
+
 	title: z
 		.string()
 		.optional()
@@ -13,12 +24,10 @@ const getTasksRequestSchema = paginationSchema.extend({
 
 	topLayerTasks: z.boolean().optional(),
 
-	taskId: z.string().optional(),
-
 	folderId: z.string().uuid().nullable().optional(),
 })
 
-export const taskBaseSchema = z.object({
+const taskBase = z.object({
 	title: z
 		.string()
 		.min(2, { message: 'The title must be at least 2 characters long.' })
@@ -35,24 +44,22 @@ export const taskBaseSchema = z.object({
 	folderId: z.string().uuid().nullable().optional(),
 })
 
-const taskFormSchema = taskBaseSchema.omit({
+const taskPayload = taskBase.omit({
 	completed: true,
 })
 
-export type TaskFormSchema = z.infer<typeof taskFormSchema>
-
-export const taskDtoSchema: z.ZodSchema = taskBaseSchema.extend({
+const task: z.ZodSchema = taskBase.extend({
 	id: z.string(),
 	userId: z.string(),
 	createdAt: z.date(),
-	subtasks: z.array(z.lazy((): z.ZodSchema => taskDtoSchema)),
+	subtasks: z.array(z.lazy((): z.ZodSchema => task)),
 })
 
 const TasksValidation = {
-	getTasksRequestSchema,
-	taskBaseSchema,
-	taskFormSchema,
-	taskDtoSchema,
+	getTasksRequest,
+	taskBase,
+	taskPayload,
+	task,
 }
 
 export default TasksValidation

@@ -1,4 +1,4 @@
-import { AuthFormType, IUserInfo } from '@/types/auth'
+import { TAuthFormType, IUserInfo } from '@/types/auth'
 
 export interface AuthSlice {
 	isAuthorized: boolean
@@ -7,8 +7,8 @@ export interface AuthSlice {
 	accountInfo: IUserInfo | null
 	setAccountInfo: (newValue: IUserInfo | null) => void
 
-	authFormType: AuthFormType
-	setAuthFormType: (newValue: AuthFormType) => void
+	authFormType: TAuthFormType
+	setAuthFormType: (newValue: TAuthFormType) => void
 
 	isOpenAccountDialog: boolean
 	setIsOpenAccountDialog: (newValue: boolean) => void

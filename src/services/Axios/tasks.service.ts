@@ -1,5 +1,10 @@
-import { GetTasksRequestDto, TaskBaseDto, TaskDto } from '@/dto/tasks'
-import { IGetTasksResponse, ITaskResponse } from '@/types/tasks'
+import {
+	IGetTasksResponse,
+	ITaskResponse,
+	TGetTasksRequest,
+	TTask,
+	TTaskBase,
+} from '@/types/tasks'
 import { AxiosResponse } from 'axios'
 import { ApiAxios } from './Axios'
 import RequestHandler from '@/utils/RequestHandler'
@@ -8,19 +13,19 @@ const TASKS_API_URL = '/tasks'
 
 const TasksService = {
 	getTasks: (
-		payload: GetTasksRequestDto,
+		payload: TGetTasksRequest,
 		config = {}
 	): Promise<AxiosResponse<IGetTasksResponse>> =>
 		RequestHandler.handleRequest(() =>
 			ApiAxios.post(`${TASKS_API_URL}/get`, payload, config)
 		),
 
-	createTask: (payload: TaskBaseDto): Promise<AxiosResponse<ITaskResponse>> =>
+	createTask: (payload: TTaskBase): Promise<AxiosResponse<ITaskResponse>> =>
 		RequestHandler.handleRequest(() =>
 			ApiAxios.post(`${TASKS_API_URL}/create`, payload)
 		),
 
-	editTask: (payload: TaskDto): Promise<AxiosResponse<ITaskResponse>> =>
+	editTask: (payload: TTask): Promise<AxiosResponse<ITaskResponse>> =>
 		RequestHandler.handleRequest(() =>
 			ApiAxios.put(`${TASKS_API_URL}`, payload)
 		),

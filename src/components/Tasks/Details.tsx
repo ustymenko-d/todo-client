@@ -8,7 +8,6 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
-import { ITask } from '@/types/tasks'
 import { useCallback, useState } from 'react'
 import useAppStore from '@/store/store'
 import { toast } from 'sonner'
@@ -25,8 +24,9 @@ import {
 import { Button } from '@/components/ui/button'
 import DeleteDialog from '../DeleteDialog'
 import { formatDate } from '@/utils/formatting'
+import { TTask } from '@/types/tasks'
 
-const Details = ({ task }: { task: ITask }) => {
+const Details = ({ task }: { task: TTask }) => {
 	const router = useRouter()
 	const pathname = usePathname()
 	const [deleting, setDeleting] = useState(false)

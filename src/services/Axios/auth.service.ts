@@ -1,5 +1,10 @@
-import { baseAuthDto, emailDto, passwordDto } from '@/dto/auth'
-import { IAuthResponse, IUserInfo } from '@/types/auth'
+import {
+	IAuthResponse,
+	IUserInfo,
+	TBaseAuth,
+	TEmail,
+	TPassword,
+} from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
 import { AxiosResponse } from 'axios'
 import { ApiAxios } from './Axios'
@@ -8,7 +13,7 @@ import RequestHandler from '@/utils/RequestHandler'
 const AUTH_API_URL = '/auth'
 
 const AuthService = {
-	signup: (payload: baseAuthDto): Promise<AxiosResponse<IAuthResponse>> =>
+	signup: (payload: TBaseAuth): Promise<AxiosResponse<IAuthResponse>> =>
 		RequestHandler.handleRequest(() =>
 			ApiAxios.post(`${AUTH_API_URL}/signup`, payload)
 		),
@@ -22,7 +27,7 @@ const AuthService = {
 			)
 		),
 
-	login: (payload: baseAuthDto): Promise<AxiosResponse<IAuthResponse>> =>
+	login: (payload: TBaseAuth): Promise<AxiosResponse<IAuthResponse>> =>
 		RequestHandler.handleRequest(() =>
 			ApiAxios.post(`${AUTH_API_URL}/login`, payload)
 		),
@@ -45,15 +50,13 @@ const AuthService = {
 			ApiAxios.delete(`${AUTH_API_URL}/delete-account`)
 		),
 
-	forgotPassword: (
-		payload: emailDto
-	): Promise<AxiosResponse<IResponseStatus>> =>
+	forgotPassword: (payload: TEmail): Promise<AxiosResponse<IResponseStatus>> =>
 		RequestHandler.handleRequest(() =>
 			ApiAxios.post(`${AUTH_API_URL}/password/forgot-password`, payload)
 		),
 
 	resetPassword: (
-		payload: passwordDto,
+		payload: TPassword,
 		resetToken: string | null
 	): Promise<AxiosResponse<IResponseStatus>> =>
 		RequestHandler.handleRequest(() =>

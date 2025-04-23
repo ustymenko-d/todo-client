@@ -8,11 +8,11 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/ui/LoadingButton'
-import FolderValidation, { TFolderName } from '@/schemas/folder.schema'
+import FolderValidation from '@/schemas/folder.schema'
 import FolderService from '@/services/Axios/folder.service'
 import useAppStore from '@/store/store'
-import { TResponseStatus } from '@/types/common'
-import { IFolder } from '@/types/folder'
+import { TResponseState } from '@/types/common'
+import { IFolder, TFolderName } from '@/types/folder'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
@@ -29,7 +29,7 @@ const Form = () => {
 	const closeEditor = useAppStore((state) => state.closeFolderEditor)
 	const isEditing = mode === 'edit'
 	const setFolders = useAppStore((state) => state.setFolders)
-	const [status, setStatus] = useState<TResponseStatus>('default')
+	const [status, setStatus] = useState<TResponseState>('default')
 	const defaultValues = useMemo<TFolderName>(
 		() => ({
 			name: isEditing ? selectedFolder?.name || '' : '',
