@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { ITask } from '@/types/tasks'
-import formatDate from '@/utils/formatDate'
 import { useCallback, useState } from 'react'
 import useAppStore from '@/store/store'
 import { toast } from 'sonner'
@@ -25,6 +24,7 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import DeleteDialog from '../DeleteDialog'
+import { formatDate } from '@/utils/formatting'
 
 const Details = ({ task }: { task: ITask }) => {
 	const router = useRouter()

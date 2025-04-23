@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/tooltip'
 import { ReactNode } from 'react'
 
-const formatValue = (value: string | null): ReactNode => {
+export const formatValue = (value: string | null): ReactNode => {
 	if (!value) return '-'
 	const stringValue = String(value)
 	if (stringValue.length <= 30) return <p>{stringValue}</p>
@@ -24,4 +24,12 @@ const formatValue = (value: string | null): ReactNode => {
 	)
 }
 
-export default formatValue
+export const formatDate = (dateString?: string): string => {
+	if (!dateString) return '-'
+	const date = new Date(dateString)
+	return date.toLocaleDateString(undefined, {
+		year: 'numeric',
+		month: '2-digit',
+		day: 'numeric',
+	})
+}

@@ -3,9 +3,8 @@ import { TaskDto } from '@/dto/tasks'
 import ColumnHeader from './ColumnHeader'
 import { Button } from '@/components/ui/button'
 import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
-import formatDate from '@/utils/formatDate'
 import FolderCell from './FolderCell'
-import formatValue from '@/utils/formatValue'
+import { formatDate, formatValue } from '@/utils/formatting'
 
 const columns: ColumnDef<TaskDto>[] = [
 	{

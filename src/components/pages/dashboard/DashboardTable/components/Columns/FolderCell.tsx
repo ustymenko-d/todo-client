@@ -1,6 +1,6 @@
 'use client'
 import useAppStore from '@/store/store'
-import formatValue from '@/utils/formatValue'
+import { formatValue } from '@/utils/formatting'
 
 const FolderCell = ({ id }: { id: string }) => {
 	const folders = useAppStore((state) => state.folders)
