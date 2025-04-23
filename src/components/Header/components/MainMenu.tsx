@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import AuthService from '@/services/Axios/auth.service'
 import AccountGroup from './AccountGroup'
+import FoldersGroup from './FoldersGroup'
 
 const MainMenu = () => {
 	const router = useRouter()
@@ -61,6 +62,7 @@ const MainMenu = () => {
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<AccountGroup />
+				<FoldersGroup />
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					disabled={loading || !isAuthorized}

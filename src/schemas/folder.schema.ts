@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const FolderNameSchema = z.object({
+export const folderName = z.object({
 	name: z
 		.string()
 		.nonempty({ message: 'The folder name is required.' })
@@ -11,3 +11,11 @@ export const FolderNameSchema = z.object({
 				'The folder name must contain at least one lowercase or one uppercase letter.',
 		}),
 })
+
+export type TFolderName = z.infer<typeof folderName>
+
+const FolderValidation = {
+	folderName,
+}
+
+export default FolderValidation

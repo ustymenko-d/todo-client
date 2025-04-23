@@ -14,3 +14,9 @@ export interface IGetResponse extends IPagination {
 	pages: number
 	total: number
 }
+
+export interface IEditorSettings<T> {
+	open: boolean
+	mode: 'create' | 'edit'
+	target: T | null
+}

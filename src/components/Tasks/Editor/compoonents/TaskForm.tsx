@@ -29,9 +29,7 @@ const TaskForm = () => {
 	const router = useRouter()
 	const pathname = usePathname()
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
-	const selectedTask = useAppStore(
-		(state) => state.taskEditorSettings.selectedTask
-	)
+	const selectedTask = useAppStore((state) => state.taskEditorSettings.target)
 	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
 	const [status, setStatus] = useState<TResponseStatus>('default')
 	const isEditing = mode === 'edit'
@@ -43,7 +41,7 @@ const TaskForm = () => {
 				? selectedTask?.parentTaskId
 				: selectedTask?.id || null,
 			expiresAt:
-				isEditing && selectedTask.expiresAt
+				isEditing && selectedTask?.expiresAt
 					? new Date(selectedTask.expiresAt)
 					: null,
 			folderId: isEditing ? selectedTask?.folderId || null : null,
@@ -89,7 +87,7 @@ const TaskForm = () => {
 	const onSubmit = (values: TaskFormSchema) => {
 		const payload: TaskBaseDto = {
 			...values,
-			completed: !isEditing ? false : selectedTask?.completed,
+			completed: !isEditing ? false : selectedTask?.completed ?? false,
 			expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
 		}
 

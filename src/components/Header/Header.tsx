@@ -8,6 +8,7 @@ import MainMenu from './components/MainMenu'
 import ThemeToggle from '../theme/ThemeToggle'
 import { ChevronLeft } from 'lucide-react'
 import AccountDialog from '../Account/AccountDialog'
+import FoldersDialog from '../Folders/FoldersDialog'
 
 const Header = () => {
 	const pathname = usePathname()
@@ -30,6 +31,7 @@ const Header = () => {
 					<>
 						<MainMenu />
 						<AccountDialog />
+						<FoldersDialog />
 					</>
 				)}
 				<ThemeToggle />

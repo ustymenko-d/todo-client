@@ -11,14 +11,14 @@ import TaskForm from './compoonents/TaskForm'
 import useAppStore from '@/store/store'
 
 const Editor = () => {
-	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
+	const closeEditor = useAppStore((state) => state.closeTaskEditor)
 	const open = useAppStore((state) => state.taskEditorSettings.open)
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
 
 	return (
 		<Dialog
 			open={open}
-			onOpenChange={closeTaskEditor}>
+			onOpenChange={closeEditor}>
 			<DialogContent className='sm:max-w-[425px]'>
 				<DialogHeader>
 					<DialogTitle>

@@ -1,36 +1,25 @@
-import { TaskDto } from '@/dto/tasks'
-
-interface TaskEditorSettings {
-	open: boolean
-	mode: 'create' | 'edit'
-	selectedTask: TaskDto | null
-}
+import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
+import { IEditorSettings } from '@/types/common'
+import { ITask } from '@/types/tasks'
 
 export interface TaskSlice {
-	taskEditorSettings: TaskEditorSettings
-	openTaskEditor: (
-		mode: 'edit' | 'create',
-		selectedTask: TaskDto | null
-	) => void
+	taskEditorSettings: IEditorSettings<ITask>
+	openTaskEditor: (mode: 'edit' | 'create', target: ITask | null) => void
 	closeTaskEditor: () => void
 
 	searchTerm: string
 	setSearchTerm: (newValue: string) => void
 }
 
-const defaultTaskEditorSettings: TaskEditorSettings = {
-	open: false,
-	mode: 'create',
-	selectedTask: null,
-}
+const taskEditorSettings = getDefaultEditorSettings<ITask>()
 
 const createTaskSlice = (
 	set: (partial: Partial<TaskSlice>) => void
 ): TaskSlice => ({
-	taskEditorSettings: defaultTaskEditorSettings,
-	openTaskEditor: (mode, selectedTask) =>
-		set({ taskEditorSettings: { open: true, mode, selectedTask } }),
-	closeTaskEditor: () => set({ taskEditorSettings: defaultTaskEditorSettings }),
+	taskEditorSettings,
+	openTaskEditor: (mode, target) =>
+		set({ taskEditorSettings: { open: true, mode, target } }),
+	closeTaskEditor: () => set({ taskEditorSettings }),
 
 	searchTerm: '',
 	setSearchTerm: (searchTerm) => set({ searchTerm }),

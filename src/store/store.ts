@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import createTaskSlice, { TaskSlice } from './slices/task'
 import createAuthSlice, { AuthSlice } from './slices/auth'
-import createFolderSlice, { FolderSlice } from './slices/folder'
+import createFoldersSlice, { FoldersSlice } from './slices/folders'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 import getStorage from '@/utils/getStorage'
 
-interface AppStore extends TaskSlice, AuthSlice, FolderSlice {}
+interface AppStore extends TaskSlice, AuthSlice, FoldersSlice {}
 
 export const useAppStore = create<AppStore>()(
 	devtools(
@@ -13,7 +13,7 @@ export const useAppStore = create<AppStore>()(
 			(set) => ({
 				...createAuthSlice(set),
 				...createTaskSlice(set),
-				...createFolderSlice(set),
+				...createFoldersSlice(set),
 			}),
 			{
 				name: 'app-store',
