@@ -12,7 +12,7 @@ import { Loader2, LogOut, Menu } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import AuthService from '@/services/Axios/auth.service'
+import AuthService from '@/services/auth.service'
 import AccountGroup from './AccountGroup'
 import FoldersGroup from './FoldersGroup'
 

@@ -9,10 +9,10 @@ import {
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/ui/LoadingButton'
 import FolderValidation from '@/schemas/folder.schema'
-import FolderService from '@/services/Axios/folder.service'
+import FoldersService from '@/services/folders.service'
 import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
-import { IFolder, TFolderName } from '@/types/folder'
+import { IFolder, TFolderName } from '@/types/folders'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
@@ -48,8 +48,8 @@ const Form = () => {
 
 			const { data } =
 				mode === 'create'
-					? await FolderService.createFolder(values)
-					: await FolderService.renameFolder(targetId, values)
+					? await FoldersService.createFolder(values)
+					: await FoldersService.renameFolder(targetId, values)
 
 			const { success } = data
 			if (success) {
@@ -63,7 +63,7 @@ const Form = () => {
 				closeEditor()
 
 				if (mode === 'create') {
-					const { data, status } = await FolderService.getFolders({
+					const { data, status } = await FoldersService.getFolders({
 						page: 1,
 						limit: 25,
 					})

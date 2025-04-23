@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { useCallback, useState } from 'react'
 import useAppStore from '@/store/store'
 import { toast } from 'sonner'
-import TasksService from '@/services/Axios/tasks.service'
+import TasksService from '@/services/tasks.service'
 import { usePathname, useRouter } from 'next/navigation'
 import {
 	Select,

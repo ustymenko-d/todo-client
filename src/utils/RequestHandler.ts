@@ -1,5 +1,5 @@
-import AuthService from '@/services/Axios/auth.service'
-import { Axios, getServerAxios } from '@/services/Axios/Axios'
+import AuthService from '@/services/auth.service'
+import { Axios, getServerAxios } from '@/services/Axios'
 import axios, { AxiosInstance, AxiosRequestConfig, Method } from 'axios'
 import { NextResponse } from 'next/server'
 

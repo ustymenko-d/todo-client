@@ -18,6 +18,6 @@ export interface IFolderResponse extends IResponseStatus {
 	folder: IFolder
 }
 
-export interface IGetFolderResponse extends IGetResponse {
+export interface IGetFoldersResponse extends IGetResponse {
 	folders: IFolder[]
 }

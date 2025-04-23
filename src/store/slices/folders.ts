@@ -1,5 +1,5 @@
 import { IEditorSettings } from '@/types/common'
-import { IFolder } from '@/types/folder'
+import { IFolder } from '@/types/folders'
 import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 
 export interface FoldersSlice {

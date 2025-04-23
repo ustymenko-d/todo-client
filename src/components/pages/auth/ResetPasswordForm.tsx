@@ -17,7 +17,7 @@ import {
 import PasswordInput from '@/components/ui/PasswordInput'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
-import AuthService from '@/services/Axios/auth.service'
+import AuthService from '@/services/auth.service'
 import { TResponseState } from '@/types/common'
 import { TPassword } from '@/types/auth'
 

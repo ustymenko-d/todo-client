@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
 import { TAuthFormType, TBaseAuth, TEmail } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
-import AuthService from '@/services/Axios/auth.service'
+import AuthService from '@/services/auth.service'
 import RememberMe from '@/components/ui/RememberMe'
 import { AxiosError } from 'axios'
 

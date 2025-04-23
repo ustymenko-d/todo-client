@@ -12,10 +12,10 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Loader2, PenLine, Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import FolderService from '@/services/Axios/folder.service'
+import FoldersService from '@/services/folders.service'
 import { useState } from 'react'
 import Editor from './components/Editor'
-import { IFolder } from '@/types/folder'
+import { IFolder } from '@/types/folders'
 
 const FoldersDialog = () => {
 	const isOpen = useAppStore((state) => state.isOpenFoldersDialog)
@@ -28,7 +28,7 @@ const FoldersDialog = () => {
 	const handleDeleteFolder = async (id: string) => {
 		setLoadingArray((state) => [...state, id])
 		try {
-			const { data } = await FolderService.deleteFolder(id)
+			const { data } = await FoldersService.deleteFolder(id)
 			const { success, message } = data
 			if (success) {
 				toast.success(message)

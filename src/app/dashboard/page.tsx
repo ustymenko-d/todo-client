@@ -1,7 +1,7 @@
 import Head from '@/components/pages/dashboard/Head'
 import TaskEditor from '@/components/Tasks/Editor/Editor'
 import DashboardTable from '@/components/pages/dashboard/DashboardTable/DashboardTable'
-import TasksService from '@/services/Axios/tasks.service'
+import TasksService from '@/services/tasks.service'
 import { cookies } from 'next/headers'
 
 interface DashboardPageProps {
