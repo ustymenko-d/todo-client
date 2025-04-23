@@ -14,13 +14,6 @@ export interface AuthSlice {
 	setIsOpenAccountDialog: (newValue: boolean) => void
 }
 
-const persistStorage = {
-	storage: typeof window !== 'undefined' ? window.sessionStorage : undefined,
-	setStorage: (newStorage: Storage) => {
-		persistStorage.storage = newStorage
-	},
-}
-
 const createAuthSlice = (
 	set: (partial: Partial<AuthSlice>) => void
 ): AuthSlice => ({
