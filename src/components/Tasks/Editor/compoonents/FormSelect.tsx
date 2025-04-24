@@ -1,5 +1,5 @@
-import { TaskFormSchema } from '@/schemas/tasks.schema'
 import { ControllerRenderProps } from 'react-hook-form'
+import useAppStore from '@/store/store'
 import {
 	Select,
 	SelectContent,
@@ -8,10 +8,10 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { FormControl } from '@/components/ui/form'
-import useAppStore from '@/store/store'
+import { TTaskPayload } from '@/types/tasks'
 
 interface FormSelectProps {
-	field: ControllerRenderProps<TaskFormSchema, 'folderId'>
+	field: ControllerRenderProps<TTaskPayload, 'folderId'>
 }
 
 const FormSelect = ({ field }: FormSelectProps) => {
