@@ -1,8 +1,10 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import useAppStore from '@/store/store'
 import TasksValidation from '@/schemas/tasks.schema'
 import {
 	Form,
@@ -12,18 +14,16 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import FormDatePicker from './FormDatePicker'
+import { toast } from 'sonner'
+import FormDatePicker from '@/components/Tasks/Editor/compoonents/FormDatePicker'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import LoadingButton from '@/components/ui/LoadingButton'
-import useAppStore from '@/store/store'
-import { TResponseState } from '@/types/common'
-import { usePathname, useRouter } from 'next/navigation'
 import TasksService from '@/services/tasks.service'
-import { toast } from 'sonner'
-import Field from './Field'
-import FormSelect from './FormSelect'
+import Field from '@/components/Tasks/Editor/compoonents/Field'
+import FormSelect from '@/components/Tasks/Editor/compoonents/FormSelect'
 import { TTask, TTaskBase, TTaskPayload } from '@/types/tasks'
+import { TResponseState } from '@/types/common'
 
 const TaskForm = () => {
 	const router = useRouter()
@@ -31,8 +31,10 @@ const TaskForm = () => {
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
 	const selectedTask = useAppStore((state) => state.taskEditorSettings.target)
 	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
+
 	const [status, setStatus] = useState<TResponseState>('default')
 	const isEditing = mode === 'edit'
+
 	const defaultValues = useMemo<TTaskPayload>(
 		() => ({
 			title: isEditing ? selectedTask?.title || '' : '',
@@ -54,11 +56,21 @@ const TaskForm = () => {
 		defaultValues,
 	})
 
-	const handleTaskAction = async (taskData: TTaskBase | TTask) => {
+	const createPayload = (values: TTaskPayload): TTaskBase | TTask => {
+		const base: TTaskBase = {
+			...values,
+			completed: !isEditing ? false : selectedTask?.completed ?? false,
+			expiresAt: values.expiresAt ? new Date(values.expiresAt) : null,
+		}
+		const payload = { ...selectedTask, ...base }
+		delete payload.subtasks
+		return payload
+	}
+
+	const handleSubmit = async (values: TTaskPayload) => {
 		try {
 			setStatus('pending')
-			const payload = { ...selectedTask, ...taskData }
-			delete payload.subtasks
+			const payload = createPayload(values)
 			const { data } =
 				mode === 'create'
 					? await TasksService.createTask(payload)
@@ -74,29 +86,19 @@ const TaskForm = () => {
 						: 'Task successfully edited'
 				)
 				closeTaskEditor()
-				if (pathname === '/dashboard') router.push(`?page=1&limit=25`)
+				if (pathname === '/dashboard') router.refresh()
 			} else {
 				toast.error('Failed to process task')
 			}
 		} catch (error) {
+			console.error(`Error while processing a task: ${error}`)
 			toast.error('Something went wrong!')
-			console.error(`Error while creating a task: ${error}`)
 		}
-	}
-
-	const onSubmit = (values: TTaskPayload) => {
-		const payload: TTaskBase = {
-			...values,
-			completed: !isEditing ? false : selectedTask?.completed ?? false,
-			expiresAt: values.expiresAt ? new Date(values.expiresAt) : null,
-		}
-
-		handleTaskAction(payload)
 	}
 
 	return (
 		<Form {...taskForm}>
-			<form onSubmit={taskForm.handleSubmit(onSubmit)}>
+			<form onSubmit={taskForm.handleSubmit(handleSubmit)}>
 				<div className='flex flex-col gap-4'>
 					<Field
 						taskForm={taskForm}

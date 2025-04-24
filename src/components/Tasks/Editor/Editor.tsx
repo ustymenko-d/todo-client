@@ -1,5 +1,6 @@
 'use client'
 
+import useAppStore from '@/store/store'
 import {
 	Dialog,
 	DialogContent,
@@ -8,11 +9,10 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import TaskForm from './compoonents/TaskForm'
-import useAppStore from '@/store/store'
 
 const Editor = () => {
-	const closeEditor = useAppStore((state) => state.closeTaskEditor)
 	const open = useAppStore((state) => state.taskEditorSettings.open)
+	const closeEditor = useAppStore((state) => state.closeTaskEditor)
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
 
 	return (
@@ -24,7 +24,11 @@ const Editor = () => {
 					<DialogTitle>
 						{mode === 'edit' ? 'Edit task' : 'Create new task'}
 					</DialogTitle>
-					<DialogDescription>* indicates required fields</DialogDescription>
+					<DialogDescription>
+						{mode === 'edit'
+							? 'Update the task information below. All changes will be saved once you click "Edit task".'
+							: 'Complete the form below to add a new task. Title is required, other fields are optional.'}
+					</DialogDescription>
 				</DialogHeader>
 				<TaskForm />
 			</DialogContent>

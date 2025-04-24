@@ -1,9 +1,5 @@
-import AuthCard from "@/components/pages/auth/AuthCard"
+import AuthCard from '@/components/pages/auth/AuthCard'
 
-const AuthPage = () => (
-	<div className='w-full max-w-sm'>
-		<AuthCard />
-	</div>
-)
+const AuthPage = () => <AuthCard />
 
 export default AuthPage

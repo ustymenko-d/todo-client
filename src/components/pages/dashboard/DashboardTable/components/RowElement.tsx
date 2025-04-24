@@ -1,5 +1,11 @@
 'use client'
 
+import { useCallback, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import useAppStore from '@/store/store'
+import TasksService from '@/services/tasks.service'
+import { Cell, flexRender, Row } from '@tanstack/react-table'
+import { toast } from 'sonner'
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -9,30 +15,27 @@ import {
 } from '@/components/ui/context-menu'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { TableCell, TableRow } from '@/components/ui/table'
-import { Cell, flexRender, Row } from '@tanstack/react-table'
-import { useCallback, useState } from 'react'
-import TasksService from '@/services/tasks.service'
-import { toast } from 'sonner'
-import { usePathname, useRouter } from 'next/navigation'
-import useAppStore from '@/store/store'
 import Details from '@/components/Tasks/Details'
 import DeleteDialog from '@/components/DeleteDialog'
+import { TResponseState } from '@/types/common'
 import { TTask } from '@/types/tasks'
 
 const RowElement = ({ row }: { row: Row<TTask> }) => {
 	const task = row.original
 	const router = useRouter()
-	const pathname = usePathname()
-	const [dialogState, setDialogState] = useState({
-		openAlert: false,
-		loading: false,
-	})
 	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
+	const [dialogState, setDialogState] = useState<{
+		openAlert: boolean
+		loading: TResponseState
+	}>({
+		openAlert: false,
+		loading: 'default',
+	})
 
 	const handleTaskAction = useCallback(
 		async (action: 'delete' | 'toggleStatus') => {
 			try {
-				setDialogState((prev) => ({ ...prev, loading: true }))
+				setDialogState((prev) => ({ ...prev, loading: 'pending' }))
 				const actionFn =
 					action === 'delete'
 						? TasksService.deleteTask
@@ -46,34 +49,35 @@ const RowElement = ({ row }: { row: Row<TTask> }) => {
 							? 'Task successfully deleted'
 							: 'Task status successfully changed'
 					)
-
-					if (pathname === '/dashboard') {
-						router.push(`?page=1&limit=25`)
-					}
+					setDialogState((prev) => ({ ...prev, loading: 'success' }))
+					router.refresh()
 				} else {
 					toast.error('Something went wrong!')
 				}
 			} catch (error) {
+				setDialogState((prev) => ({ ...prev, loading: 'error' }))
 				console.error(`Error while performing task action: ${action}`, error)
 				toast.error('Something went wrong!')
-			} finally {
-				setDialogState((prev) => ({ ...prev, loading: false }))
 			}
 		},
-		[task.id, pathname, router]
+		[task.id, router]
 	)
 
-	const handleDeleteOpen = () =>
-		setTimeout(() => setDialogState({ ...dialogState, openAlert: true }), 0)
+	const openDeleteDialog = () =>
+		setTimeout(
+			() => setDialogState((prev) => ({ ...prev, openAlert: true })),
+			0
+		)
 
 	return (
 		<>
 			<DeleteDialog
 				handleDelete={() => handleTaskAction('delete')}
-				loading={dialogState.loading}
+				loading={dialogState.loading === 'pending'}
+				disabled={dialogState.loading === 'success'}
 				open={dialogState.openAlert}
-				onOpenChange={(open: boolean) =>
-					setDialogState({ ...dialogState, openAlert: open })
+				onOpenChange={(openAlert: boolean) =>
+					setDialogState((prev) => ({ ...prev, openAlert }))
 				}
 			/>
 
@@ -109,7 +113,7 @@ const RowElement = ({ row }: { row: Row<TTask> }) => {
 						Toggle status
 					</ContextMenuItem>
 					<ContextMenuSeparator />
-					<ContextMenuItem onSelect={handleDeleteOpen}>Delete</ContextMenuItem>
+					<ContextMenuItem onSelect={openDeleteDialog}>Delete</ContextMenuItem>
 				</ContextMenuContent>
 			</ContextMenu>
 		</>

@@ -1,3 +1,4 @@
+import { flexRender } from '@tanstack/react-table'
 import { ITableComponentProps } from '../DashboardTable'
 import {
 	Table,
@@ -7,7 +8,6 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { flexRender } from '@tanstack/react-table'
 import columns from './Columns/Columns'
 import RowElement from './RowElement'
 

@@ -1,8 +1,10 @@
 'use client'
 
-import { useEffect, useMemo, useTransition } from 'react'
+import { ChangeEvent, useEffect, useMemo, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { debounce } from 'lodash'
+import useAppStore from '@/store/store'
+import useBreakpoints from '@/hooks/useBreakpoints'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,8 +15,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ITableComponentProps } from '../DashboardTable'
 import { Loader2, Plus, Settings2 } from 'lucide-react'
-import useAppStore from '@/store/store'
-import useBreakpoints from '@/hooks/useBreakpoints'
 
 const defaultColumns = ['completed', 'title', 'actions']
 
@@ -45,14 +45,14 @@ const Head = ({ table }: ITableComponentProps) => {
 		[router]
 	)
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value
 		setSearchTerm(value)
 		handleSearchChange(value)
 	}
 
-	const renderColumnVisibility = () => {
-		return table
+	const renderColumnVisibility = () =>
+		table
 			.getAllColumns()
 			.filter(
 				(column) => column.getCanHide() && !defaultColumns.includes(column.id)
@@ -66,7 +66,6 @@ const Head = ({ table }: ITableComponentProps) => {
 					{column.id}
 				</DropdownMenuCheckboxItem>
 			))
-	}
 
 	useEffect(() => {
 		setSearchTerm(searchParams.get('title') || '')

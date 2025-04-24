@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import useAppStore from '@/store/store'
 import AuthService from '@/services/auth.service'
@@ -26,8 +26,10 @@ const useAuthentication = () => {
 				} else {
 					await AuthService.clearAuthCookies()
 					router.push('/')
+					return
 				}
 			}
+
 			const { data, status } = await FoldersService.getFolders({
 				page: 1,
 				limit: 25,
@@ -37,7 +39,7 @@ const useAuthentication = () => {
 				setFolders(data.folders)
 			}
 		} catch (error) {
-			console.error(error)
+			console.error('[AuthProvider] Failed to fetch account info:', error)
 		}
 	}, [
 		accountInfo,
@@ -55,7 +57,6 @@ const useAuthentication = () => {
 		accountInfo,
 		setAccountInfo,
 		folders,
-		setFolders,
 		resetFolders,
 	}
 }
@@ -75,8 +76,13 @@ const AuthProvider = ({
 		resetFolders,
 	} = useAuthentication()
 	const pathname = usePathname()
-	const isHomePage = pathname === '/' || pathname.startsWith('/auth')
-	const isDashboardPage = pathname.startsWith('/dashboard')
+	const { isHomePage, isDashboardPage } = useMemo(
+		() => ({
+			isHomePage: pathname === '/' || pathname.startsWith('/auth'),
+			isDashboardPage: pathname.startsWith('/dashboard'),
+		}),
+		[pathname]
+	)
 
 	useEffect(() => {
 		if (isHomePage) {
@@ -85,10 +91,8 @@ const AuthProvider = ({
 			if (folders) resetFolders()
 		}
 
-		if (isDashboardPage) {
-			if (!isAuthorized || !accountInfo) {
-				fetchAccountInfo()
-			}
+		if (isDashboardPage && (!isAuthorized || !accountInfo)) {
+			fetchAccountInfo()
 		}
 	}, [
 		accountInfo,

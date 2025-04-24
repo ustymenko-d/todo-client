@@ -36,7 +36,7 @@ const AuthCard = () => {
 		[authFormType]
 	)
 	return (
-		<Card>
+		<Card className='max-w-sm'>
 			<CardHeader>
 				<CardTitle className='text-2xl'>{title}</CardTitle>
 				<CardDescription>{description}</CardDescription>

@@ -1,9 +1,9 @@
+import useAppStore from '@/store/store'
 import {
 	DropdownMenuGroup,
 	DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
 import { CircleUser } from 'lucide-react'
-import useAppStore from '@/store/store'
 
 const AccountGroup = () => {
 	const setIsOpenAccountDialog = useAppStore(

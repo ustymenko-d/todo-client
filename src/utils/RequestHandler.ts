@@ -45,6 +45,8 @@ class RequestHandler {
 				!extraConfig?.skipRefresh &&
 				error.response?.data?.message !== 'Missing access or refresh token'
 			) {
+				console.error(error);
+				
 				return NextResponse.json({ needRefresh: true })
 			}
 

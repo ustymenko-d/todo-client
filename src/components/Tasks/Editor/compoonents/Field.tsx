@@ -1,3 +1,5 @@
+import { ElementType } from 'react'
+import { UseFormReturn } from 'react-hook-form'
 import {
 	FormControl,
 	FormField,
@@ -5,13 +7,11 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import { TaskFormSchema } from '@/schemas/tasks.schema'
-import { ElementType } from 'react'
-import { UseFormReturn } from 'react-hook-form'
+import { TTaskPayload } from '@/types/tasks'
 
 interface IFieldProps {
-	taskForm: UseFormReturn<TaskFormSchema>
-	name: keyof TaskFormSchema
+	taskForm: UseFormReturn<TTaskPayload>
+	name: keyof TTaskPayload
 	placeholder: string
 	Component: ElementType
 }

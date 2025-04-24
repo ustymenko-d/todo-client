@@ -1,4 +1,8 @@
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import useAppStore from '@/store/store'
+import AuthService from '@/services/auth.service'
+import { toast } from 'sonner'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -7,20 +11,17 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import useAppStore from '@/store/store'
+import { Button } from '@/components/ui/button'
+import AccountGroup from '@/components/Header/components/AccountGroup'
+import FoldersGroup from '@/components/Header/components/FoldersGroup'
 import { Loader2, LogOut, Menu } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { toast } from 'sonner'
-import AuthService from '@/services/auth.service'
-import AccountGroup from './AccountGroup'
-import FoldersGroup from './FoldersGroup'
 
 const MainMenu = () => {
 	const router = useRouter()
 	const isAuthorized = useAppStore((state) => state.isAuthorized)
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const accountInfo = useAppStore((state) => state.accountInfo)
+	const resetFolders = useAppStore((state) => state.resetFolders)
 	const [loading, setLoading] = useState<boolean>(false)
 
 	const handleLogout = async () => {
@@ -30,6 +31,7 @@ const MainMenu = () => {
 			const { success, message } = data
 			if (success) {
 				setIsAuthorized(false)
+				resetFolders()
 				toast.success(message)
 				router.push('/')
 			}

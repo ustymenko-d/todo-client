@@ -1,3 +1,10 @@
+import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import useAppStore from '@/store/store'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import FoldersService from '@/services/folders.service'
+import { toast } from 'sonner'
 import {
 	Form as RHForm,
 	FormControl,
@@ -9,15 +16,8 @@ import {
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/ui/LoadingButton'
 import FolderValidation from '@/schemas/folder.schema'
-import FoldersService from '@/services/folders.service'
-import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 import { IFolder, TFolderName } from '@/types/folders'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 
 const Form = () => {
 	const router = useRouter()
@@ -30,6 +30,7 @@ const Form = () => {
 	const isEditing = mode === 'edit'
 	const setFolders = useAppStore((state) => state.setFolders)
 	const [status, setStatus] = useState<TResponseState>('default')
+
 	const defaultValues = useMemo<TFolderName>(
 		() => ({
 			name: isEditing ? selectedFolder?.name || '' : '',
@@ -41,50 +42,47 @@ const Form = () => {
 		defaultValues,
 	})
 
-	const handleTaskAction = async (values: TFolderName) => {
+	const updateFoldersList = (folder: IFolder) => {
+		setFolders([folder, ...(folders || [])])
+	}
+
+	const updateFolderName = (newName: string) => {
+		if (!selectedFolder || !folders) return
+		setFolders(
+			folders.map((folder) =>
+				folder.id === selectedFolder.id ? { ...folder, name: newName } : folder
+			)
+		)
+	}
+
+	const handleAction = async (values: TFolderName) => {
 		try {
 			setStatus('pending')
-			const targetId = selectedFolder ? selectedFolder?.id : ''
+			const targetId = selectedFolder?.id ?? ''
 
-			const { data } =
-				mode === 'create'
-					? await FoldersService.createFolder(values)
-					: await FoldersService.renameFolder(targetId, values)
+			const action = isEditing
+				? FoldersService.renameFolder(targetId, values)
+				: FoldersService.createFolder(values)
 
-			const { success } = data
-			if (success) {
-				setStatus('success')
-				toast.success(
-					mode === 'create'
-						? 'Folder successfully created'
-						: 'Folder successfully renamed'
-				)
-				folderForm.reset()
-				closeEditor()
+			const res = await action
+			console.log(res)
 
-				if (mode === 'create') {
-					const { data, status } = await FoldersService.getFolders({
-						page: 1,
-						limit: 25,
-					})
-
-					if (status === 200) {
-						setFolders(data.folders)
-					}
-				}
-				if (mode === 'edit' && selectedFolder && folders) {
-					setFolders(
-						folders.map((folder: IFolder) =>
-							folder.id === selectedFolder.id
-								? { ...folder, name: values.name }
-								: folder
-						)
-					)
-				}
-				router.refresh()
-			} else {
+			if (!res.data.success) {
 				toast.error('Failed to process folder')
+				setStatus('error')
+				return
 			}
+
+			toast.success(isEditing ? 'Folder renamed' : 'Folder created')
+			folderForm.reset()
+			closeEditor()
+			setStatus('success')
+			if (isEditing) {
+				updateFolderName(values.name)
+			} else {
+				updateFoldersList(res.data.folder)
+			}
+			router.refresh()
 		} catch (error) {
 			setStatus('error')
 			toast.error('Something went wrong!')
@@ -94,7 +92,7 @@ const Form = () => {
 
 	return (
 		<RHForm {...folderForm}>
-			<form onSubmit={folderForm.handleSubmit(handleTaskAction)}>
+			<form onSubmit={folderForm.handleSubmit(handleAction)}>
 				<div className='flex flex-col gap-4'>
 					<FormField
 						control={folderForm.control}
@@ -120,7 +118,7 @@ const Form = () => {
 						loading={status === 'pending'}
 						disabled={status === 'success'}
 						type='submit'>
-						<span>{mode === 'create' ? 'Create' : 'Rename'}</span>
+						<span>{isEditing ? 'Rename' : 'Create'}</span>
 					</LoadingButton>
 				</div>
 			</form>

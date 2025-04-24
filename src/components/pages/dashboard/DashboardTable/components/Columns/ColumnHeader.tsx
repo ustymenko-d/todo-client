@@ -1,3 +1,4 @@
+import { HTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 import { Column } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -16,25 +17,26 @@ import {
 } from 'lucide-react'
 
 interface ColumnHeaderProps<TData, TValue>
-	extends React.HTMLAttributes<HTMLDivElement> {
+	extends HTMLAttributes<HTMLDivElement> {
 	column: Column<TData, TValue>
 	title: string
 }
 
-const getSortingIcon = (sortState: string | false) => {
-	if (sortState === 'desc') return <ArrowDownWideNarrow />
-	if (sortState === 'asc') return <ArrowUpNarrowWide />
-	return <ArrowDownUp />
-}
+const getSortingIcon = (sortState: string | false) =>
+	sortState === 'desc' ? (
+		<ArrowDownWideNarrow />
+	) : sortState === 'asc' ? (
+		<ArrowUpNarrowWide />
+	) : (
+		<ArrowDownUp />
+	)
 
 const ColumnHeader = <TData, TValue>({
 	column,
 	title,
 	className,
 }: ColumnHeaderProps<TData, TValue>) => {
-	if (!column.getCanSort()) {
-		return <div className={cn(className)}>{title}</div>
-	}
+	if (!column.getCanSort()) return <div className={cn(className)}>{title}</div>
 
 	return (
 		<DropdownMenu>

@@ -1,5 +1,4 @@
-'use client'
-
+import useAppStore from '@/store/store'
 import {
 	Dialog,
 	DialogContent,
@@ -7,7 +6,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import useAppStore from '@/store/store'
 import Form from './Form'
 
 const Editor = () => {
@@ -19,7 +17,7 @@ const Editor = () => {
 		<Dialog
 			open={isOpen}
 			onOpenChange={closeEditor}>
-			<DialogContent className='sm:max-w-[425px]'>
+			<DialogContent className='sm:max-w-sm'>
 				<DialogHeader>
 					<DialogTitle>
 						{mode === 'edit' ? 'Rename folder' : 'Create new folder'}

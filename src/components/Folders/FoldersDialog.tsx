@@ -1,5 +1,8 @@
 'use client'
 
+import { useCallback, useState } from 'react'
+import useAppStore from '@/store/store'
+import FoldersService from '@/services/folders.service'
 import {
 	Dialog,
 	DialogContent,
@@ -7,15 +10,12 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import useAppStore from '@/store/store'
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Loader2, PenLine, Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import FoldersService from '@/services/folders.service'
-import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import Editor from './components/Editor'
 import { IFolder } from '@/types/folders'
+import { Plus } from 'lucide-react'
+import FolderCard from './components/FolderCard'
 
 const FoldersDialog = () => {
 	const isOpen = useAppStore((state) => state.isOpenFoldersDialog)
@@ -25,9 +25,14 @@ const FoldersDialog = () => {
 	const setFolders = useAppStore((state) => state.setFolders)
 	const [loadingArray, setLoadingArray] = useState<string[]>([])
 
+	const isFolderLoading = useCallback(
+		(id: string) => loadingArray.includes(id),
+		[loadingArray]
+	)
+
 	const handleDeleteFolder = async (id: string) => {
-		setLoadingArray((state) => [...state, id])
 		try {
+			setLoadingArray((prev) => [...prev, id])
 			const { data } = await FoldersService.deleteFolder(id)
 			const { success, message } = data
 			if (success) {
@@ -35,11 +40,11 @@ const FoldersDialog = () => {
 				setFolders(folders?.filter((folder: IFolder) => folder.id !== id) || [])
 			}
 		} catch (error) {
-			setLoadingArray((state) => state.filter((element) => element !== id))
+			setLoadingArray((prev) => prev.filter((element) => element !== id))
 			toast.error('Something went wrong!')
 			console.error('Error:', error)
 		} finally {
-			setLoadingArray((state) => state.filter((element) => element !== id))
+			setLoadingArray((prev) => prev.filter((element) => element !== id))
 		}
 	}
 
@@ -63,39 +68,15 @@ const FoldersDialog = () => {
 							<Plus className='opacity-60' />
 							Create folder
 						</Button>
-						{folders?.map((folder) => {
-							const { id, name } = folder
-							const isLoading = loadingArray.includes(id)
-							return (
-								<Card key={id}>
-									<CardHeader className='flex-row flex-wrap items-center justify-between gap-4'>
-										<CardTitle>{name}</CardTitle>
-										<div className='flex gap-2 items-center'>
-											<Button
-												size='icon'
-												variant='outline'
-												onClick={() => openEditor('edit', folder)}>
-												<PenLine />
-											</Button>
-											<Button
-												size='icon'
-												variant='destructive'
-												disabled={isLoading}
-												onClick={() => handleDeleteFolder(id)}>
-												{isLoading ? (
-													<Loader2
-														strokeWidth={1.5}
-														className='animate-spin'
-													/>
-												) : (
-													<Trash2 />
-												)}
-											</Button>
-										</div>
-									</CardHeader>
-								</Card>
-							)
-						})}
+						{folders?.map((folder) => (
+							<FolderCard
+								key={folder.id}
+								folder={folder}
+								isLoading={isFolderLoading(folder.id)}
+								onEdit={() => openEditor('edit', folder)}
+								onDelete={() => handleDeleteFolder(folder.id)}
+							/>
+						))}
 					</div>
 				</DialogContent>
 			</Dialog>

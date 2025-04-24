@@ -1,8 +1,8 @@
+import useAppStore from '@/store/store'
 import {
 	DropdownMenuGroup,
 	DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
-import useAppStore from '@/store/store'
 import { Folder } from 'lucide-react'
 
 const FoldersGroup = () => {

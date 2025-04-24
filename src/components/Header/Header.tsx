@@ -1,14 +1,14 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { buttonVariants } from '../ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import useAppStore from '@/store/store'
 import Link from 'next/link'
-import MainMenu from './components/MainMenu'
-import ThemeToggle from '../theme/ThemeToggle'
+import MainMenu from '@/components/Header/components/MainMenu'
+import ThemeToggle from '@/components/theme/ThemeToggle'
+import AccountDialog from '@/components/Account/AccountDialog'
+import FoldersDialog from '@/components/Folders/FoldersDialog'
 import { ChevronLeft } from 'lucide-react'
-import AccountDialog from '../Account/AccountDialog'
-import FoldersDialog from '../Folders/FoldersDialog'
 
 const Header = () => {
 	const pathname = usePathname()

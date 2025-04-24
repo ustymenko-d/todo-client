@@ -1,10 +1,10 @@
-import { ColumnDef } from '@tanstack/react-table'
-import ColumnHeader from './ColumnHeader'
-import { Button } from '@/components/ui/button'
-import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
-import FolderCell from './FolderCell'
 import { formatDate, formatValue } from '@/utils/formatting'
+import { ColumnDef } from '@tanstack/react-table'
+import { Button } from '@/components/ui/button'
+import ColumnHeader from './ColumnHeader'
+import FolderCell from './FolderCell'
 import { TTask } from '@/types/tasks'
+import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
 
 const columns: ColumnDef<TTask>[] = [
 	{
