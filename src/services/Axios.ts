@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
 
-const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL ?? 'http://localhost:3000'
 const baseConfig = {
 	baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 	withCredentials: true,
@@ -10,7 +9,7 @@ const baseConfig = {
 export const Axios: AxiosInstance = axios.create(baseConfig)
 export const ApiAxios: AxiosInstance = axios.create({
 	...baseConfig,
-	baseURL: new URL('/api', frontendUrl).toString(),
+	baseURL: new URL('/api', process.env.NEXT_PUBLIC_FRONTEND_URL).toString(),
 })
 
 export const getServerAxios = async () => {
