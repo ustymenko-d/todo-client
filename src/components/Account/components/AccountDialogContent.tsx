@@ -55,20 +55,23 @@ const AccountDialogContent = () => {
 		<DialogContent>
 			<DialogHeader>
 				<DialogTitle className='flex gap-2 items-center'>
-					{accountInfo?.username ? (
-						<>
-							<span>{accountInfo.username}</span>
-							<VerificationBadge />
-						</>
-					) : (
-						'Account settings'
-					)}
+					Account settings
+					<VerificationBadge />
 				</DialogTitle>
 				<DialogDescription>
 					This dialog displays your account information. You can also delete the
 					account using the &quot;Delete account&quot; button.
 				</DialogDescription>
 			</DialogHeader>
+
+			<div className='flex flex-col'>
+				<Label
+					htmlFor='account-email'
+					className='text-muted-foreground'>
+					Username:
+				</Label>
+				<span id='account-email'>{accountInfo?.username}</span>
+			</div>
 
 			<div className='flex flex-col'>
 				<Label
