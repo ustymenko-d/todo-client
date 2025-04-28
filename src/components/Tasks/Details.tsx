@@ -8,7 +8,7 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import useAppStore from '@/store/store'
 import { toast } from 'sonner'
 import TasksService from '@/services/tasks.service'
@@ -23,8 +23,9 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import DeleteDialog from '../DeleteDialog'
-import { formatDate } from '@/utils/formatting'
+import { formatDate, formatValue } from '@/utils/formatting'
 import { TTask } from '@/types/tasks'
+import { IFolder } from '@/types/folders'
 
 const Details = ({ task }: { task: TTask }) => {
 	const router = useRouter()
@@ -32,9 +33,14 @@ const Details = ({ task }: { task: TTask }) => {
 	const [deleting, setDeleting] = useState(false)
 	const [toggling, setToggling] = useState(false)
 	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
-	const folders = useAppStore((state) => state.folders)
-	const { title, description, completed, createdAt, folderId, expiresAt } = task
-	const folder = folders?.find((f) => f.id === folderId)
+	const folders = useAppStore((state) => state.accountInfo?.folders)
+	const { title, description, completed, startDate, folderId, expiresDate } =
+		task
+
+	const folder: IFolder | null = useMemo(
+		() => folders?.find((f) => f.id === folderId) ?? null,
+		[folders, folderId]
+	)
 
 	const handleTaskAction = useCallback(
 		async (action: 'delete' | 'toggleStatus') => {
@@ -126,21 +132,21 @@ const Details = ({ task }: { task: TTask }) => {
 
 				<div className='flex flex-col gap-1'>
 					<Label
-						htmlFor='createdAt'
+						htmlFor='startDate'
 						className='text-muted-foreground'>
 						Created at:
 					</Label>
-					<span id='createdAt'>{formatDate(createdAt.toString())}</span>
+					<span id='startDate'>{formatDate(startDate)}</span>
 				</div>
 
-				{expiresAt && (
+				{expiresDate && (
 					<div className='flex flex-col gap-1'>
 						<Label
-							htmlFor='expiresAt'
+							htmlFor='expiresDate'
 							className='text-muted-foreground'>
 							Expires at:
 						</Label>
-						<span id='expiresAt'>{formatDate(expiresAt.toString())}</span>
+						<span id='expiresDate'>{formatDate(expiresDate)}</span>
 					</div>
 				)}
 
@@ -151,7 +157,7 @@ const Details = ({ task }: { task: TTask }) => {
 							className='text-muted-foreground'>
 							Folder:
 						</Label>
-						<span id='folder'>{folder?.name}</span>
+						<span id='folder'>{formatValue(folder?.name)}</span>
 					</div>
 				)}
 			</div>

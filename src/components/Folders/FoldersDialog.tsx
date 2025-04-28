@@ -13,16 +13,15 @@ import {
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import Editor from './components/Editor'
-import { IFolder } from '@/types/folders'
-import { Plus } from 'lucide-react'
 import FolderCard from './components/FolderCard'
+import { Plus } from 'lucide-react'
 
 const FoldersDialog = () => {
 	const isOpen = useAppStore((state) => state.isOpenFoldersDialog)
 	const setIsOpen = useAppStore((state) => state.setIsOpenFoldersDialog)
-	const folders = useAppStore((state) => state.folders)
+	const accountInfo = useAppStore((state) => state.accountInfo)
+	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const openEditor = useAppStore((state) => state.openFolderEditor)
-	const setFolders = useAppStore((state) => state.setFolders)
 	const [loadingArray, setLoadingArray] = useState<string[]>([])
 
 	const isFolderLoading = useCallback(
@@ -37,7 +36,12 @@ const FoldersDialog = () => {
 			const { success, message } = data
 			if (success) {
 				toast.success(message)
-				setFolders(folders?.filter((folder: IFolder) => folder.id !== id) || [])
+				if (accountInfo) {
+					setAccountInfo((prev) => ({
+						...prev!,
+						folders: prev?.folders?.filter((folder) => folder.id !== id),
+					}))
+				}
 			}
 		} catch (error) {
 			setLoadingArray((prev) => prev.filter((element) => element !== id))
@@ -68,7 +72,7 @@ const FoldersDialog = () => {
 							<Plus className='opacity-60' />
 							Create folder
 						</Button>
-						{folders?.map((folder) => (
+						{accountInfo?.folders?.map((folder) => (
 							<FolderCard
 								key={folder.id}
 								folder={folder}

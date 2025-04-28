@@ -43,10 +43,9 @@ class RequestHandler {
 			if (
 				axios.isAxiosError(error) &&
 				!extraConfig?.skipRefresh &&
-				error.response?.data?.message !== 'Missing access or refresh token'
+				error.response?.data?.message !== 'Missing access or refresh token' &&
+				error.status === 401
 			) {
-				console.error(error);
-				
 				return NextResponse.json({ needRefresh: true })
 			}
 

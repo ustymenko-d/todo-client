@@ -5,7 +5,9 @@ export interface AuthSlice {
 	setIsAuthorized: (newValue: boolean) => void
 
 	accountInfo: IUserInfo | null
-	setAccountInfo: (newValue: IUserInfo | null) => void
+	setAccountInfo: (
+		newValue: IUserInfo | null | ((prev: IUserInfo | null) => IUserInfo | null)
+	) => void
 
 	authFormType: TAuthFormType
 	setAuthFormType: (newValue: TAuthFormType) => void
@@ -15,13 +17,22 @@ export interface AuthSlice {
 }
 
 const createAuthSlice = (
-	set: (partial: Partial<AuthSlice>) => void
+	set: (
+		partial: Partial<AuthSlice> | ((state: AuthSlice) => Partial<AuthSlice>)
+	) => void
 ): AuthSlice => ({
 	isAuthorized: false,
 	setIsAuthorized: (isAuthorized) => set({ isAuthorized }),
 
 	accountInfo: null,
-	setAccountInfo: (accountInfo) => set({ accountInfo }),
+	// setAccountInfo: (accountInfo) => set({ accountInfo }),
+	setAccountInfo: (accountInfoOrUpdater) =>
+		set((state) => ({
+			accountInfo:
+				typeof accountInfoOrUpdater === 'function'
+					? accountInfoOrUpdater(state.accountInfo)
+					: accountInfoOrUpdater,
+		})),
 
 	authFormType: 'login',
 	setAuthFormType: (authFormType) => set({ authFormType }),

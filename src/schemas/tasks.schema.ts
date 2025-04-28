@@ -28,37 +28,30 @@ const getTasksRequest = z.object({
 })
 
 const taskBase = z.object({
-	title: z
-		.string()
-		.min(2, { message: 'The title must be at least 2 characters long.' })
-		.nonempty({ message: 'The title is required.' }),
+	title: z.string().nonempty().max(50),
 
-	description: z.string().nullable().optional(),
+	description: z.string().max(300).nullable().optional(),
 
-	completed: z.boolean({ message: 'Invalid value.' }),
+	completed: z.boolean().optional(),
 
-	parentTaskId: z.string().nullable().optional(),
+	parentTaskId: z.string().uuid().nullable().optional(),
 
-	expiresAt: z.date().nullable().optional(),
+	startDate: z.date().nullable().optional(),
+
+	expiresDate: z.date().nullable().optional(),
 
 	folderId: z.string().uuid().nullable().optional(),
 })
 
-const taskPayload = taskBase.omit({
-	completed: true,
-})
-
-const task: z.ZodSchema = taskBase.extend({
+const task = taskBase.extend({
 	id: z.string(),
 	userId: z.string(),
-	createdAt: z.date(),
 	subtasks: z.array(z.lazy((): z.ZodSchema => task)),
 })
 
 const TasksValidation = {
 	getTasksRequest,
 	taskBase,
-	taskPayload,
 	task,
 }
 

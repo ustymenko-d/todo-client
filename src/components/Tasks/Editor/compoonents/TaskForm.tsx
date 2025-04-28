@@ -22,7 +22,7 @@ import LoadingButton from '@/components/ui/LoadingButton'
 import TasksService from '@/services/tasks.service'
 import Field from '@/components/Tasks/Editor/compoonents/Field'
 import FormSelect from '@/components/Tasks/Editor/compoonents/FormSelect'
-import { TTask, TTaskBase, TTaskPayload } from '@/types/tasks'
+import { TTask, TTaskBase } from '@/types/tasks'
 import { TResponseState } from '@/types/common'
 
 const TaskForm = () => {
@@ -35,46 +35,52 @@ const TaskForm = () => {
 	const [status, setStatus] = useState<TResponseState>('default')
 	const isEditing = mode === 'edit'
 
-	const defaultValues = useMemo<TTaskPayload>(
+	const defaultValues = useMemo<TTaskBase>(
 		() => ({
 			title: isEditing ? selectedTask?.title || '' : '',
-			description: isEditing ? selectedTask?.description || '' : '',
+			description: isEditing ? selectedTask?.description : '',
 			parentTaskId: isEditing
 				? selectedTask?.parentTaskId
 				: selectedTask?.id || null,
-			expiresAt:
-				isEditing && selectedTask?.expiresAt
-					? new Date(selectedTask.expiresAt)
+			expiresDate:
+				isEditing && selectedTask?.expiresDate
+					? new Date(selectedTask.expiresDate)
 					: null,
-			folderId: isEditing ? selectedTask?.folderId || null : null,
+			folderId: isEditing ? selectedTask?.folderId : null,
 		}),
 		[isEditing, selectedTask]
 	)
 
-	const taskForm = useForm<TTaskPayload>({
-		resolver: zodResolver(TasksValidation.taskPayload),
+	const taskForm = useForm<TTaskBase>({
+		resolver: zodResolver(TasksValidation.taskBase),
 		defaultValues,
 	})
 
-	const createPayload = (values: TTaskPayload): TTaskBase | TTask => {
+	const createPayload = (values: TTaskBase): TTaskBase | TTask => {
 		const base: TTaskBase = {
 			...values,
 			completed: !isEditing ? false : selectedTask?.completed ?? false,
-			expiresAt: values.expiresAt ? new Date(values.expiresAt) : null,
+			startDate: values.startDate ? new Date(values.startDate) : null,
+			expiresDate: values.expiresDate ? new Date(values.expiresDate) : null,
 		}
+
+		if (mode === 'create') return base
+
 		const payload = { ...selectedTask, ...base }
 		delete payload.subtasks
 		return payload
 	}
 
-	const handleSubmit = async (values: TTaskPayload) => {
+	const handleSubmit = async (values: TTaskBase) => {
 		try {
 			setStatus('pending')
 			const payload = createPayload(values)
+			console.log(payload)
+
 			const { data } =
 				mode === 'create'
-					? await TasksService.createTask(payload)
-					: await TasksService.editTask(payload)
+					? await TasksService.createTask(payload as TTaskBase)
+					: await TasksService.editTask(payload as TTask)
 
 			const { success } = data
 
@@ -116,7 +122,7 @@ const TaskForm = () => {
 					<div className='grid grid-cols-2 gap-3'>
 						<FormField
 							control={taskForm.control}
-							name='expiresAt'
+							name='expiresDate'
 							render={({ field }) => (
 								<FormItem className='flex flex-col gap-1'>
 									<FormLabel className='text-muted-foreground'>

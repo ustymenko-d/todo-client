@@ -21,7 +21,7 @@ const MainMenu = () => {
 	const isAuthorized = useAppStore((state) => state.isAuthorized)
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const accountInfo = useAppStore((state) => state.accountInfo)
-	const resetFolders = useAppStore((state) => state.resetFolders)
+	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const [loading, setLoading] = useState<boolean>(false)
 
 	const handleLogout = async () => {
@@ -30,9 +30,9 @@ const MainMenu = () => {
 			const { data } = await AuthService.logout()
 			const { success, message } = data
 			if (success) {
-				setIsAuthorized(false)
-				resetFolders()
 				toast.success(message)
+				setIsAuthorized(false)
+				setAccountInfo(null)
 				router.push('/')
 			}
 		} catch (error) {

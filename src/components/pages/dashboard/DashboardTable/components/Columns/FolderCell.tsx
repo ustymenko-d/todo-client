@@ -4,9 +4,9 @@ import useAppStore from '@/store/store'
 import { formatValue } from '@/utils/formatting'
 
 const FolderCell = ({ id }: { id: string }) => {
-	const folders = useAppStore((state) => state.folders)
+	const folders = useAppStore((state) => state.accountInfo?.folders)
 	const folder = folders?.find((f) => f.id === id)
-	const formatedValue = folder?.name ? formatValue(folder?.name) : '-'
+	const formatedValue = formatValue(folder?.name)
 
 	return <>{formatedValue}</>
 }

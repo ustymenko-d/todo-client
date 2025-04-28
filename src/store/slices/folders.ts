@@ -3,10 +3,6 @@ import { IFolder } from '@/types/folders'
 import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 
 export interface FoldersSlice {
-	folders: IFolder[] | null
-	setFolders: (folders: IFolder[]) => void
-	resetFolders: () => void
-
 	isOpenFoldersDialog: boolean
 	setIsOpenFoldersDialog: (newValue: boolean) => void
 
@@ -23,10 +19,6 @@ const folderEditorSettings = getDefaultEditorSettings<IFolder>()
 const createFoldersSlice = (
 	set: (partial: Partial<FoldersSlice>) => void
 ): FoldersSlice => ({
-	folders: null,
-	setFolders: (folders) => set({ folders }),
-	resetFolders: () => set({ folders: null }),
-
 	isOpenFoldersDialog: false,
 	setIsOpenFoldersDialog: (isOpenFoldersDialog) => set({ isOpenFoldersDialog }),
 

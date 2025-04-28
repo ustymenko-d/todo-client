@@ -81,27 +81,27 @@ const columns: ColumnDef<TTask>[] = [
 	{
 		accessorKey: 'folderId',
 		header: 'Folder',
-		cell: ({ row }) => <FolderCell id={row.original.folderId} />,
+		cell: ({ row }) => <FolderCell id={row.original.folderId ?? ''} />,
 	},
 	{
-		accessorKey: 'createdAt',
+		accessorKey: 'startDate',
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Created'
+				title='Start'
 			/>
 		),
-		cell: ({ row }) => formatDate(row.original.createdAt),
+		cell: ({ row }) => formatDate(row.original.startDate),
 	},
 	{
-		accessorKey: 'expiresAt',
+		accessorKey: 'expiresDate',
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
 				title='Expires'
 			/>
 		),
-		cell: ({ row }) => formatDate(row.original.expiresAt),
+		cell: ({ row }) => formatDate(row.original.expiresDate),
 	},
 ]
 

@@ -10,8 +10,7 @@ import AuthFormInput from './AuthFormInput'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
-import { TAuthFormType, TBaseAuth, TEmail } from '@/types/auth'
-import { IResponseStatus } from '@/types/common'
+import { TAuthFormType, TAuthPayload, TEmail } from '@/types/auth'
 import AuthService from '@/services/auth.service'
 import RememberMe from '@/components/ui/RememberMe'
 import { AxiosError } from 'axios'
@@ -68,6 +67,7 @@ const AuthForm = () => {
 	const authFormType = useAppStore((state) => state.authFormType)
 	const isAuthorized = useAppStore((state) => state.isAuthorized)
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
+	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const [loading, setLoading] = useState(false)
 
 	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
@@ -80,44 +80,62 @@ const AuthForm = () => {
 		defaultValues,
 	})
 
-	const processResponse = useCallback(
-		(response: IResponseStatus) => {
-			const { success, message } = response
-
-			if (success) {
-				if (authFormType !== 'forgotPassword') {
-					setIsAuthorized(true)
-					router.push('/dashboard')
-				}
+	const handleForgotPassword = useCallback(
+		async (payload: TEmail) => {
+			const { data } = await AuthService.forgotPassword(payload)
+			if (data.success) {
+				toast.success(data.message)
 				authForm.reset(defaultValues)
-				toast.success(message)
 			} else {
-				toast.error(message)
+				toast.error(data.message)
 			}
 		},
-		[authForm, authFormType, defaultValues, router, setIsAuthorized]
+		[authForm, defaultValues]
 	)
 
-	const handleAuthAction = useCallback(
-		async (payload: TBaseAuth | TEmail): Promise<void> => {
-			setLoading(true)
+	const handleAuth = useCallback(
+		async (payload: TAuthPayload) => {
+			const { data } =
+				authFormType === 'signup'
+					? await AuthService.signup(payload as TAuthPayload)
+					: await AuthService.login(payload as TAuthPayload)
+			const { success, message, userInfo } = data
+
+			if (!success) {
+				toast.error(message)
+				return
+			}
+
+			authForm.reset(defaultValues)
+			toast.success(message)
+			setIsAuthorized(true)
+			setAccountInfo(userInfo)
+			router.push('/dashboard')
+		},
+		[
+			authFormType,
+			authForm,
+			defaultValues,
+			router,
+			setAccountInfo,
+			setIsAuthorized,
+		]
+	)
+
+	const onSubmit = useCallback(
+		async (values: z.infer<typeof validationSchema>): Promise<void> => {
 			try {
-				let response
-				switch (authFormType) {
-					case 'signup':
-						response = await AuthService.signup(payload as TBaseAuth)
-						break
-					case 'login':
-						response = await AuthService.login(payload as TBaseAuth)
-						break
-					case 'forgotPassword':
-						response = await AuthService.forgotPassword(payload as TEmail)
-						break
-					default:
-						return
+				setLoading(true)
+
+				if (authFormType === 'forgotPassword') {
+					await handleForgotPassword({ email: values.email })
+				} else {
+					await handleAuth({
+						email: values.email,
+						password: values.password,
+						rememberMe: values.rememberMe,
+					})
 				}
-				const { data } = response
-				processResponse(data)
 			} catch (error) {
 				const axiosError = error as AxiosError
 				const message =
@@ -132,20 +150,8 @@ const AuthForm = () => {
 				setLoading(false)
 			}
 		},
-		[authFormType, processResponse]
+		[authFormType, handleAuth, handleForgotPassword]
 	)
-
-	const onSubmit = (values: z.infer<typeof validationSchema>) => {
-		const payload: TBaseAuth | TEmail =
-			authFormType === 'forgotPassword'
-				? { email: values.email }
-				: {
-						email: values.email,
-						password: values.password,
-						rememberMe: values.rememberMe,
-				  }
-		handleAuthAction(payload)
-	}
 
 	useEffect(() => {
 		authForm.reset(defaultValues)

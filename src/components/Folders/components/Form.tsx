@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/ui/LoadingButton'
-import FolderValidation from '@/schemas/folder.schema'
+import FoldersValidation from '@/schemas/folders.schema'
 import { TResponseState } from '@/types/common'
 import { IFolder, TFolderName } from '@/types/folders'
 
@@ -25,11 +25,12 @@ const Form = () => {
 	const selectedFolder = useAppStore(
 		(state) => state.folderEditorSettings.target
 	)
-	const folders = useAppStore((state) => state.folders)
+	const accountInfo = useAppStore((state) => state.accountInfo)
+	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const closeEditor = useAppStore((state) => state.closeFolderEditor)
-	const isEditing = mode === 'edit'
-	const setFolders = useAppStore((state) => state.setFolders)
+
 	const [status, setStatus] = useState<TResponseState>('default')
+	const isEditing = mode === 'edit'
 
 	const defaultValues = useMemo<TFolderName>(
 		() => ({
@@ -38,21 +39,32 @@ const Form = () => {
 		[isEditing, selectedFolder?.name]
 	)
 	const folderForm = useForm<TFolderName>({
-		resolver: zodResolver(FolderValidation.folderName),
+		resolver: zodResolver(FoldersValidation.folderName),
 		defaultValues,
 	})
 
 	const updateFoldersList = (folder: IFolder) => {
-		setFolders([folder, ...(folders || [])])
+		if (accountInfo) {
+			setAccountInfo((prev) => ({
+				...prev!,
+				folders: [folder, ...(prev?.folders ?? [])],
+			}))
+		}
 	}
 
 	const updateFolderName = (newName: string) => {
-		if (!selectedFolder || !folders) return
-		setFolders(
-			folders.map((folder) =>
-				folder.id === selectedFolder.id ? { ...folder, name: newName } : folder
-			)
-		)
+		if (!selectedFolder || !accountInfo?.folders) return
+
+		if (accountInfo) {
+			setAccountInfo((prev) => ({
+				...prev!,
+				folders: (prev?.folders ?? []).map((folder) =>
+					folder.id === selectedFolder.id
+						? { ...folder, name: newName }
+						: folder
+				),
+			}))
+		}
 	}
 
 	const handleAction = async (values: TFolderName) => {

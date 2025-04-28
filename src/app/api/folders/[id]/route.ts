@@ -4,13 +4,13 @@ import RequestHandler from '@/utils/RequestHandler'
 
 export const PATCH = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
-	const id = getIdFromRequest(request, 'folder')
+	const id = getIdFromRequest(request, 'folders')
 	if (!id) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
-	return RequestHandler.request(`/folder/${id}`, 'patch', body)
+	return RequestHandler.request(`/folders/${id}`, 'patch', body)
 }
 
 export const DELETE = async (request: NextRequest): Promise<NextResponse> => {
-	const id = getIdFromRequest(request, 'folder')
+	const id = getIdFromRequest(request, 'folders')
 	if (!id) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
-	return RequestHandler.request(`/folder/${id}`, 'delete')
+	return RequestHandler.request(`/folders/${id}`, 'delete')
 }

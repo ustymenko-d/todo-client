@@ -8,14 +8,14 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { FormControl } from '@/components/ui/form'
-import { TTaskPayload } from '@/types/tasks'
+import { TTaskBase } from '@/types/tasks'
 
 interface FormSelectProps {
-	field: ControllerRenderProps<TTaskPayload, 'folderId'>
+	field: ControllerRenderProps<TTaskBase, 'folderId'>
 }
 
 const FormSelect = ({ field }: FormSelectProps) => {
-	const folders = useAppStore((state) => state.folders)
+	const folders = useAppStore((state) => state.accountInfo?.folders)
 
 	const handleChange = (value: string) => {
 		field.onChange(value === 'null' ? null : value)

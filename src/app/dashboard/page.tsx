@@ -33,7 +33,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 	const cookieStore = await cookies()
 	const cookieHeader = cookieStore.toString()
 
-	const { data: axiosData } = await TasksService.getTasks(
+	const { data } = await TasksService.getTasks(
 		{
 			...pagination,
 			topLayerTasks:
@@ -49,15 +49,15 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 		}
 	)
 
-	const { data } = axiosData
+	const { tasks, pages } = data
 
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
 			<Head />
 			{data ? (
 				<DashboardTable
-					data={data.tasks}
-					pagination={{ ...pagination, pages: data.pages }}
+					data={tasks}
+					pagination={{ ...pagination, pages }}
 				/>
 			) : (
 				<EmptyPlaceholder />

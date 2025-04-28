@@ -7,11 +7,11 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import { TTaskPayload } from '@/types/tasks'
+import { TTaskBase } from '@/types/tasks'
 
 interface IFieldProps {
-	taskForm: UseFormReturn<TTaskPayload>
-	name: keyof TTaskPayload
+	taskForm: UseFormReturn<TTaskBase>
+	name: keyof TTaskBase
 	placeholder: string
 	Component: ElementType
 }

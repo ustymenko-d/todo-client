@@ -18,10 +18,10 @@ import {
 import { cn } from '@/lib/utils'
 import { ControllerRenderProps } from 'react-hook-form'
 import { CalendarIcon } from 'lucide-react'
-import { TTaskPayload } from '@/types/tasks'
+import { TTaskBase } from '@/types/tasks'
 
 interface FormDatePickerProps {
-	field: ControllerRenderProps<TTaskPayload, 'expiresAt'>
+	field: ControllerRenderProps<TTaskBase, 'expiresDate'>
 }
 
 const FormDatePicker = ({ field }: FormDatePickerProps) => {

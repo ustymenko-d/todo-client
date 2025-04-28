@@ -1,7 +1,7 @@
 import {
 	IAuthResponse,
 	IUserInfo,
-	TBaseAuth,
+	TAuthPayload,
 	TEmail,
 	TPassword,
 } from '@/types/auth'
@@ -13,7 +13,7 @@ import RequestHandler from '@/utils/RequestHandler'
 const AUTH_API_URL = '/auth'
 
 const AuthService = {
-	signup: (payload: TBaseAuth): Promise<AxiosResponse<IAuthResponse>> =>
+	signup: (payload: TAuthPayload): Promise<AxiosResponse<IAuthResponse>> =>
 		RequestHandler.handleRequest(() =>
 			ApiAxios.post(`${AUTH_API_URL}/signup`, payload)
 		),
@@ -27,7 +27,7 @@ const AuthService = {
 			)
 		),
 
-	login: (payload: TBaseAuth): Promise<AxiosResponse<IAuthResponse>> =>
+	login: (payload: TAuthPayload): Promise<AxiosResponse<IAuthResponse>> =>
 		RequestHandler.handleRequest(() =>
 			ApiAxios.post(`${AUTH_API_URL}/login`, payload)
 		),

@@ -8,7 +8,7 @@ import {
 	TFolderName,
 } from '@/types/folders'
 
-const FOLDERS_API_URL = '/folder'
+const FOLDERS_API_URL = '/folders'
 
 const FoldersService = {
 	createFolder: (
