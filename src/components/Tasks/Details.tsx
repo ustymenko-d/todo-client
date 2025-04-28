@@ -130,21 +130,23 @@ const Details = ({ task }: { task: TTask }) => {
 					</Select>
 				</div>
 
-				<div className='flex flex-col gap-1'>
-					<Label
-						htmlFor='startDate'
-						className='text-muted-foreground'>
-						Created at:
-					</Label>
-					<span id='startDate'>{formatDate(startDate)}</span>
-				</div>
+				{startDate && (
+					<div className='flex flex-col gap-1'>
+						<Label
+							htmlFor='startDate'
+							className='text-muted-foreground'>
+							Start date:
+						</Label>
+						<span id='startDate'>{formatDate(startDate)}</span>
+					</div>
+				)}
 
 				{expiresDate && (
 					<div className='flex flex-col gap-1'>
 						<Label
 							htmlFor='expiresDate'
 							className='text-muted-foreground'>
-							Expires at:
+							Expires date:
 						</Label>
 						<span id='expiresDate'>{formatDate(expiresDate)}</span>
 					</div>
