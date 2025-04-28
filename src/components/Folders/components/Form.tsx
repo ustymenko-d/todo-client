@@ -76,11 +76,10 @@ const Form = () => {
 				? FoldersService.renameFolder(targetId, values)
 				: FoldersService.createFolder(values)
 
-			const res = await action
-			console.log(res)
+			const { data } = await action
 
-			if (!res.data.success) {
-				toast.error('Failed to process folder')
+			if (!data.success) {
+				toast.error(data.message || 'Failed to process folder')
 				setStatus('error')
 				return
 			}
@@ -92,7 +91,7 @@ const Form = () => {
 			if (isEditing) {
 				updateFolderName(values.name)
 			} else {
-				updateFoldersList(res.data.folder)
+				updateFoldersList(data.folder)
 			}
 			router.refresh()
 		} catch (error) {
