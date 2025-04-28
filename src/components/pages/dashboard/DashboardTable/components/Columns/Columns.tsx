@@ -88,7 +88,7 @@ const columns: ColumnDef<TTask>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Start'
+				title='Start Date'
 			/>
 		),
 		cell: ({ row }) => formatDate(row.original.startDate),
@@ -98,7 +98,7 @@ const columns: ColumnDef<TTask>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Expires'
+				title='Expires Date'
 			/>
 		),
 		cell: ({ row }) => formatDate(row.original.expiresDate),

@@ -17,6 +17,12 @@ import { ITableComponentProps } from '../DashboardTable'
 import { Loader2, Plus, Settings2 } from 'lucide-react'
 
 const defaultColumns = ['completed', 'title', 'actions']
+const columnLabels: Record<string, string> = {
+	description: 'Description',
+	folderId: 'Folder',
+	startDate: 'Start Date',
+	expiresDate: 'Expires Date',
+}
 
 const Head = ({ table }: ITableComponentProps) => {
 	const router = useRouter()
@@ -63,7 +69,7 @@ const Head = ({ table }: ITableComponentProps) => {
 					className='capitalize'
 					checked={column.getIsVisible()}
 					onCheckedChange={(value) => column.toggleVisibility(!!value)}>
-					{column.id}
+					{columnLabels[column.id] ?? column.id}
 				</DropdownMenuCheckboxItem>
 			))
 
