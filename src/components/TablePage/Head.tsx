@@ -13,7 +13,7 @@ const Head = () => {
 					{accountInfo?.username ? `, ${accountInfo?.username}!` : '!'}
 				</h1>
 				<p className='text-base text-muted-foreground'>
-					Here&apos;s a list of your tasks
+					Here&apos;s a list of your tasks:
 				</p>
 			</div>
 		</div>

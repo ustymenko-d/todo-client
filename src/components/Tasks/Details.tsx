@@ -64,7 +64,7 @@ const Details = ({ task }: { task: TTask }) => {
 							: 'Task status successfully changed'
 					)
 
-					if (pathname === '/dashboard') {
+					if (pathname === '/table') {
 						router.push(`?page=1&limit=25`)
 					}
 				} else {

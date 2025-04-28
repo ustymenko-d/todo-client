@@ -13,8 +13,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ITableComponentProps } from '../DashboardTable'
 import { Loader2, Plus, Settings2 } from 'lucide-react'
+import { ITableComponentProps } from '@/components/TablePage/Table/Table'
 
 const defaultColumns = ['completed', 'title', 'actions']
 const columnLabels: Record<string, string> = {

@@ -5,7 +5,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { ITableComponentProps } from '../../DashboardTable'
+import { ITableComponentProps } from '@/components/TablePage/Table/Table'
 
 const PaginationSelect = ({ table }: ITableComponentProps) => {
 	const pageSize = table.getState().pagination.pageSize

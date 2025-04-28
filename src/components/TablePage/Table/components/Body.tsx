@@ -1,5 +1,4 @@
 import { flexRender } from '@tanstack/react-table'
-import { ITableComponentProps } from '../DashboardTable'
 import {
 	Table,
 	TableBody,
@@ -9,7 +8,8 @@ import {
 	TableRow,
 } from '@/components/ui/table'
 import columns from './Columns/Columns'
-import RowElement from './RowElement'
+import Row from './Row'
+import { ITableComponentProps } from '@/components/TablePage/Table/Table'
 
 const Body = ({ table }: ITableComponentProps) => {
 	const rows = table.getRowModel().rows
@@ -32,7 +32,7 @@ const Body = ({ table }: ITableComponentProps) => {
 
 	const renderRows = () =>
 		rows.map((row) => (
-			<RowElement
+			<Row
 				key={row.id}
 				row={row}
 			/>

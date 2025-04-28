@@ -1,7 +1,7 @@
 import { formatDate, formatValue } from '@/utils/formatting'
 import { ColumnDef } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import ColumnHeader from './ColumnHeader'
+import Header from './Header'
 import FolderCell from './FolderCell'
 import { TTask } from '@/types/tasks'
 import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
@@ -10,7 +10,7 @@ const columns: ColumnDef<TTask>[] = [
 	{
 		accessorKey: 'title',
 		header: ({ column }) => (
-			<ColumnHeader
+			<Header
 				column={column}
 				title='Title'
 			/>
@@ -86,7 +86,7 @@ const columns: ColumnDef<TTask>[] = [
 	{
 		accessorKey: 'startDate',
 		header: ({ column }) => (
-			<ColumnHeader
+			<Header
 				column={column}
 				title='Start Date'
 			/>
@@ -96,7 +96,7 @@ const columns: ColumnDef<TTask>[] = [
 	{
 		accessorKey: 'expiresDate',
 		header: ({ column }) => (
-			<ColumnHeader
+			<Header
 				column={column}
 				title='Expires Date'
 			/>

@@ -92,7 +92,7 @@ const TaskForm = () => {
 						: 'Task successfully edited'
 				)
 				closeTaskEditor()
-				if (pathname === '/dashboard') router.refresh()
+				if (pathname === '/table') router.refresh()
 			} else {
 				toast.error('Failed to process task')
 			}

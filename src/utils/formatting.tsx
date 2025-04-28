@@ -33,3 +33,6 @@ export const formatDate = (dateString?: Date | null): string => {
 		day: 'numeric',
 	})
 }
+
+export const stringToBoolean = (value: string): boolean =>
+	value?.trim().toLowerCase() === 'true' || false

@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import useAppStore from '@/store/store'
 import TasksService from '@/services/tasks.service'
-import { Cell, flexRender, Row } from '@tanstack/react-table'
+import { Cell, flexRender, Row as TanstackRow } from '@tanstack/react-table'
 import { toast } from 'sonner'
 import {
 	ContextMenu,
@@ -20,7 +20,7 @@ import DeleteDialog from '@/components/DeleteDialog'
 import { TResponseState } from '@/types/common'
 import { TTask } from '@/types/tasks'
 
-const RowElement = ({ row }: { row: Row<TTask> }) => {
+const Row = ({ row }: { row: TanstackRow<TTask> }) => {
 	const task = row.original
 	const router = useRouter()
 	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
@@ -120,4 +120,4 @@ const RowElement = ({ row }: { row: Row<TTask> }) => {
 	)
 }
 
-export default RowElement
+export default Row

@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import LoadingButton from '@/components/ui/LoadingButton'
 import { toast } from 'sonner'
+import LoadingButton from '@/components/ui/LoadingButton'
 
 const EmptyPlaceholder = () => {
 	const router = useRouter()

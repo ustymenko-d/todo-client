@@ -31,7 +31,7 @@ const getSortingIcon = (sortState: string | false) =>
 		<ArrowDownUp />
 	)
 
-const ColumnHeader = <TData, TValue>({
+const Header = <TData, TValue>({
 	column,
 	title,
 	className,
@@ -63,4 +63,4 @@ const ColumnHeader = <TData, TValue>({
 	)
 }
 
-export default ColumnHeader
+export default Header

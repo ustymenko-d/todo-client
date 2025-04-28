@@ -10,17 +10,17 @@ import {
 	getPaginationRowModel,
 	getSortedRowModel,
 	SortingState,
-	Table,
+	Table as TanstackTable,
 	useReactTable,
 	VisibilityState,
 } from '@tanstack/react-table'
-import columns from './components/Columns/Columns'
-import Head from './components/Head'
-import Body from './components/Body'
-import Pagination from './components/Pagination/Pagination'
+import columns from '@/components/TablePage/Table/components/Columns/Columns'
+import Head from '@/components/TablePage/Table/components/Head'
+import Body from '@/components/TablePage/Table/components/Body'
+import Pagination from '@/components/TablePage/Table/components/Pagination/Pagination'
 import { TTask } from '@/types/tasks'
 
-interface DashboardTableProps {
+interface TableProps {
 	data: TTask[] | []
 	pagination: {
 		page: number
@@ -30,10 +30,10 @@ interface DashboardTableProps {
 }
 
 export interface ITableComponentProps {
-	table: Table<TTask>
+	table: TanstackTable<TTask>
 }
 
-const DashboardTable = ({ data, pagination }: DashboardTableProps) => {
+const Table = ({ data, pagination }: TableProps) => {
 	const router = useRouter()
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -83,4 +83,4 @@ const DashboardTable = ({ data, pagination }: DashboardTableProps) => {
 	)
 }
 
-export default DashboardTable
+export default Table

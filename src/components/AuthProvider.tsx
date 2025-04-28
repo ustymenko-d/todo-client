@@ -12,49 +12,44 @@ const AuthProvider = ({
 }>) => {
 	const router = useRouter()
 	const pathname = usePathname()
-
 	const isAuthorized = useAppStore((state) => state.isAuthorized)
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 
-	const { isHomePage, isDashboardPage } = useMemo(
+	const isIndexPage = useMemo(
 		() => ({
-			isHomePage: pathname === '/' || pathname.startsWith('/auth'),
-			isDashboardPage: pathname.startsWith('/dashboard'),
+			isIndexPage: pathname === '/' || pathname.startsWith('/auth'),
 		}),
 		[pathname]
 	)
 
 	const fetchAccountInfo = useCallback(async () => {
 		try {
-			const { data: accountInfo } = await AuthService.getAccountInfo()
-			if (accountInfo) {
-				setAccountInfo(accountInfo)
-				if (!isAuthorized) setIsAuthorized(true)
+			const { data } = await AuthService.getAccountInfo()
+
+			if (data) {
+				setAccountInfo(data)
 			} else {
 				await AuthService.clearAuthCookies()
 				router.push('/')
-				return
 			}
 		} catch (error) {
-			console.error('[AuthProvider] Failed to fetch account info:', error)
+			console.error('Failed to fetch account info:', error)
 		}
-	}, [setAccountInfo, isAuthorized, setIsAuthorized, router])
+	}, [setAccountInfo, router])
 
 	useEffect(() => {
-		if (isHomePage) {
+		if (isIndexPage) {
 			if (isAuthorized) setIsAuthorized(false)
 			if (accountInfo) setAccountInfo(null)
-		}
-
-		if (isDashboardPage && (!isAuthorized || !accountInfo)) {
-			fetchAccountInfo()
+		} else {
+			if (!isAuthorized) setIsAuthorized(true)
+			if (!accountInfo) fetchAccountInfo()
 		}
 	}, [
 		pathname,
-		isHomePage,
-		isDashboardPage,
+		isIndexPage,
 		accountInfo,
 		setAccountInfo,
 		fetchAccountInfo,

@@ -13,8 +13,8 @@ export async function middleware(request: NextRequest) {
 	const wasRefreshed = searchParams.get('refreshed') === 'true'
 	const resetPasswordToken = searchParams.get('resetToken')
 	const verificationToken = searchParams.get('verificationToken')
-	const isAuthPage = pathname === '/' || pathname.startsWith('/auth')
-	const isDashboardPage = pathname.startsWith('/dashboard')
+	const isStartPage = pathname === '/' || pathname.startsWith('/auth')
+	// const isDashboardPage = pathname.startsWith('/dashboard')
 
 	if (verificationToken) {
 		try {
@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
 		return redirectTo('/', request)
 	}
 
-	if (isAuthPage) {
+	if (isStartPage) {
 		if (accessToken && verifyToken(accessToken)) {
 			return redirectTo('/dashboard', request)
 		}
@@ -48,24 +48,24 @@ export async function middleware(request: NextRequest) {
 		})
 	}
 
-	if (isDashboardPage) {
-		if (!accessToken) {
-			return redirectTo('/', request)
-		}
+	// if (isDashboardPage) {
+	// 	if (!accessToken) {
+	// 		return redirectTo('/', request)
+	// 	}
 
-		if (!verifyToken(accessToken)) {
-			if (refreshToken && !wasRefreshed) {
-				const refreshUrl = new URL(
-					'/api/auth/tokens/refresh-tokens',
-					request.url
-				)
-				refreshUrl.searchParams.set('redirect', pathname)
-				return NextResponse.redirect(refreshUrl)
-			}
+	// 	if (!verifyToken(accessToken)) {
+	// 		if (refreshToken && !wasRefreshed) {
+	// 			const refreshUrl = new URL(
+	// 				'/api/auth/tokens/refresh-tokens',
+	// 				request.url
+	// 			)
+	// 			refreshUrl.searchParams.set('redirect', pathname)
+	// 			return NextResponse.redirect(refreshUrl)
+	// 		}
 
-			return redirectTo('/', request)
-		}
-	}
+	// 		return redirectTo('/', request)
+	// 	}
+	// }
 
 	return NextResponse.next({
 		headers: { 'Cache-Control': 'no-store' },
