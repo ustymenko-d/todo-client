@@ -68,6 +68,7 @@ const AuthForm = () => {
 	const isAuthorized = useAppStore((state) => state.isAuthorized)
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
+	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
 	const [loading, setLoading] = useState(false)
 
 	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
@@ -110,15 +111,17 @@ const AuthForm = () => {
 			toast.success(message)
 			setIsAuthorized(true)
 			setAccountInfo(userInfo)
+			setAuthHydrated(true)
 			router.push('/dashboard')
 		},
 		[
 			authFormType,
 			authForm,
 			defaultValues,
-			router,
-			setAccountInfo,
 			setIsAuthorized,
+			setAccountInfo,
+			setAuthHydrated,
+			router,
 		]
 	)
 

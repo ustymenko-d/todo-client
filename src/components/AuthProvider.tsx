@@ -1,63 +1,66 @@
 'use client'
 
-import { useCallback, useEffect, useMemo } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import useAppStore from '@/store/store'
 import AuthService from '@/services/auth.service'
 
-const AuthProvider = ({
-	children,
-}: Readonly<{
-	children: React.ReactNode
-}>) => {
-	const router = useRouter()
+const AuthProvider = () => {
 	const pathname = usePathname()
-	const isAuthorized = useAppStore((state) => state.isAuthorized)
-	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
-	const accountInfo = useAppStore((state) => state.accountInfo)
-	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 
-	const isIndexPage = useMemo(
-		() => ({
-			isIndexPage: pathname === '/' || pathname.startsWith('/auth'),
-		}),
-		[pathname]
-	)
+	const authHydrated = useAppStore((s) => s.authHydrated)
+	const setAuthHydrated = useAppStore((s) => s.setAuthHydrated)
+	const setIsAuthorized = useAppStore((s) => s.setIsAuthorized)
+	const setAccountInfo = useAppStore((s) => s.setAccountInfo)
 
-	const fetchAccountInfo = useCallback(async () => {
-		try {
-			const { data } = await AuthService.getAccountInfo()
-
-			if (data) {
-				setAccountInfo(data)
-			} else {
-				await AuthService.clearAuthCookies()
-				router.push('/')
-			}
-		} catch (error) {
-			console.error('Failed to fetch account info:', error)
-		}
-	}, [setAccountInfo, router])
+	const [storeReady, setStoreReady] = useState(false)
+	const isStartPage = pathname === '/' || pathname.startsWith('/auth')
 
 	useEffect(() => {
-		if (isIndexPage) {
-			if (isAuthorized) setIsAuthorized(false)
-			if (accountInfo) setAccountInfo(null)
-		} else {
-			if (!isAuthorized) setIsAuthorized(true)
-			if (!accountInfo) fetchAccountInfo()
+		const unsub = useAppStore.persist.onFinishHydration(() => {
+			setStoreReady(true)
+		})
+
+		if (useAppStore.persist.hasHydrated()) {
+			setStoreReady(true)
 		}
+
+		return unsub
+	}, [])
+
+	useEffect(() => {
+		if (!storeReady || authHydrated || isStartPage) return
+
+		const fetchAccountData = async () => {
+			try {
+				const { data } = await AuthService.getAccountInfo()
+				if (data?.username) {
+					setAccountInfo(data)
+					setIsAuthorized(true)
+				} else {
+					throw new Error('No user data')
+				}
+			} catch {
+				setIsAuthorized(false)
+				setAccountInfo(null)
+				await AuthService.clearAuthCookies()
+			} finally {
+				setAuthHydrated(true)
+			}
+		}
+		console.log('[AuthProvider] fetch')
+
+		fetchAccountData()
 	}, [
-		pathname,
-		isIndexPage,
-		accountInfo,
+		authHydrated,
+		isStartPage,
 		setAccountInfo,
-		fetchAccountInfo,
-		isAuthorized,
+		setAuthHydrated,
 		setIsAuthorized,
+		storeReady,
 	])
 
-	return <>{children}</>
+	return null
 }
 
 export default AuthProvider

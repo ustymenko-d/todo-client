@@ -22,6 +22,8 @@ const MainMenu = () => {
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
+	const authHydrated = useAppStore((state) => state.authHydrated)
+	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
 	const [loading, setLoading] = useState<boolean>(false)
 
 	const handleLogout = async () => {
@@ -33,6 +35,7 @@ const MainMenu = () => {
 				toast.success(message)
 				setIsAuthorized(false)
 				setAccountInfo(null)
+				if (!authHydrated) setAuthHydrated(true)
 				router.push('/')
 			}
 		} catch (error) {

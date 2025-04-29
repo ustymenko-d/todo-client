@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
 	}
 
 	if (isStartPage) {
-		if (accessToken && verifyToken(accessToken)) {
+		if (verifyToken(accessToken)) {
 			return redirectTo('/dashboard', request)
 		}
 

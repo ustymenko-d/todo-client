@@ -1,6 +1,9 @@
 import { TAuthFormType, IUserInfo } from '@/types/auth'
 
 export interface AuthSlice {
+	authHydrated: boolean
+	setAuthHydrated: (newValue: boolean) => void
+
 	isAuthorized: boolean
 	setIsAuthorized: (newValue: boolean) => void
 
@@ -21,11 +24,13 @@ const createAuthSlice = (
 		partial: Partial<AuthSlice> | ((state: AuthSlice) => Partial<AuthSlice>)
 	) => void
 ): AuthSlice => ({
+	authHydrated: false,
+	setAuthHydrated: (authHydrated) => set({ authHydrated }),
+
 	isAuthorized: false,
 	setIsAuthorized: (isAuthorized) => set({ isAuthorized }),
 
 	accountInfo: null,
-	// setAccountInfo: (accountInfo) => set({ accountInfo }),
 	setAccountInfo: (accountInfoOrUpdater) =>
 		set((state) => ({
 			accountInfo:
