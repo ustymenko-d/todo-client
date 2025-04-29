@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/table'
 import columns from './Columns/Columns'
 import Row from './Row'
-import { ITableComponentProps } from '@/components/TablePage/Table/Table'
+import { ITableComponentProps } from '@/components/TablePage/Table'
 
 const Body = ({ table }: ITableComponentProps) => {
 	const rows = table.getRowModel().rows

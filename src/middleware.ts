@@ -3,7 +3,7 @@ import verifyToken from './utils/tokens'
 import AuthService from './services/auth.service'
 
 export const config = {
-	matcher: ['/', '/auth/:path*', '/dashboard', '/table', '/settings'],
+	matcher: ['/', '/auth/:path*', '/home', '/table', '/settings'],
 }
 
 export const redirectTo = (url: string, request: NextRequest) =>
@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest) {
 
 	if (isStartPage) {
 		if (verifyToken(accessToken)) {
-			return redirectTo('/dashboard', request)
+			return redirectTo('/home', request)
 		}
 
 		if (refreshToken && !wasRefreshed) {

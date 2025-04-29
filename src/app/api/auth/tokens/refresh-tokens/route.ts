@@ -3,8 +3,7 @@ import RequestHandler from '@/utils/RequestHandler'
 import { splitCookiesString, parse } from 'set-cookie-parser'
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {
-	const redirectPath =
-		request.nextUrl.searchParams.get('redirect') || '/dashboard'
+	const redirectPath = request.nextUrl.searchParams.get('redirect') || '/home'
 	const redirectUrl = new URL(redirectPath, request.nextUrl.origin)
 
 	console.log('[Refresh] Starting token refresh...')

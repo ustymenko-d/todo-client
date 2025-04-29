@@ -7,7 +7,7 @@ import {
 import PaginationSelect from './PaginationSelect'
 import { ReactElement } from 'react'
 import { Button } from '@/components/ui/button'
-import { ITableComponentProps } from '@/components/TablePage/Table/Table'
+import { ITableComponentProps } from '@/components/TablePage/Table'
 
 const Pagination = ({ table }: ITableComponentProps) => {
 	const { pageIndex } = table.getState().pagination

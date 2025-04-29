@@ -1,10 +1,9 @@
 import TasksService from '@/services/tasks.service'
 import { stringToBoolean } from '@/utils/formatting'
 import { cookies } from 'next/headers'
-import Head from '@/components/TablePage/Head'
 import EmptyPlaceholder from '@/components/TablePage/EmptyPlaceholder'
 import TaskEditor from '@/components/Tasks/Editor/Editor'
-import Table from '@/components/TablePage/Table/Table'
+import Table from '@/components/TablePage/Table'
 
 interface TablePageProps {
 	searchParams: Promise<{
@@ -51,7 +50,6 @@ const TablePage = async ({ searchParams }: TablePageProps) => {
 
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
-			<Head />
 			{data ? (
 				<Table
 					data={tasks}

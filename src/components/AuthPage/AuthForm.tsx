@@ -112,7 +112,7 @@ const AuthForm = () => {
 			setIsAuthorized(true)
 			setAccountInfo(userInfo)
 			setAuthHydrated(true)
-			router.push('/dashboard')
+			router.push('/home')
 		},
 		[
 			authFormType,

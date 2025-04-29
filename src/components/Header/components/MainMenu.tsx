@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import useAppStore from '@/store/store'
 import AuthService from '@/services/auth.service'
 import { toast } from 'sonner'
@@ -12,12 +12,13 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import AccountGroup from '@/components/Header/components/AccountGroup'
-import FoldersGroup from '@/components/Header/components/FoldersGroup'
 import { Loader2, LogOut, Menu } from 'lucide-react'
+import Link from 'next/link'
+import { navItems } from '@/const'
 
 const MainMenu = () => {
 	const router = useRouter()
+	const pathname = usePathname()
 	const isAuthorized = useAppStore((state) => state.isAuthorized)
 	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const accountInfo = useAppStore((state) => state.accountInfo)
@@ -66,8 +67,32 @@ const MainMenu = () => {
 					</span>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<AccountGroup />
-				<FoldersGroup />
+				<DropdownMenuGroup className='flex flex-col gap-1'>
+					{navItems.map(({ href, label, icon: Icon }) => {
+						const isActive = pathname === href
+
+						return (
+							<DropdownMenuItem
+								key={href}
+								asChild>
+								<Link
+									href={href}
+									className={`flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm ${
+										isActive
+											? 'bg-muted text-primary font-medium'
+											: 'hover:bg-accent'
+									}`}>
+									<Icon
+										strokeWidth={1.5}
+										className='!w-5 !h-5 opacity-60'
+									/>
+									{label}
+								</Link>
+							</DropdownMenuItem>
+						)
+					})}
+				</DropdownMenuGroup>
+
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					disabled={loading || !isAuthorized}
@@ -76,10 +101,13 @@ const MainMenu = () => {
 					{loading ? (
 						<Loader2
 							strokeWidth={1.5}
-							className='animate-spin opacity-60'
+							className='!w-5 !h-5 animate-spin opacity-60'
 						/>
 					) : (
-						<LogOut className='opacity-60' />
+						<LogOut
+							strokeWidth={1.5}
+							className='!w-5 !h-5 opacity-60'
+						/>
 					)}
 					Log out
 				</DropdownMenuItem>

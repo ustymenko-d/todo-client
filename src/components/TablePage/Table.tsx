@@ -14,10 +14,10 @@ import {
 	useReactTable,
 	VisibilityState,
 } from '@tanstack/react-table'
-import columns from '@/components/TablePage/Table/components/Columns/Columns'
-import Head from '@/components/TablePage/Table/components/Head'
-import Body from '@/components/TablePage/Table/components/Body'
-import Pagination from '@/components/TablePage/Table/components/Pagination/Pagination'
+import columns from '@/components/TablePage/components/Columns/Columns'
+import Head from '@/components/TablePage/components/Head'
+import Body from '@/components/TablePage/components/Body'
+import Pagination from '@/components/TablePage/components/Pagination/Pagination'
 import { TTask } from '@/types/tasks'
 
 interface TableProps {
