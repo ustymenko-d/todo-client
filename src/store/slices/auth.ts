@@ -14,9 +14,6 @@ export interface AuthSlice {
 
 	authFormType: TAuthFormType
 	setAuthFormType: (newValue: TAuthFormType) => void
-
-	isOpenAccountDialog: boolean
-	setIsOpenAccountDialog: (newValue: boolean) => void
 }
 
 const createAuthSlice = (
@@ -41,9 +38,6 @@ const createAuthSlice = (
 
 	authFormType: 'login',
 	setAuthFormType: (authFormType) => set({ authFormType }),
-
-	isOpenAccountDialog: false,
-	setIsOpenAccountDialog: (isOpenAccountDialog) => set({ isOpenAccountDialog }),
 })
 
 export default createAuthSlice
