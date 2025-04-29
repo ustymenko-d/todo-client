@@ -24,7 +24,7 @@ export const navItems: TNavItem[] = [
 		href: '/folders',
 		label: 'Folders',
 		icon: Folder,
-		description: 'Organize and manage your folders efficiently',
+		description: 'Manage and organize your folders efficiently',
 	},
 	{
 		href: '/settings',

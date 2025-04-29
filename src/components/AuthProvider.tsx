@@ -8,10 +8,10 @@ import AuthService from '@/services/auth.service'
 const AuthProvider = () => {
 	const pathname = usePathname()
 
-	const authHydrated = useAppStore((s) => s.authHydrated)
-	const setAuthHydrated = useAppStore((s) => s.setAuthHydrated)
-	const setIsAuthorized = useAppStore((s) => s.setIsAuthorized)
-	const setAccountInfo = useAppStore((s) => s.setAccountInfo)
+	const authHydrated = useAppStore((state) => state.authHydrated)
+	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
+	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
+	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 
 	const [storeReady, setStoreReady] = useState(false)
 	const isStartPage = pathname === '/' || pathname.startsWith('/auth')

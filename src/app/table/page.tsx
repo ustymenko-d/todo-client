@@ -50,6 +50,15 @@ const TablePage = async ({ searchParams }: TablePageProps) => {
 
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
+			<div className='flex flex-col'>
+				<h1 className='text-xl font-semibold tracking-tight'>
+					Manage your tasks
+				</h1>
+				<p className='text-base text-muted-foreground'>
+					Here&apos;s a list of your tasks:
+				</p>
+			</div>
+
 			{data ? (
 				<Table
 					data={tasks}

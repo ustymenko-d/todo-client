@@ -17,6 +17,9 @@ interface DeleteDialogProps extends ComponentProps<typeof AlertDialog> {
 	loading: boolean
 	disabled?: boolean
 	needTrigger?: boolean
+	deleteTarget?: 'task' | 'folder'
+	title?: string
+	description?: string
 }
 
 const DeleteDialog = ({
@@ -24,6 +27,7 @@ const DeleteDialog = ({
 	loading,
 	disabled,
 	needTrigger,
+	deleteTarget,
 	...props
 }: DeleteDialogProps) => (
 	<AlertDialog {...props}>
@@ -40,10 +44,11 @@ const DeleteDialog = ({
 		<AlertDialogContent>
 			<AlertDialogHeader>
 				<AlertDialogTitle>
-					Are you sure you want to delete this task?
+					Are you sure you want to delete this {deleteTarget}?
 				</AlertDialogTitle>
 				<AlertDialogDescription>
-					This action cannot be undone. This will permanently delete your task.
+					This action cannot be undone. This will permanently delete your{' '}
+					{deleteTarget}.
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter>

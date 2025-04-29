@@ -6,8 +6,6 @@ import useAppStore from '@/store/store'
 import Link from 'next/link'
 import MainMenu from '@/components/Header/components/MainMenu'
 import ThemeToggle from '@/components/theme/ThemeToggle'
-import AccountDialog from '@/components/Account/AccountDialog'
-import FoldersDialog from '@/components/Folders/FoldersDialog'
 import { ChevronLeft } from 'lucide-react'
 
 const Header = () => {
@@ -27,13 +25,7 @@ const Header = () => {
 						<ChevronLeft />
 					</Link>
 				)}
-				{isAuthorized && (
-					<>
-						<MainMenu />
-						<AccountDialog />
-						<FoldersDialog />
-					</>
-				)}
+				{isAuthorized && <MainMenu />}
 				<ThemeToggle />
 			</div>
 		</header>

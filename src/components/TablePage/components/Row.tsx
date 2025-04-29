@@ -75,6 +75,7 @@ const Row = ({ row }: { row: TanstackRow<TTask> }) => {
 				handleDelete={() => handleTaskAction('delete')}
 				loading={dialogState.loading === 'pending'}
 				disabled={dialogState.loading === 'success'}
+				deleteTarget='task'
 				open={dialogState.openAlert}
 				onOpenChange={(openAlert: boolean) =>
 					setDialogState((prev) => ({ ...prev, openAlert }))

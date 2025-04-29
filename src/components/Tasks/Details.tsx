@@ -179,6 +179,7 @@ const Details = ({ task }: { task: TTask }) => {
 					handleDelete={() => handleTaskAction('delete')}
 					loading={deleting}
 					needTrigger
+					deleteTarget='task'
 				/>
 			</DialogFooter>
 		</DialogContent>
