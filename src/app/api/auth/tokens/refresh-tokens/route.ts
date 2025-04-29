@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import RequestHandler from '@/utils/RequestHandler'
+import { splitCookiesString, parse } from 'set-cookie-parser'
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {
-	const redirectBackTo = getRedirectPath(request)
-	const redirectUrl = buildRedirectUrl(request, redirectBackTo)
+	const redirectPath =
+		request.nextUrl.searchParams.get('redirect') || '/dashboard'
+	const redirectUrl = new URL(redirectPath, request.nextUrl.origin)
+
+	console.log('[Refresh] Starting token refresh...')
+	console.log('[Refresh] Redirecting to:', redirectUrl.toString())
 
 	try {
 		const response = await RequestHandler.request(
@@ -14,9 +19,12 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 
 		const setCookie = response.headers.get('set-cookie')
 
-		if (setCookie) return buildRedirectResponse(redirectUrl, setCookie)
+		if (setCookie) {
+			console.log('[Refresh] Tokens refreshed successfully')
+			return buildRedirectResponse(redirectUrl, setCookie)
+		}
 	} catch (error) {
-		console.error('[Token refresh failed]', {
+		console.error('[Refresh] Token refresh failed:', {
 			error,
 			requestUrl: request.nextUrl.href,
 		})
@@ -25,18 +33,47 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 	return buildFallbackResponse(request)
 }
 
-const getRedirectPath = (request: NextRequest): string =>
-	request.nextUrl.searchParams.get('redirect') || '/dashboard'
-
-const buildRedirectUrl = (request: NextRequest, path: string): URL => {
-	const url = new URL(path, request.nextUrl.origin)
-	url.searchParams.set('refreshed', 'true')
-	return url
-}
-
-const buildRedirectResponse = (url: URL, setCookie: string): NextResponse => {
+export const buildRedirectResponse = (
+	url: URL,
+	setCookieHeader: string
+): NextResponse => {
 	const response = NextResponse.redirect(url)
-	response.headers.set('set-cookie', setCookie)
+	const cookies = splitCookiesString(setCookieHeader)
+
+	for (const rawCookie of cookies) {
+		const { name, value, ...options } = parse(rawCookie)[0]
+
+		let sameSite: 'lax' | 'strict' | 'none' | undefined
+		switch ((options.sameSite || '').toLowerCase()) {
+			case 'lax':
+				sameSite = 'lax'
+				break
+			case 'strict':
+				sameSite = 'strict'
+				break
+			case 'none':
+				sameSite = 'none'
+				break
+			default:
+				sameSite = undefined
+		}
+
+		response.cookies.set(name, value, {
+			httpOnly: options.httpOnly,
+			sameSite,
+			path: options.path || '/',
+			maxAge: options.maxAge,
+			secure: options.secure,
+		})
+	}
+
+	response.cookies.set('refreshed', 'true', {
+		httpOnly: true,
+		path: '/',
+		sameSite: 'lax',
+		maxAge: 60,
+	})
+
 	return response
 }
 
@@ -46,6 +83,8 @@ const buildFallbackResponse = (request: NextRequest): NextResponse => {
 
 	response.cookies.set('access_token', '', { maxAge: 0, path: '/' })
 	response.cookies.set('refresh_token', '', { maxAge: 0, path: '/' })
+	response.cookies.set('refreshed', '', { maxAge: 0, path: '/' })
+	console.warn('[Refresh] Redirected to fallback, tokens cleared.')
 
 	return response
 }
