@@ -32,7 +32,7 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 	return buildFallbackResponse(request)
 }
 
-export const buildRedirectResponse = (
+const buildRedirectResponse = (
 	url: URL,
 	setCookieHeader: string
 ): NextResponse => {
