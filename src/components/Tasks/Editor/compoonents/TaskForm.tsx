@@ -42,6 +42,10 @@ const TaskForm = () => {
 			parentTaskId: isEditing
 				? selectedTask?.parentTaskId
 				: selectedTask?.id || null,
+			startDate:
+				isEditing && selectedTask?.startDate
+					? new Date(selectedTask.startDate)
+					: null,
 			expiresDate:
 				isEditing && selectedTask?.expiresDate
 					? new Date(selectedTask.expiresDate)
@@ -75,7 +79,6 @@ const TaskForm = () => {
 		try {
 			setStatus('pending')
 			const payload = createPayload(values)
-			console.log(payload)
 
 			const { data } =
 				mode === 'create'
@@ -95,6 +98,7 @@ const TaskForm = () => {
 				if (pathname === '/table') router.refresh()
 			} else {
 				toast.error('Failed to process task')
+				setStatus('error')
 			}
 		} catch (error) {
 			console.error(`Error while processing a task: ${error}`)
@@ -122,11 +126,11 @@ const TaskForm = () => {
 					<div className='grid grid-cols-2 gap-3'>
 						<FormField
 							control={taskForm.control}
-							name='expiresDate'
+							name='startDate'
 							render={({ field }) => (
 								<FormItem className='flex flex-col gap-1'>
 									<FormLabel className='text-muted-foreground'>
-										Set expires date:
+										Start date:
 									</FormLabel>
 									<FormControl>
 										<FormDatePicker field={field} />
@@ -135,20 +139,35 @@ const TaskForm = () => {
 								</FormItem>
 							)}
 						/>
+
 						<FormField
 							control={taskForm.control}
-							name='folderId'
+							name='expiresDate'
 							render={({ field }) => (
 								<FormItem className='flex flex-col gap-1'>
 									<FormLabel className='text-muted-foreground'>
-										Folder:
+										Expires date:
 									</FormLabel>
-									<FormSelect field={field} />
+									<FormControl>
+										<FormDatePicker field={field} />
+									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 					</div>
+
+					<FormField
+						control={taskForm.control}
+						name='folderId'
+						render={({ field }) => (
+							<FormItem className='flex flex-col gap-1'>
+								<FormLabel className='text-muted-foreground'>Folder:</FormLabel>
+								<FormSelect field={field} />
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
 					<LoadingButton
 						loading={status === 'pending'}

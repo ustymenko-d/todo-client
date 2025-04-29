@@ -21,7 +21,7 @@ import { CalendarIcon } from 'lucide-react'
 import { TTaskBase } from '@/types/tasks'
 
 interface FormDatePickerProps {
-	field: ControllerRenderProps<TTaskBase, 'expiresDate'>
+	field: ControllerRenderProps<TTaskBase, 'expiresDate' | 'startDate'>
 }
 
 const FormDatePicker = ({ field }: FormDatePickerProps) => {
@@ -42,13 +42,18 @@ const FormDatePicker = ({ field }: FormDatePickerProps) => {
 				align='start'
 				className='flex w-auto flex-col space-y-2 p-2'>
 				<Select
-					onValueChange={(value) =>
-						field.onChange(addDays(new Date(), parseInt(value)))
-					}>
+					onValueChange={(value) => {
+						if (value === 'null') {
+							field.onChange(null)
+						} else {
+							field.onChange(addDays(new Date(), parseInt(value)))
+						}
+					}}>
 					<SelectTrigger>
 						<SelectValue placeholder='Select' />
 					</SelectTrigger>
 					<SelectContent position='popper'>
+						<SelectItem value='null'>No Date</SelectItem>
 						<SelectItem value='0'>Today</SelectItem>
 						<SelectItem value='1'>Tomorrow</SelectItem>
 						<SelectItem value='7'>In a week</SelectItem>

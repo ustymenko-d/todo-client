@@ -1,16 +1,27 @@
 import { z } from 'zod'
 
+const validateDates = (data: {
+	startDate?: Date | null
+	expiresDate?: Date | null
+}) => {
+	if (!data.startDate || !data.expiresDate) return true
+	return data.expiresDate >= data.startDate
+}
+
+const expiresAfterStartRefine = {
+	message: 'The expires date must be the same as or later than start date',
+	path: ['expiresDate'],
+}
+
 const getTasksRequest = z.object({
 	page: z
 		.number()
 		.int({ message: 'Must be an integer.' })
-		.positive({ message: 'Must be a positive number greater than zero.' })
 		.min(1, { message: 'Must be at least 1.' }),
 
 	limit: z
 		.number()
 		.int({ message: 'Must be an integer.' })
-		.positive({ message: 'Must be a positive number greater than zero.' })
 		.min(1, { message: 'Must be at least 1.' }),
 
 	title: z
@@ -27,8 +38,8 @@ const getTasksRequest = z.object({
 	folderId: z.string().uuid().nullable().optional(),
 })
 
-const taskBase = z.object({
-	title: z.string().nonempty().max(50),
+const taskBaseSchema = z.object({
+	title: z.string().nonempty({ message: 'Title is required.' }).max(50),
 
 	description: z.string().max(300).nullable().optional(),
 
@@ -43,11 +54,15 @@ const taskBase = z.object({
 	folderId: z.string().uuid().nullable().optional(),
 })
 
-const task = taskBase.extend({
-	id: z.string(),
-	userId: z.string(),
-	subtasks: z.array(z.lazy((): z.ZodSchema => task)),
-})
+const taskBase = taskBaseSchema.refine(validateDates, expiresAfterStartRefine)
+
+const task = taskBaseSchema
+	.extend({
+		id: z.string(),
+		userId: z.string(),
+		subtasks: z.array(z.lazy((): z.ZodSchema => task)),
+	})
+	.refine(validateDates, expiresAfterStartRefine)
 
 const TasksValidation = {
 	getTasksRequest,
