@@ -17,7 +17,7 @@ interface DeleteDialogProps extends ComponentProps<typeof AlertDialog> {
 	loading: boolean
 	disabled?: boolean
 	needTrigger?: boolean
-	deleteTarget?: 'task' | 'folder'
+	deleteTarget?: 'task' | 'folder' | 'account'
 	title?: string
 	description?: string
 }

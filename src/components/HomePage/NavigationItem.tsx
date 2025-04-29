@@ -15,7 +15,7 @@ const NavigationItem = ({ navItem }: { navItem: TNavItem }) => {
 				<Icon
 					size={40}
 					strokeWidth={1}
-					className='opacity-60'
+					className='opacity-50'
 				/>
 				<CardTitle>{label}</CardTitle>
 				<CardDescription className='hidden sm:inline-block'>
