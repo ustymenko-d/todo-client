@@ -6,12 +6,12 @@ const UnverifiedInfo = () => {
 	return (
 		<div className='flex flex-col gap-1'>
 			<p className='text-base'>
-				To verify your account, check the email specified during registration (
-				{accountInfo?.email}). An unverified account will be deleted three days
-				after registration.
+				Please check the email address you provided during registration (
+				{accountInfo?.email}). Accounts with unverified emails will be deleted
+				three days after registration.
 			</p>
 			<ul
-				className='list-with-title text-muted-foreground list-disc'
+				className='list-disc list-with-title text-muted-foreground'
 				aria-label='Restrictions for unverified users:'>
 				<li className='ml-5'>cannot create more than ten tasks</li>
 				<li className='ml-5'>cannot create more than three folders</li>
