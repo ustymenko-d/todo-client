@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Loader2, LogOut, Menu } from 'lucide-react'
 import Link from 'next/link'
 import { navItems } from '@/const'
+import VerificationBadge from '@/components/SettingsPage/components/VerificationBadge'
 
 const MainMenu = () => {
 	const router = useRouter()
@@ -61,8 +62,11 @@ const MainMenu = () => {
 				align='start'
 				className=''>
 				<DropdownMenuGroup className='flex flex-col px-3 py-2'>
-					<span className='font-medium'>{accountInfo?.username}</span>
-					<span className='font-light opacity-70 text-sm'>
+					<div className='flex items-center gap-2'>
+						<span className='font-medium'>{accountInfo?.username}</span>
+						<VerificationBadge />
+					</div>
+					<span className='text-sm font-light opacity-70'>
 						{accountInfo?.email}
 					</span>
 				</DropdownMenuGroup>
