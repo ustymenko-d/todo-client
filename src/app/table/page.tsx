@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import EmptyPlaceholder from '@/components/TablePage/EmptyPlaceholder'
 import TaskEditor from '@/components/Tasks/Editor/Editor'
 import Table from '@/components/TablePage/Table'
+import PageHead from '@/components/PageHead'
 
 interface TablePageProps {
 	searchParams: Promise<{
@@ -50,14 +51,7 @@ const TablePage = async ({ searchParams }: TablePageProps) => {
 
 	return (
 		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
-			<div className='flex flex-col'>
-				<h1 className='text-xl font-semibold tracking-tight'>
-					Manage your tasks
-				</h1>
-				<p className='text-base text-muted-foreground'>
-					Here&apos;s a list of your tasks:
-				</p>
-			</div>
+			<PageHead subject='tasks' />
 
 			{data ? (
 				<Table
