@@ -1,13 +1,12 @@
 'use client'
 
 import useAppStore from '@/store/store'
-import { IUserInfo } from '@/types/auth'
 import { Separator } from '@/components/ui/separator'
 import UnverifiedInfo from '@/components/SettingsPage/components/UnverifiedInfo'
 
 const UnverifiedAlert = () => {
 	const accountInfo = useAppStore((state) => state.accountInfo)
-	const { isVerified } = accountInfo as IUserInfo
+	const isVerified = accountInfo?.isVerified ?? null
 
 	if (isVerified) return null
 
