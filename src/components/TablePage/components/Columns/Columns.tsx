@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import Header from './Header'
 import FolderCell from './FolderCell'
 import { TTask } from '@/types/tasks'
-import { ChevronRight, CircleCheckBig, Hourglass } from 'lucide-react'
+import { ChevronRight, CircleCheck, Loader } from 'lucide-react'
 
 const columns: ColumnDef<TTask>[] = [
 	{
@@ -61,19 +61,19 @@ const columns: ColumnDef<TTask>[] = [
 			return (
 				<div className='flex items-center gap-2'>
 					{completed ? (
-						<CircleCheckBig
-							className='text-muted-foreground'
-							size={18}
+						<CircleCheck
+							className='text-green-500 dark:text-green-400'
+							size={16}
 							strokeWidth={1}
 						/>
 					) : (
-						<Hourglass
+						<Loader
 							className='text-muted-foreground'
-							size={18}
+							size={16}
 							strokeWidth={1}
 						/>
 					)}
-					{completed ? 'Done' : 'In Progress'}
+					{completed ? 'Done' : 'In Process'}
 				</div>
 			)
 		},

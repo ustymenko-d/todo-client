@@ -123,7 +123,7 @@ const Details = ({ task }: { task: TTask }) => {
 								<SelectItem
 									disabled={!completed}
 									value='in-progress'>
-									In Progress
+									In Process
 								</SelectItem>
 							</SelectGroup>
 						</SelectContent>

@@ -12,7 +12,7 @@ const RootPage = () => (
 		</div>
 
 		<div className='flex flex-col gap-2'>
-			<p className='text-base text-center xl:text-lg'>
+			<p className='text-base text-center xl:text-lg text-muted-foreground'>
 				Please log in to your account or create a new one to continue.
 			</p>
 
