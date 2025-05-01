@@ -28,7 +28,7 @@ const columns: ColumnDef<TTask>[] = [
 						<Button
 							size='icon'
 							variant='ghost'
-							className='w-7 h-7'
+							className='w-6 h-6'
 							onClick={(e) => {
 								e.stopPropagation()
 								row.getToggleExpandedHandler()?.()
@@ -73,7 +73,7 @@ const columns: ColumnDef<TTask>[] = [
 							strokeWidth={1}
 						/>
 					)}
-					{completed ? 'Done' : 'In Process'}
+					{completed ? 'Done' : 'In\u00A0Process'}
 				</div>
 			)
 		},

@@ -54,7 +54,7 @@ const formConfig: Record<TAuthFormType, IFormConfig> = {
 	},
 	forgotPassword: {
 		fields: ['email'],
-		buttonText: 'Send reset password email',
+		buttonText: 'Send a password reset email',
 		validationSchema: AuthValidation.email,
 		defaultValues: {
 			email: '',

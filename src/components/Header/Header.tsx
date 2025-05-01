@@ -25,7 +25,9 @@ const Header = () => {
 						<ChevronLeft />
 					</Link>
 				)}
-				{isAuthorized && <MainMenu />}
+				{isAuthorized && !pathname.startsWith('/auth') && pathname !== '/' && (
+					<MainMenu />
+				)}
 				<ThemeToggle />
 			</div>
 		</header>

@@ -8,7 +8,7 @@ const UnverifiedAlert = () => {
 	const accountInfo = useAppStore((state) => state.accountInfo)
 	const isVerified = accountInfo?.isVerified ?? null
 
-	if (isVerified) return null
+	if (!accountInfo || isVerified) return null
 
 	return (
 		<div className='pt-4'>

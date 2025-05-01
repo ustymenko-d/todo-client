@@ -78,20 +78,27 @@ const MainMenu = () => {
 						return (
 							<DropdownMenuItem
 								key={href}
-								asChild>
-								<Link
-									href={href}
-									className={`flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm ${
-										isActive
-											? 'bg-muted text-primary font-medium'
-											: 'hover:bg-accent'
-									}`}>
-									<Icon
-										strokeWidth={1.5}
-										className='!w-5 !h-5 opacity-60'
-									/>
-									{label}
-								</Link>
+								asChild
+								className={isActive ? 'cursor-default' : ''}>
+								{isActive ? (
+									<div className='flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm bg-muted text-primary font-medium'>
+										<Icon
+											strokeWidth={1.5}
+											className='!w-5 !h-5 opacity-60'
+										/>
+										{label}
+									</div>
+								) : (
+									<Link
+										href={href}
+										className='flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm hover:bg-accent'>
+										<Icon
+											strokeWidth={1.5}
+											className='!w-5 !h-5 opacity-60'
+										/>
+										{label}
+									</Link>
+								)}
 							</DropdownMenuItem>
 						)
 					})}
