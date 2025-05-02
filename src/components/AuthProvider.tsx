@@ -48,7 +48,6 @@ const AuthProvider = () => {
 				setAuthHydrated(true)
 			}
 		}
-		console.log('[AuthProvider] fetch')
 
 		fetchAccountData()
 	}, [

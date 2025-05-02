@@ -97,7 +97,7 @@ const TaskForm = () => {
 				closeTaskEditor()
 				if (pathname === '/table') router.refresh()
 			} else {
-				toast.error('Failed to process task')
+				toast.error(data?.message || 'Failed to process task')
 				setStatus('error')
 			}
 		} catch (error) {
