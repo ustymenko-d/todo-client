@@ -1,11 +1,12 @@
-import Body from '@/components/SettingsPage/Body'
+import PageSection from '@/components/ui/PageSection'
 import Head from '@/components/SettingsPage/Head'
+import Body from '@/components/SettingsPage/Body'
 
 const SettingsPage = () => (
-	<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
+	<PageSection>
 		<Head />
 		<Body />
-	</section>
+	</PageSection>
 )
 
 export default SettingsPage

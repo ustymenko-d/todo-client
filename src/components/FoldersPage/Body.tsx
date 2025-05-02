@@ -43,7 +43,7 @@ const Body = () => {
 	if (!accountInfo?.folders?.length) return <EmptyPlaceholder />
 
 	return (
-		<div className='mt-4 w-full flex flex-col gap-2 lg:gap-4'>
+		<div className='grid w-full gap-2 mt-4 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>
 			{accountInfo?.folders?.map((folder) => (
 				<FolderCard
 					key={folder.id}

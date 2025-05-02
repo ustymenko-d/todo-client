@@ -1,13 +1,14 @@
-import Body from '@/components/FoldersPage/Body'
+import PageSection from '@/components/ui/PageSection'
 import Head from '@/components/FoldersPage/Head'
+import Body from '@/components/FoldersPage/Body'
 import Editor from '@/components/FoldersPage/components/Editor'
 
 const FoldersPage = () => (
-	<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
+	<PageSection>
 		<Head />
 		<Body />
 		<Editor />
-	</section>
+	</PageSection>
 )
 
 export default FoldersPage

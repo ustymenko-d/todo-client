@@ -1,10 +1,11 @@
-import TasksService from '@/services/tasks.service'
-import { stringToBoolean } from '@/utils/formatting'
 import { cookies } from 'next/headers'
-import EmptyPlaceholder from '@/components/TablePage/EmptyPlaceholder'
-import TaskEditor from '@/components/Tasks/Editor/Editor'
-import Table from '@/components/TablePage/Table'
+import { stringToBoolean } from '@/utils/formatting'
+import TasksService from '@/services/tasks.service'
+import PageSection from '@/components/ui/PageSection'
 import PageHead from '@/components/PageHead'
+import EmptyPlaceholder from '@/components/TablePage/EmptyPlaceholder'
+import Table from '@/components/TablePage/Table'
+import TaskEditor from '@/components/Tasks/Editor/Editor'
 
 interface TablePageProps {
 	searchParams: Promise<{
@@ -50,7 +51,7 @@ const TablePage = async ({ searchParams }: TablePageProps) => {
 	const { tasks, pages } = data
 
 	return (
-		<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8'>
+		<PageSection>
 			<PageHead subject='tasks' />
 
 			{data ? (
@@ -62,7 +63,7 @@ const TablePage = async ({ searchParams }: TablePageProps) => {
 				<EmptyPlaceholder />
 			)}
 			<TaskEditor />
-		</section>
+		</PageSection>
 	)
 }
 

@@ -1,3 +1,4 @@
+import PageSection from '@/components/ui/PageSection'
 import Head from '@/components/HomePage/Head'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import NavigationItem from '@/components/HomePage/NavigationItem'
@@ -6,7 +7,7 @@ import { navItems, TNavItem } from '@/const'
 import { LayoutGrid } from 'lucide-react'
 
 const HomePage = () => (
-	<section className='w-full overflow-hidden rounded-[0.5rem] border bg-background shadow gap-3 grow p-2 sm:p-4 lg:p-8 flex flex-col'>
+	<PageSection>
 		<Head />
 		<div className='grid grid-cols-2 gap-4 pt-4 md:grid-cols-3 xl:grid-cols-4'>
 			<Card className='h-full p-4 flex flex-col gap-2 items-center text-center bg-muted text-primary font-medium cursor-default'>
@@ -31,7 +32,7 @@ const HomePage = () => (
 			)}
 		</div>
 		<UnverifiedAlert />
-	</section>
+	</PageSection>
 )
 
 export default HomePage
