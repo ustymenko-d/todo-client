@@ -10,7 +10,7 @@ import { ChevronLeft } from 'lucide-react'
 
 const Header = () => {
 	const pathname = usePathname()
-	const isAuthorized = useAppStore((state) => state.isAuthorized)
+	const accountInfo = useAppStore((state) => state.accountInfo)
 
 	return (
 		<header className='sticky top-0 z-10 border-b border-dashed backdrop-blur'>
@@ -25,7 +25,7 @@ const Header = () => {
 						<ChevronLeft />
 					</Link>
 				)}
-				{isAuthorized && !pathname.startsWith('/auth') && pathname !== '/' && (
+				{accountInfo && !pathname.startsWith('/auth') && pathname !== '/' && (
 					<MainMenu />
 				)}
 				<ThemeToggle />

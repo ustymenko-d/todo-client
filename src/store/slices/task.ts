@@ -14,12 +14,21 @@ export interface TaskSlice {
 const taskEditorSettings = getDefaultEditorSettings<TTask>()
 
 const createTaskSlice = (
-	set: (partial: Partial<TaskSlice>) => void
+	set: (
+		partial: Partial<TaskSlice> | ((state: TaskSlice) => Partial<TaskSlice>)
+	) => void
 ): TaskSlice => ({
 	taskEditorSettings,
 	openTaskEditor: (mode, target) =>
 		set({ taskEditorSettings: { open: true, mode, target } }),
-	closeTaskEditor: () => set({ taskEditorSettings }),
+	closeTaskEditor: () =>
+		set((state) => ({
+			taskEditorSettings: {
+				...state.taskEditorSettings,
+				open: false,
+				target: null,
+			},
+		})),
 
 	searchTerm: '',
 	setSearchTerm: (searchTerm) => set({ searchTerm }),

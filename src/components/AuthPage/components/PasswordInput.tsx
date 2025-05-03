@@ -1,5 +1,3 @@
-'use client'
-
 import { InputHTMLAttributes, ReactNode, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
@@ -9,7 +7,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Button } from './button'
+import { Button } from '../../ui/button'
 import useAppStore from '@/store/store'
 
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -30,7 +28,7 @@ const PasswordInput = ({
 		<div className='grid gap-2'>
 			<div className='flex items-center'>
 				{labelNode}
-				{authFormType === 'login' && forgotBtn && (
+				{authFormType === 'signin' && forgotBtn && (
 					<Button
 						type='button'
 						onClick={() => setAuthFormType('forgotPassword')}

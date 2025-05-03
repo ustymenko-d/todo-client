@@ -11,9 +11,10 @@ import {
 import Form from './Form'
 
 const Editor = () => {
-	const isOpen = useAppStore((state) => state.folderEditorSettings.open)
+	const { open: isOpen, mode } = useAppStore(
+		(state) => state.folderEditorSettings
+	)
 	const closeEditor = useAppStore((state) => state.closeFolderEditor)
-	const mode = useAppStore((state) => state.folderEditorSettings.mode)
 
 	return (
 		<Dialog

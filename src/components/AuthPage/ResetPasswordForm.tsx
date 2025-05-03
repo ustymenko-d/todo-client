@@ -14,7 +14,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import PasswordInput from '@/components/ui/PasswordInput'
+import PasswordInput from '@/components/AuthPage/components/PasswordInput'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
 import AuthService from '@/services/auth.service'

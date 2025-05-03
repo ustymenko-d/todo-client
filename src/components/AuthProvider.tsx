@@ -7,14 +7,13 @@ import AuthService from '@/services/auth.service'
 
 const AuthProvider = () => {
 	const pathname = usePathname()
+	const isStartPage = pathname === '/' || pathname.startsWith('/auth')
 
 	const authHydrated = useAppStore((state) => state.authHydrated)
 	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
-	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 
 	const [storeReady, setStoreReady] = useState(false)
-	const isStartPage = pathname === '/' || pathname.startsWith('/auth')
 
 	useEffect(() => {
 		const unsub = useAppStore.persist.onFinishHydration(() => {
@@ -36,12 +35,10 @@ const AuthProvider = () => {
 				const { data } = await AuthService.getAccountInfo()
 				if (data?.username) {
 					setAccountInfo(data)
-					setIsAuthorized(true)
 				} else {
 					throw new Error('No user data')
 				}
 			} catch {
-				setIsAuthorized(false)
 				setAccountInfo(null)
 				await AuthService.clearAuthCookies()
 			} finally {
@@ -50,14 +47,7 @@ const AuthProvider = () => {
 		}
 
 		fetchAccountData()
-	}, [
-		authHydrated,
-		isStartPage,
-		setAccountInfo,
-		setAuthHydrated,
-		setIsAuthorized,
-		storeReady,
-	])
+	}, [authHydrated, isStartPage, setAccountInfo, setAuthHydrated, storeReady])
 
 	return null
 }

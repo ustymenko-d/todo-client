@@ -20,13 +20,13 @@ import VerificationBadge from '@/components/SettingsPage/components/Verification
 const MainMenu = () => {
 	const router = useRouter()
 	const pathname = usePathname()
-	const isAuthorized = useAppStore((state) => state.isAuthorized)
-	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
+
 	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const authHydrated = useAppStore((state) => state.authHydrated)
 	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
-	const [loading, setLoading] = useState<boolean>(false)
+
+	const [loading, setLoading] = useState(false)
 
 	const handleLogout = async () => {
 		try {
@@ -35,7 +35,6 @@ const MainMenu = () => {
 			const { success, message } = data
 			if (success) {
 				toast.success(message)
-				setIsAuthorized(false)
 				setAccountInfo(null)
 				if (!authHydrated) setAuthHydrated(true)
 				router.push('/')
@@ -106,7 +105,7 @@ const MainMenu = () => {
 
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
-					disabled={loading || !isAuthorized}
+					disabled={loading || !accountInfo}
 					onClick={handleLogout}
 					className='flex items-center gap-2'>
 					{loading ? (

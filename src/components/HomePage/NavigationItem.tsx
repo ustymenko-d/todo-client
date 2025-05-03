@@ -1,13 +1,13 @@
-import { Card, CardDescription, CardTitle } from '@/components/ui/card'
-import { TNavItem } from '@/const'
 import Link from 'next/link'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card'
+import { TNavItem } from '@/types/common'
 
 const NavigationItem = ({ navItem }: { navItem: TNavItem }) => {
 	const { href, icon: Icon, label, description } = navItem
 
 	return (
 		<Link href={href}>
-			<Card className='h-full p-4 flex flex-col gap-2 items-center text-center hover:bg-accent'>
+			<Card className='flex flex-col items-center h-full gap-2 p-4 text-center hover:bg-accent'>
 				<Icon
 					size={40}
 					strokeWidth={1}

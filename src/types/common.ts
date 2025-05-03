@@ -1,3 +1,5 @@
+import { LucideIcon } from 'lucide-react'
+
 export type TResponseState = 'default' | 'pending' | 'success' | 'error'
 
 export interface IResponseStatus {
@@ -19,4 +21,11 @@ export interface IEditorSettings<T> {
 	open: boolean
 	mode: 'create' | 'edit'
 	target: T | null
+}
+
+export type TNavItem = {
+	href: string
+	label: string
+	icon: LucideIcon
+	description: string
 }

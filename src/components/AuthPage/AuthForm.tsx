@@ -1,160 +1,102 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import useAppStore from '@/store/store'
 import { useForm } from 'react-hook-form'
-import { z, ZodSchema } from 'zod'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import AuthValidation from '@/schemas/authForm.schema'
 import { Form } from '@/components/ui/form'
-import AuthFormSuggestion from './AuthFormSuggestion'
-import AuthFormInput from './AuthFormInput'
+import AuthFormSuggestion from './components/AuthFormSuggestion'
+import AuthFormInput from './components/AuthFormInput'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
-import { TAuthFormType, TAuthPayload, TEmail } from '@/types/auth'
+import { TAuthPayload, TEmail } from '@/types/auth'
 import AuthService from '@/services/auth.service'
 import RememberMe from '@/components/ui/RememberMe'
 import { AxiosError } from 'axios'
-
-export type TBaseFields = 'email' | 'password' | 'confirmPassword'
-type TFields = TBaseFields | 'rememberMe'
-
-interface IFormConfig {
-	fields: TFields[]
-	buttonText: string
-	validationSchema: ZodSchema
-	defaultValues: {
-		email: string
-		password?: string
-		confirmPassword?: string
-		rememberMe?: boolean
-	}
-}
-
-const formConfig: Record<TAuthFormType, IFormConfig> = {
-	login: {
-		fields: ['email', 'password', 'rememberMe'],
-		buttonText: 'Log in',
-		validationSchema: AuthValidation.login,
-		defaultValues: {
-			email: '',
-			password: '',
-			rememberMe: false,
-		},
-	},
-	signup: {
-		fields: ['email', 'password', 'confirmPassword', 'rememberMe'],
-		buttonText: 'Sign up',
-		validationSchema: AuthValidation.signup,
-		defaultValues: {
-			email: '',
-			password: '',
-			confirmPassword: '',
-			rememberMe: false,
-		},
-	},
-	forgotPassword: {
-		fields: ['email'],
-		buttonText: 'Send a password reset email',
-		validationSchema: AuthValidation.email,
-		defaultValues: {
-			email: '',
-		},
-	},
-}
+import { formConfig } from '@/const'
 
 const AuthForm = () => {
 	const router = useRouter()
+
 	const authFormType = useAppStore((state) => state.authFormType)
-	const isAuthorized = useAppStore((state) => state.isAuthorized)
-	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
+	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
+
 	const [loading, setLoading] = useState(false)
 
-	const { fields, buttonText, validationSchema, defaultValues } = useMemo(
-		() => formConfig[authFormType],
-		[authFormType]
-	)
+	const { fields, buttonText, validationSchema, defaultValues } =
+		formConfig[authFormType]
 
 	const authForm = useForm<z.infer<typeof validationSchema>>({
 		resolver: zodResolver(validationSchema),
 		defaultValues,
 	})
 
-	const handleForgotPassword = useCallback(
-		async (payload: TEmail) => {
-			const { data } = await AuthService.forgotPassword(payload)
-			if (data.success) {
-				toast.success(data.message)
-				authForm.reset(defaultValues)
+	const handleForgotPassword = async (payload: TEmail) => {
+		const { data } = await AuthService.forgotPassword(payload)
+		const { success, message } = data
+
+		if (!success) {
+			toast.error(message)
+			return
+		}
+
+		toast.success(message)
+		authForm.reset(defaultValues)
+	}
+
+	const handleAuth = async (payload: TAuthPayload) => {
+		const { data } =
+			authFormType === 'signup'
+				? await AuthService.signup(payload)
+				: await AuthService.login(payload)
+
+		const { success, message, userInfo } = data
+
+		if (!success) {
+			toast.error(message)
+			return
+		}
+
+		authForm.reset(defaultValues)
+		toast.success(message)
+		setAccountInfo(userInfo)
+		setAuthHydrated(true)
+		router.push('/home')
+	}
+
+	const onSubmit = async (
+		values: z.infer<typeof validationSchema>
+	): Promise<void> => {
+		try {
+			setLoading(true)
+
+			if (authFormType === 'forgotPassword') {
+				await handleForgotPassword({ email: values.email })
 			} else {
-				toast.error(data.message)
+				const { email, password, rememberMe } = values as TAuthPayload
+				await handleAuth({
+					email,
+					password,
+					rememberMe,
+				})
 			}
-		},
-		[authForm, defaultValues]
-	)
+		} catch (error) {
+			const axiosError = error as AxiosError
+			const message =
+				(axiosError.response?.data as { message?: string })?.message ||
+				axiosError.response?.data ||
+				'Something went wrong'
 
-	const handleAuth = useCallback(
-		async (payload: TAuthPayload) => {
-			const { data } =
-				authFormType === 'signup'
-					? await AuthService.signup(payload as TAuthPayload)
-					: await AuthService.login(payload as TAuthPayload)
-			const { success, message, userInfo } = data
-
-			if (!success) {
-				toast.error(message)
-				return
-			}
-
-			authForm.reset(defaultValues)
-			toast.success(message)
-			setIsAuthorized(true)
-			setAccountInfo(userInfo)
-			setAuthHydrated(true)
-			router.push('/home')
-		},
-		[
-			authFormType,
-			authForm,
-			defaultValues,
-			setIsAuthorized,
-			setAccountInfo,
-			setAuthHydrated,
-			router,
-		]
-	)
-
-	const onSubmit = useCallback(
-		async (values: z.infer<typeof validationSchema>): Promise<void> => {
-			try {
-				setLoading(true)
-
-				if (authFormType === 'forgotPassword') {
-					await handleForgotPassword({ email: values.email })
-				} else {
-					await handleAuth({
-						email: values.email,
-						password: values.password,
-						rememberMe: values.rememberMe,
-					})
-				}
-			} catch (error) {
-				const axiosError = error as AxiosError
-				const message =
-					(axiosError.response?.data as { message?: string })?.message ||
-					axiosError.response?.data ||
-					'Something went wrong'
-				toast.error(
-					typeof message === 'string' ? message : JSON.stringify(message)
-				)
-				console.error(`${authFormType} error:`, error)
-			} finally {
-				setLoading(false)
-			}
-		},
-		[authFormType, handleAuth, handleForgotPassword]
-	)
+			toast.error(
+				typeof message === 'string' ? message : JSON.stringify(message)
+			)
+			console.error(`${authFormType} error:`, error)
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	useEffect(() => {
 		authForm.reset(defaultValues)
@@ -183,7 +125,7 @@ const AuthForm = () => {
 					<LoadingButton
 						type='submit'
 						loading={loading}
-						disabled={isAuthorized}>
+						disabled={!!accountInfo}>
 						{buttonText}
 					</LoadingButton>
 				</div>

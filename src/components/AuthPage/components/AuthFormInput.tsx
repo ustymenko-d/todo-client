@@ -1,5 +1,5 @@
 import { Control } from 'react-hook-form'
-import EmailInput from '@/components/ui/EmailInput'
+import EmailInput from '@/components/AuthPage/components/EmailInput'
 import {
 	FormControl,
 	FormField,
@@ -7,8 +7,8 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import PasswordInput from '@/components/ui/PasswordInput'
-import { TBaseFields } from './AuthForm'
+import PasswordInput from '@/components/AuthPage/components/PasswordInput'
+import { TBaseFields } from '@/types/auth'
 
 interface AuthFormInputProps {
 	name: TBaseFields

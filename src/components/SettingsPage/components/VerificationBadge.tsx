@@ -9,25 +9,20 @@ import { BadgeAlert, BadgeCheck } from 'lucide-react'
 
 const VerificationBadge = () => {
 	const accountInfo = useAppStore((state) => state.accountInfo)
+	const tooltipText = accountInfo?.isVerified ? 'Verified' : 'Unverified'
+	const BadgeIcon = accountInfo?.isVerified ? BadgeCheck : BadgeAlert
 
 	return (
 		<TooltipProvider>
 			<Tooltip>
 				<TooltipTrigger asChild>
-					{accountInfo?.isVerified ? (
-						<BadgeCheck
-							strokeWidth={1.25}
-							size={20}
-						/>
-					) : (
-						<BadgeAlert
-							strokeWidth={1.25}
-							size={20}
-						/>
-					)}
+					<BadgeIcon
+						strokeWidth={1.25}
+						size={20}
+					/>
 				</TooltipTrigger>
 				<TooltipContent>
-					<p>{accountInfo?.isVerified ? 'Verified' : 'Unverified'}</p>
+					<p>{tooltipText}</p>
 				</TooltipContent>
 			</Tooltip>
 		</TooltipProvider>

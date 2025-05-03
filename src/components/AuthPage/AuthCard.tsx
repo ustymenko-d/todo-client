@@ -1,6 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
 import useAppStore from '@/store/store'
 import {
 	Card,
@@ -12,29 +11,25 @@ import {
 import AuthForm from './AuthForm'
 
 const cardConfig = {
-	login: {
+	signin: {
 		title: 'Welcome back',
 		description:
-			'Please enter your email and password below to login to your account',
+			'Please enter your email and password to sign in to your account.',
 	},
 	signup: {
-		title: 'Create account',
-		description:
-			'Please enter your email and password below to sign up your account',
+		title: 'Create an account',
+		description: 'Please enter your email and password to create your account.',
 	},
 	forgotPassword: {
-		title: 'Forgot password',
+		title: 'Forgot your password?',
 		description: 'Please enter the email address provided during registration',
 	},
 } as const
 
 const AuthCard = () => {
 	const authFormType = useAppStore((state) => state.authFormType)
+	const { title, description } = cardConfig[authFormType]
 
-	const { title, description } = useMemo(
-		() => cardConfig[authFormType],
-		[authFormType]
-	)
 	return (
 		<Card className='max-w-sm'>
 			<CardHeader>

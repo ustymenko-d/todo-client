@@ -1,6 +1,7 @@
 'use client'
 
-import { Label } from '@/components/ui/label'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import useAppStore from '@/store/store'
 import UnverifiedInfo from './components/UnverifiedInfo'
 import VerificationBadge from './components/VerificationBadge'
@@ -8,84 +9,81 @@ import { Separator } from '@/components/ui/separator'
 import DeleteDialog from '../DeleteDialog'
 import AuthService from '@/services/auth.service'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
+import UserInfoRow from './components/UserInfoRow'
 
 const Body = () => {
 	const router = useRouter()
+
 	const accountInfo = useAppStore((state) => state.accountInfo)
-	const setIsAuthorized = useAppStore((state) => state.setIsAuthorized)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const authHydrated = useAppStore((state) => state.authHydrated)
 	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
-	const [openAlert, setOpenAlert] = useState<boolean>(false)
-	const [loading, setLoading] = useState<boolean>(false)
+
+	const [openAlert, setOpenAlert] = useState(false)
+	const [loading, setLoading] = useState(false)
 
 	const handleDeleteAccount = async (): Promise<void> => {
+		setLoading(true)
 		try {
-			setLoading(true)
 			const { data } = await AuthService.deleteAccount()
 			const { success, message } = data
+
 			if (success) {
-				setIsAuthorized(false)
 				setAccountInfo(null)
 				if (!authHydrated) setAuthHydrated(true)
 				toast.success(message)
 				router.push('/')
 			}
 		} catch (error) {
+			console.error('Delete account error:', error)
 			toast.error('Something went wrong!')
-			console.error('Error:', error)
 		} finally {
 			setLoading(false)
 		}
 	}
 
 	return (
-		<div className='flex flex-col gap-2 pt-4'>
-			<div className='flex flex-col'>
-				<Label
-					htmlFor='account-email'
-					className='text-muted-foreground'>
-					Username:
-				</Label>
-				<span id='account-email'>{accountInfo?.username}</span>
+		<>
+			<div className='flex flex-col gap-2 pt-4'>
+				<UserInfoRow
+					label='Username:'
+					htmlFor='username'>
+					<span id='username'>{accountInfo?.username}</span>
+				</UserInfoRow>
+
+				<UserInfoRow
+					label='Email:'
+					htmlFor='email'>
+					<div className='flex items-center gap-2'>
+						<span id='email'>{accountInfo?.email}</span>
+						<VerificationBadge />
+					</div>
+				</UserInfoRow>
+
+				{!accountInfo?.isVerified && <UnverifiedInfo />}
+
+				<h2 className='text-xl font-semibold text-red-600'>Delete account</h2>
+				<Separator />
+				<p>
+					Once you delete your account, there is no going back. Please be
+					certain.
+				</p>
+				<Button
+					variant='destructive'
+					disabled={loading}
+					className='flex items-center gap-1 w-fit'
+					onClick={() => setOpenAlert(true)}>
+					{loading && (
+						<Loader2
+							strokeWidth={1.5}
+							className='animate-spin'
+						/>
+					)}
+					Delete your account
+				</Button>
 			</div>
-
-			<div className='flex flex-col'>
-				<Label
-					htmlFor='account-email'
-					className='text-muted-foreground'>
-					Email:
-				</Label>
-				<div className='flex gap-2 items-center'>
-					<span id='account-email'>{accountInfo?.email}</span>
-					<VerificationBadge />
-				</div>
-			</div>
-
-			{!accountInfo?.isVerified && <UnverifiedInfo />}
-
-			<h2 className='text-red-600 font-semibold text-xl'>Delete account</h2>
-			<Separator />
-			<p>
-				Once you delete your account, there is no going back. Please be certain.
-			</p>
-			<Button
-				variant='destructive'
-				disabled={loading}
-				className='w-fit flex gap-1 items-center'
-				onClick={() => setOpenAlert(true)}>
-				{loading && (
-					<Loader2
-						strokeWidth={1.5}
-						className='animate-spin'
-					/>
-				)}
-				Delete your account
-			</Button>
 
 			<DeleteDialog
 				handleDelete={handleDeleteAccount}
@@ -94,7 +92,7 @@ const Body = () => {
 				open={openAlert}
 				onOpenChange={setOpenAlert}
 			/>
-		</div>
+		</>
 	)
 }
 

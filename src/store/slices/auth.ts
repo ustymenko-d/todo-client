@@ -1,19 +1,16 @@
-import { TAuthFormType, IUserInfo } from '@/types/auth'
+import { TAuthForm, IUserInfo } from '@/types/auth'
 
 export interface AuthSlice {
 	authHydrated: boolean
 	setAuthHydrated: (newValue: boolean) => void
-
-	isAuthorized: boolean
-	setIsAuthorized: (newValue: boolean) => void
 
 	accountInfo: IUserInfo | null
 	setAccountInfo: (
 		newValue: IUserInfo | null | ((prev: IUserInfo | null) => IUserInfo | null)
 	) => void
 
-	authFormType: TAuthFormType
-	setAuthFormType: (newValue: TAuthFormType) => void
+	authFormType: TAuthForm
+	setAuthFormType: (newValue: TAuthForm) => void
 }
 
 const createAuthSlice = (
@@ -24,9 +21,6 @@ const createAuthSlice = (
 	authHydrated: false,
 	setAuthHydrated: (authHydrated) => set({ authHydrated }),
 
-	isAuthorized: false,
-	setIsAuthorized: (isAuthorized) => set({ isAuthorized }),
-
 	accountInfo: null,
 	setAccountInfo: (accountInfoOrUpdater) =>
 		set((state) => ({
@@ -36,7 +30,7 @@ const createAuthSlice = (
 					: accountInfoOrUpdater,
 		})),
 
-	authFormType: 'login',
+	authFormType: 'signin',
 	setAuthFormType: (authFormType) => set({ authFormType }),
 })
 

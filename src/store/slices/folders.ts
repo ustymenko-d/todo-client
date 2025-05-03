@@ -14,12 +14,23 @@ export interface FoldersSlice {
 const folderEditorSettings = getDefaultEditorSettings<IFolder>()
 
 const createFoldersSlice = (
-	set: (partial: Partial<FoldersSlice>) => void
+	set: (
+		partial:
+			| Partial<FoldersSlice>
+			| ((state: FoldersSlice) => Partial<FoldersSlice>)
+	) => void
 ): FoldersSlice => ({
 	folderEditorSettings,
 	openFolderEditor: (mode, target) =>
 		set({ folderEditorSettings: { open: true, mode, target } }),
-	closeFolderEditor: () => set({ folderEditorSettings }),
+	closeFolderEditor: () =>
+		set((state) => ({
+			folderEditorSettings: {
+				...state.folderEditorSettings,
+				open: false,
+				target: null,
+			},
+		})),
 })
 
 export default createFoldersSlice

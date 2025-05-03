@@ -1,11 +1,7 @@
-import { Folder, LayoutGrid, LucideIcon, Settings, Sheet } from 'lucide-react'
-
-export type TNavItem = {
-	href: string
-	label: string
-	icon: LucideIcon
-	description: string
-}
+import { Folder, LayoutGrid, Settings, Sheet } from 'lucide-react'
+import { TNavItem } from '@/types/common'
+import AuthValidation from '@/schemas/authForm.schema'
+import { IFormConfig, TAuthForm } from './types/auth'
 
 export const navItems: TNavItem[] = [
 	{
@@ -33,3 +29,35 @@ export const navItems: TNavItem[] = [
 		description: 'View and update your account settings and preferences',
 	},
 ]
+
+export const formConfig: Record<TAuthForm, IFormConfig> = {
+	signin: {
+		fields: ['email', 'password', 'rememberMe'],
+		buttonText: 'Sign in',
+		validationSchema: AuthValidation.login,
+		defaultValues: {
+			email: '',
+			password: '',
+			rememberMe: false,
+		},
+	},
+	signup: {
+		fields: ['email', 'password', 'confirmPassword', 'rememberMe'],
+		buttonText: 'Sign up',
+		validationSchema: AuthValidation.signup,
+		defaultValues: {
+			email: '',
+			password: '',
+			confirmPassword: '',
+			rememberMe: false,
+		},
+	},
+	forgotPassword: {
+		fields: ['email'],
+		buttonText: 'Send a password reset email',
+		validationSchema: AuthValidation.email,
+		defaultValues: {
+			email: '',
+		},
+	},
+}

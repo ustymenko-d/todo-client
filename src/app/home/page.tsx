@@ -3,14 +3,15 @@ import Head from '@/components/HomePage/Head'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import NavigationItem from '@/components/HomePage/NavigationItem'
 import UnverifiedAlert from '@/components/HomePage/UnverifiedAlert'
-import { navItems, TNavItem } from '@/const'
+import { navItems } from '@/const'
 import { LayoutGrid } from 'lucide-react'
+import { TNavItem } from '@/types/common'
 
 const HomePage = () => (
 	<PageSection>
 		<Head />
 		<div className='grid grid-cols-2 gap-4 pt-4 md:grid-cols-3 xl:grid-cols-4'>
-			<Card className='h-full p-4 flex flex-col gap-2 items-center text-center bg-muted text-primary font-medium cursor-default'>
+			<Card className='flex flex-col items-center h-full gap-2 p-4 font-medium text-center cursor-default bg-muted text-primary'>
 				<LayoutGrid
 					size={40}
 					strokeWidth={1}

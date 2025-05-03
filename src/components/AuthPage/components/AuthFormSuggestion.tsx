@@ -1,24 +1,23 @@
-import { useMemo } from 'react'
-import useAppStore from '@/store/store'
 import Link from 'next/link'
-import { TAuthFormType } from '@/types/auth'
+import useAppStore from '@/store/store'
+import { TAuthForm } from '@/types/auth'
 
 const signupSuggestion = {
 	text: 'Don’t have an account?',
 	linkText: 'Sign up',
-	newType: 'signup' as TAuthFormType,
+	newType: 'signup' as TAuthForm,
 }
 
 const suggestionConfig: Record<
-	TAuthFormType,
-	{ text: string; linkText: string; newType: TAuthFormType }
+	TAuthForm,
+	{ text: string; linkText: string; newType: TAuthForm }
 > = {
-	login: signupSuggestion,
+	signin: signupSuggestion,
 	forgotPassword: signupSuggestion,
 	signup: {
 		text: 'Already have an account?',
-		linkText: 'Log in',
-		newType: 'login',
+		linkText: 'Sign in',
+		newType: 'signin' as TAuthForm,
 	},
 } as const
 
@@ -29,10 +28,10 @@ const AuthFormSuggestion = () => {
 		text: suggestionText,
 		linkText,
 		newType,
-	} = useMemo(() => suggestionConfig[authFormType], [authFormType])
+	} = suggestionConfig[authFormType]
 
 	return (
-		<div className='flex flex-wrap gap-2 mt-4 text-center text-sm'>
+		<div className='flex flex-wrap gap-2 mt-4 text-sm text-center'>
 			<span>{suggestionText}</span>
 			<Link
 				href='/auth'

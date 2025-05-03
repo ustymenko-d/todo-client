@@ -7,7 +7,7 @@ import LoadingButton from '@/components/ui/LoadingButton'
 
 const EmptyPlaceholder = () => {
 	const router = useRouter()
-	const [loading, setLoading] = useState<boolean>(false)
+	const [loading, setLoading] = useState(false)
 
 	const handleRefresh = () => {
 		try {
@@ -21,7 +21,7 @@ const EmptyPlaceholder = () => {
 	}
 
 	return (
-		<div className='mt-4 w-full min-h-40 flex flex-col gap-3 items-center justify-center border rounded-md'>
+		<div className='flex flex-col items-center justify-center w-full gap-3 mt-4 border rounded-md min-h-40'>
 			<h2>Failed to upload tasks</h2>
 			<LoadingButton
 				loading={loading}
