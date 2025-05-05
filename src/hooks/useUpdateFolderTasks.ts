@@ -63,12 +63,28 @@ const useUpdateFolderTasks = (action: TTaskAction) => {
 					  }
 			),
 
-		delete: (folders, task) =>
-			folders.map((folder) =>
-				folder.id !== task.folderId
-					? folder
-					: { ...folder, tasks: folder.tasks.filter((t) => t.id !== task.id) }
-			),
+		delete: (folders, task) => {
+			const allTasks = folders.flatMap((folder) => folder.tasks)
+
+			const collectAllTaskIds = (taskId: string): string[] => {
+				const directChildren = allTasks.filter((t) => t.parentTaskId === taskId)
+				return [
+					taskId,
+					...directChildren.flatMap((child) => collectAllTaskIds(child.id)),
+				]
+			}
+
+			const idsToDelete = new Set(collectAllTaskIds(task.id))
+
+			return folders.map((folder) => {
+				const filteredTasks = folder.tasks.filter((t) => !idsToDelete.has(t.id))
+				return {
+					...folder,
+					tasks: filteredTasks,
+					total: filteredTasks.length,
+				}
+			})
+		},
 	}
 
 	const handleUpdateFolderTasks = (
