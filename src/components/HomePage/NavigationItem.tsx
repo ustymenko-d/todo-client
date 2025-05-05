@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
+import Link from 'next/link'
 import { TNavItem } from '@/types/common'
 
 const NavigationItem = ({ navItem }: { navItem: TNavItem }) => {

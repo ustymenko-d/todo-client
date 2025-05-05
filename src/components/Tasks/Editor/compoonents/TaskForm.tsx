@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import useAppStore from '@/store/store'
@@ -14,26 +13,27 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import { toast } from 'sonner'
 import FormDatePicker from '@/components/Tasks/Editor/compoonents/FormDatePicker'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import LoadingButton from '@/components/ui/LoadingButton'
-import TasksService from '@/services/tasks.service'
 import Field from '@/components/Tasks/Editor/compoonents/Field'
 import FormSelect from '@/components/Tasks/Editor/compoonents/FormSelect'
 import { TTask, TTaskBase } from '@/types/tasks'
-import { TResponseState } from '@/types/common'
+import useTaskActions from '@/hooks/useTaskActions'
 
 const TaskForm = () => {
-	const router = useRouter()
-	const pathname = usePathname()
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
 	const selectedTask = useAppStore((state) => state.taskEditorSettings.target)
-	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
 
-	const [status, setStatus] = useState<TResponseState>('default')
+	const [loading, setLoading] = useState(false)
 	const isEditing = mode === 'edit'
+
+	const { handleTaskAction: createTask } = useTaskActions('create')
+	const { handleTaskAction: editTask } = useTaskActions(
+		'edit',
+		selectedTask as TTask
+	)
 
 	const defaultValues = useMemo<TTaskBase>(
 		() => ({
@@ -76,33 +76,12 @@ const TaskForm = () => {
 	}
 
 	const handleSubmit = async (values: TTaskBase) => {
-		try {
-			setStatus('pending')
-			const payload = createPayload(values)
+		const payload = createPayload(values)
 
-			const { data } =
-				mode === 'create'
-					? await TasksService.createTask(payload as TTaskBase)
-					: await TasksService.editTask(payload as TTask)
-
-			const { success } = data
-
-			if (success) {
-				setStatus('success')
-				toast.success(
-					mode === 'create'
-						? 'Task successfully created'
-						: 'Task successfully edited'
-				)
-				closeTaskEditor()
-				if (pathname === '/table') router.refresh()
-			} else {
-				toast.error(data?.message || 'Failed to process task')
-				setStatus('error')
-			}
-		} catch (error) {
-			console.error(`Error while processing a task: ${error}`)
-			toast.error('Something went wrong!')
+		if (mode === 'create') {
+			createTask(setLoading, payload as TTaskBase)
+		} else {
+			editTask(setLoading, payload as TTask)
 		}
 	}
 
@@ -170,8 +149,8 @@ const TaskForm = () => {
 					/>
 
 					<LoadingButton
-						loading={status === 'pending'}
-						disabled={status === 'success'}
+						loading={loading}
+						disabled={loading}
 						type='submit'>
 						<span>{mode === 'create' ? 'Create task' : 'Edit task'}</span>
 					</LoadingButton>

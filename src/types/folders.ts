@@ -1,6 +1,7 @@
 import FoldersValidation from '@/schemas/folders.schema'
 import { IGetResponse, IPagination, IResponseStatus } from './common'
 import { z } from 'zod'
+import { IGetTasksResponse } from './tasks'
 
 export type TFolderName = z.infer<typeof FoldersValidation.folderName>
 
@@ -20,4 +21,9 @@ export interface IFolderResponse extends IResponseStatus {
 
 export interface IGetFoldersResponse extends IGetResponse {
 	folders: IFolder[]
+}
+
+export interface IFolderWithTasks extends IGetTasksResponse {
+	id: string
+	name: string
 }

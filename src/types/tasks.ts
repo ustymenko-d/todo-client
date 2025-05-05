@@ -17,3 +17,5 @@ export interface IGetTasksResponse extends IPagination {
 	total: number
 	tasks: TTask[]
 }
+
+export type TTaskAction = 'create' | 'edit' | 'changeStatus' | 'delete'

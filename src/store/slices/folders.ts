@@ -1,8 +1,15 @@
 import { IEditorSettings } from '@/types/common'
-import { IFolder } from '@/types/folders'
+import { IFolder, IFolderWithTasks } from '@/types/folders'
 import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 
 export interface FoldersSlice {
+	foldersWithTasks: IFolderWithTasks[]
+	setFoldersWithTasks: (
+		value:
+			| IFolderWithTasks[]
+			| ((prev: IFolderWithTasks[]) => IFolderWithTasks[])
+	) => void
+
 	folderEditorSettings: IEditorSettings<IFolder>
 	openFolderEditor: (
 		mode: 'edit' | 'create',
@@ -20,6 +27,13 @@ const createFoldersSlice = (
 			| ((state: FoldersSlice) => Partial<FoldersSlice>)
 	) => void
 ): FoldersSlice => ({
+	foldersWithTasks: [],
+	setFoldersWithTasks: (value) =>
+		set((state) => ({
+			foldersWithTasks:
+				typeof value === 'function' ? value(state.foldersWithTasks) : value,
+		})),
+
 	folderEditorSettings,
 	openFolderEditor: (mode, target) =>
 		set({ folderEditorSettings: { open: true, mode, target } }),

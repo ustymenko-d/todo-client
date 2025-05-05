@@ -28,7 +28,7 @@ const Form = () => {
 	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const closeEditor = useAppStore((state) => state.closeFolderEditor)
-
+	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 	const [status, setStatus] = useState<TResponseState>('default')
 	const isEditing = mode === 'edit'
 
@@ -65,6 +65,12 @@ const Form = () => {
 				),
 			}))
 		}
+
+		setFoldersWithTasks((prev) =>
+			prev.map((folder) =>
+				folder.id === selectedFolder.id ? { ...folder, name: newName } : folder
+			)
+		)
 	}
 
 	const handleAction = async (values: TFolderName) => {

@@ -6,6 +6,7 @@ import AuthProvider from '@/components/AuthProvider'
 import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer'
 import './globals.css'
+import DetailsDialog from '@/components/Tasks/DetailsDialog/DetailsDialog'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -40,6 +41,7 @@ const RootLayout = ({
 					{children}
 				</main>
 				<Footer />
+				<DetailsDialog />
 				<Toaster
 					position='top-center'
 					richColors

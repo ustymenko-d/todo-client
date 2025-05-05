@@ -5,12 +5,13 @@ import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 import FoldersService from '@/services/folders.service'
 import EmptyPlaceholder from './EmptyPlaceholder'
-import FolderCard from './components/FolderCard'
+import Folder from './components/Folder'
 
 const Body = () => {
 	const accountInfo = useAppStore((state) => state.accountInfo)
 	const openEditor = useAppStore((state) => state.openFolderEditor)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
+	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 	const [loadingArray, setLoadingArray] = useState<string[]>([])
 	const isFolderLoading = useCallback(
 		(id: string) => loadingArray.includes(id),
@@ -30,6 +31,7 @@ const Body = () => {
 						folders: prev?.folders?.filter((folder) => folder.id !== id),
 					}))
 				}
+				setFoldersWithTasks((prev) => prev.filter((f) => f.id !== id))
 			}
 		} catch (error) {
 			setLoadingArray((prev) => prev.filter((element) => element !== id))
@@ -45,7 +47,7 @@ const Body = () => {
 	return (
 		<div className='grid w-full gap-2 mt-4 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>
 			{accountInfo?.folders?.map((folder) => (
-				<FolderCard
+				<Folder
 					key={folder.id}
 					folder={folder}
 					isLoading={isFolderLoading(folder.id)}
