@@ -14,7 +14,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 	const updateDialogTask = useAppStore((state) => state.updateDialogTask)
 
 	const { handleUpdateFolderTasks } = useUpdateFolderTasks(action)
-	const previousFolderId = task?.folderId
+	// const previousFolderId = task?.folderId
 
 	const performAction = async (payload?: TTaskBase | TTask) => {
 		switch (action) {
@@ -33,7 +33,8 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 
 	const handleTaskAction = async (
 		setLoadingState: (state: boolean) => void,
-		payload?: TTaskBase | TTask
+		payload?: TTaskBase | TTask,
+		previousFolderId?: string | null
 	) => {
 		try {
 			setLoadingState(true)
@@ -53,7 +54,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 			if (['edit', 'changeStatus'].includes(action))
 				updateDialogTask(updatedTask)
 
-			handleUpdateFolderTasks(updatedTask, previousFolderId)
+			handleUpdateFolderTasks(updatedTask, task?.folderId ?? previousFolderId)
 
 			if (pathname === '/table') router.refresh()
 		} catch (error) {
