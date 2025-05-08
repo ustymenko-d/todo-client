@@ -18,7 +18,7 @@ interface FolderCardProps {
 	onDelete: () => void
 }
 
-const LIMIT = 10
+const LIMIT = 10 as const
 
 const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)

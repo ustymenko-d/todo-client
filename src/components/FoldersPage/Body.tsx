@@ -13,8 +13,7 @@ import {
 	DragStartEvent,
 } from '@dnd-kit/core'
 import Task from './components/Task'
-import useTaskActions from '@/hooks/useTaskActions'
-import { TTask } from '@/types/tasks'
+import useTaskMove from '@/hooks/useTaskMove'
 
 const Body = () => {
 	const accountInfo = useAppStore((state) => state.accountInfo)
@@ -26,6 +25,8 @@ const Body = () => {
 	const [loadingArray, setLoadingArray] = useState<string[]>([])
 	const [loading, setLoading] = useState(false)
 	const [activeId, setActiveId] = useState<string | null>(null)
+
+	const { moveTask } = useTaskMove(setLoading)
 
 	const isFolderLoading = useCallback(
 		(id: string) => loadingArray.includes(id),
@@ -39,8 +40,6 @@ const Body = () => {
 				.find((task) => task.id === activeId) || null,
 		[foldersWithTasks, activeId]
 	)
-
-	const { handleTaskAction } = useTaskActions('edit')
 
 	const handleDeleteFolder = async (id: string) => {
 		try {
@@ -58,9 +57,8 @@ const Body = () => {
 				setFoldersWithTasks((prev) => prev.filter((f) => f.id !== id))
 			}
 		} catch (error) {
-			setLoadingArray((prev) => prev.filter((element) => element !== id))
 			toast.error('Something went wrong!')
-			console.error('Error:', error)
+			console.error('Delete Folder Error:', error)
 		} finally {
 			setLoadingArray((prev) => prev.filter((element) => element !== id))
 		}
@@ -71,38 +69,21 @@ const Body = () => {
 	}
 
 	const handleDragEnd = useCallback(
-		({ active, over }: DragEndEvent) => {
+		async ({ active, over }: DragEndEvent) => {
 			if (loading || !over) return
 
-			const newFolderId = over.id
-			const sourceFolder = foldersWithTasks.find((f) =>
-				f.tasks.some((t) => t.id === active.id)
-			)
-			const task = sourceFolder?.tasks.find((t) => t.id === active.id)
+			const taskId = String(active.id)
+			const newFolderId = String(over.id)
+			const task = foldersWithTasks
+				.flatMap((folder) => folder.tasks)
+				.find((t) => t.id === taskId)
+
 			if (!task || task.folderId === newFolderId) return
 
-			const prevFolderId = task.folderId
-
-			setFoldersWithTasks((prev) =>
-				prev.map((folder) =>
-					folder.id === prevFolderId
-						? { ...folder, tasks: folder.tasks.filter((t) => t.id !== task.id) }
-						: folder
-				)
-			)
-
-			const updatedTask: Partial<TTask> = {
-				...task,
-				folderId: String(newFolderId),
-			}
-
-			delete updatedTask.subtasks
-			delete updatedTask.lastEdited
-
-			handleTaskAction(setLoading, updatedTask as TTask, prevFolderId)
+			await moveTask(task, newFolderId)
 			setActiveId(null)
 		},
-		[loading, foldersWithTasks, handleTaskAction, setFoldersWithTasks]
+		[loading, foldersWithTasks, moveTask]
 	)
 
 	const handleDragCancel = () => {
@@ -117,7 +98,7 @@ const Body = () => {
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				onDragCancel={handleDragCancel}>
-				{accountInfo?.folders?.map((folder) => (
+				{accountInfo.folders.map((folder) => (
 					<Folder
 						key={folder.id}
 						folder={folder}
@@ -127,9 +108,7 @@ const Body = () => {
 					/>
 				))}
 
-				<DragOverlay>
-					{activeTask ? <Task task={activeTask} /> : null}
-				</DragOverlay>
+				<DragOverlay>{activeTask && <Task task={activeTask} />}</DragOverlay>
 			</DndContext>
 		</div>
 	)
