@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import RequestHandler from '@/utils/RequestHandler'
+import { handleRequest } from '@/utils/requestHandler'
 import { splitCookiesString, parse } from 'set-cookie-parser'
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {
@@ -10,11 +10,9 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 	console.log('[Refresh] Redirecting to:', redirectUrl.toString())
 
 	try {
-		const response = await RequestHandler.request(
-			'/auth/tokens/refresh-tokens',
-			'get',
-			{ skipRefresh: true }
-		)
+		const response = await handleRequest('/auth/tokens/refresh-tokens', 'get', {
+			skipRefresh: true,
+		})
 
 		const setCookie = response.headers.get('set-cookie')
 

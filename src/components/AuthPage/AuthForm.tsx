@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
 import { TAuthPayload, TEmail } from '@/types/auth'
 import AuthService from '@/services/auth.service'
-import RememberMe from '@/components/ui/RememberMe'
+import RememberMe from '@/components/AuthPage/components/RememberMe'
 import { AxiosError } from 'axios'
 import { formConfig } from '@/const'
 

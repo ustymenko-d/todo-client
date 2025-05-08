@@ -24,12 +24,12 @@ const HomePage = () => (
 			</Card>
 
 			{navItems.map((item: TNavItem, index: number) =>
-				index === 0 ? null : (
+				index !== 0 ? (
 					<NavigationItem
 						key={item.href}
 						navItem={item}
 					/>
-				)
+				) : null
 			)}
 		</div>
 		<UnverifiedAlert />

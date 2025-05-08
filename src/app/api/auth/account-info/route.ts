@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import RequestHandler from '@/utils/RequestHandler'
+import { handleRequest } from '@/utils/requestHandler'
 
 export const GET = async (): Promise<NextResponse> =>
-	RequestHandler.request('/auth/account-info', 'get')
+	handleRequest('/auth/account-info', 'get')

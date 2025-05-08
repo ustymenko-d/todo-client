@@ -1,4 +1,4 @@
-import HomeLink from '@/components/HomeLink'
+import HomeLink from '@/components/HomePage/HomeLink'
 
 const RootPage = () => (
 	<div className='flex flex-col gap-2 mb-6'>

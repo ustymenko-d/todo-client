@@ -7,15 +7,17 @@ import { buttonVariants } from '@/components/ui/button'
 const HomeLink = ({ type }: { type: 'signin' | 'signup' }) => {
 	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
 
+	const handleClick = () => {
+		setAuthFormType(type)
+	}
+
 	return (
 		<Link
 			className={buttonVariants({
 				variant: type === 'signin' ? 'default' : 'outline',
 			})}
 			href='/auth'
-			onClick={() => {
-				setAuthFormType(type)
-			}}>
+			onClick={handleClick}>
 			{type === 'signin' ? 'Sign in' : 'Sign up'}
 		</Link>
 	)

@@ -1,3 +1,5 @@
+import { ApiAxios } from './Axios'
+import { handleApiRequest } from '@/utils/requestHandler'
 import {
 	IAuthResponse,
 	IUserInfo,
@@ -6,69 +8,68 @@ import {
 	TPassword,
 } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
-import { AxiosResponse } from 'axios'
-import { ApiAxios } from './Axios'
-import RequestHandler from '@/utils/RequestHandler'
 
 const AUTH_API_URL = '/auth'
 
 const AuthService = {
-	signup: (payload: TAuthPayload): Promise<AxiosResponse<IAuthResponse>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.post(`${AUTH_API_URL}/signup`, payload)
+	signup: (payload: TAuthPayload) =>
+		handleApiRequest(() =>
+			ApiAxios.post<IAuthResponse>(`${AUTH_API_URL}/signup`, payload)
 		),
 
-	verifyEmail: (
-		verificationToken: string
-	): Promise<AxiosResponse<IResponseStatus>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.get(
+	verifyEmail: (verificationToken: string) =>
+		handleApiRequest(() =>
+			ApiAxios.get<IResponseStatus>(
 				`${AUTH_API_URL}/email-verification?verificationToken=${verificationToken}`
 			)
 		),
 
-	login: (payload: TAuthPayload): Promise<AxiosResponse<IAuthResponse>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.post(`${AUTH_API_URL}/login`, payload)
+	login: (payload: TAuthPayload) =>
+		handleApiRequest(() =>
+			ApiAxios.post<IAuthResponse>(`${AUTH_API_URL}/login`, payload)
 		),
 
-	getAccountInfo: (): Promise<AxiosResponse<IUserInfo>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.get(`${AUTH_API_URL}/account-info`)
+	getAccountInfo: () =>
+		handleApiRequest(() =>
+			ApiAxios.get<IUserInfo>(`${AUTH_API_URL}/account-info`)
 		),
 
-	logout: (): Promise<AxiosResponse<IResponseStatus>> =>
-		RequestHandler.handleRequest(() => ApiAxios.get(`${AUTH_API_URL}/logout`)),
-
-	refreshToken: (): Promise<AxiosResponse<IResponseStatus>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.get(`${AUTH_API_URL}/tokens/refresh-tokens`)
+	logout: () =>
+		handleApiRequest(() =>
+			ApiAxios.get<IResponseStatus>(`${AUTH_API_URL}/logout`)
 		),
 
-	deleteAccount: (): Promise<AxiosResponse<IResponseStatus>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.delete(`${AUTH_API_URL}/delete-account`)
+	refreshToken: () =>
+		handleApiRequest(() =>
+			ApiAxios.get<IResponseStatus>(`${AUTH_API_URL}/tokens/refresh-tokens`)
 		),
 
-	forgotPassword: (payload: TEmail): Promise<AxiosResponse<IResponseStatus>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.post(`${AUTH_API_URL}/password/forgot-password`, payload)
+	deleteAccount: () =>
+		handleApiRequest(() =>
+			ApiAxios.delete<IResponseStatus>(`${AUTH_API_URL}/delete-account`)
 		),
 
-	resetPassword: (
-		payload: TPassword,
-		resetToken: string | null
-	): Promise<AxiosResponse<IResponseStatus>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.patch(
+	forgotPassword: (payload: TEmail) =>
+		handleApiRequest(() =>
+			ApiAxios.post<IResponseStatus>(
+				`${AUTH_API_URL}/password/forgot-password`,
+				payload
+			)
+		),
+
+	resetPassword: (payload: TPassword, resetToken: string | null) =>
+		handleApiRequest(() =>
+			ApiAxios.patch<IResponseStatus>(
 				`${AUTH_API_URL}/password/reset-password?resetToken=${resetToken}`,
 				payload
 			)
 		),
 
-	clearAuthCookies: (): Promise<AxiosResponse<IResponseStatus>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.get(`${AUTH_API_URL}/cookies/clear-auth-cookies`)
+	clearAuthCookies: () =>
+		handleApiRequest(() =>
+			ApiAxios.get<IResponseStatus>(
+				`${AUTH_API_URL}/cookies/clear-auth-cookies`
+			)
 		),
 }
 

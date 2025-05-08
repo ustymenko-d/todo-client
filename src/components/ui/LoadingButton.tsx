@@ -1,16 +1,14 @@
-import { FC, ReactNode } from 'react'
 import { Button } from './button'
 import { Loader2 } from 'lucide-react'
 
-interface LoadingButtonProps {
+const LoadingButton = ({
+	loading,
+	children,
+	disabled,
+	...props
+}: {
 	loading: boolean
-	children: ReactNode
-	disabled?: boolean
-}
-
-const LoadingButton: FC<
-	LoadingButtonProps & React.ComponentProps<typeof Button>
-> = ({ loading, children, disabled, ...props }) => (
+} & React.ComponentProps<typeof Button>) => (
 	<Button
 		{...props}
 		disabled={loading || disabled}>

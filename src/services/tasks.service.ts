@@ -5,39 +5,35 @@ import {
 	TTask,
 	TTaskBase,
 } from '@/types/tasks'
-import { AxiosResponse } from 'axios'
 import { ApiAxios } from './Axios'
-import RequestHandler from '@/utils/RequestHandler'
+import { handleApiRequest } from '@/utils/requestHandler'
 
 const TASKS_API_URL = '/tasks'
 
 const TasksService = {
-	getTasks: (
-		payload: TGetTasksRequest,
-		config = {}
-	): Promise<AxiosResponse<IGetTasksResponse>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.post(`${TASKS_API_URL}/get`, payload, config)
+	getTasks: (payload: TGetTasksRequest, config = {}) =>
+		handleApiRequest(() =>
+			ApiAxios.post<IGetTasksResponse>(`${TASKS_API_URL}/get`, payload, config)
 		),
 
-	createTask: (payload: TTaskBase): Promise<AxiosResponse<ITaskResponse>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.post(`${TASKS_API_URL}/create`, payload)
+	createTask: (payload: TTaskBase) =>
+		handleApiRequest(() =>
+			ApiAxios.post<ITaskResponse>(`${TASKS_API_URL}/create`, payload)
 		),
 
-	editTask: (payload: TTask): Promise<AxiosResponse<ITaskResponse>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.put(`${TASKS_API_URL}`, payload)
+	editTask: (payload: TTask) =>
+		handleApiRequest(() =>
+			ApiAxios.put<ITaskResponse>(`${TASKS_API_URL}`, payload)
 		),
 
-	toggleStatus: (taskId: string): Promise<AxiosResponse<ITaskResponse>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.patch(`${TASKS_API_URL}/${taskId}`)
+	toggleStatus: (taskId: string) =>
+		handleApiRequest(() =>
+			ApiAxios.patch<ITaskResponse>(`${TASKS_API_URL}/${taskId}`)
 		),
 
-	deleteTask: (taskId: string): Promise<AxiosResponse<ITaskResponse>> =>
-		RequestHandler.handleRequest(() =>
-			ApiAxios.delete(`${TASKS_API_URL}/${taskId}`)
+	deleteTask: (taskId: string) =>
+		handleApiRequest(() =>
+			ApiAxios.delete<ITaskResponse>(`${TASKS_API_URL}/${taskId}`)
 		),
 }
 

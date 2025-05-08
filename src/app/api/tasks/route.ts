@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import RequestHandler from '@/utils/RequestHandler'
+import { handleRequest } from '@/utils/requestHandler'
 import { TTask } from '@/types/tasks'
 
 export const PUT = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
-	return RequestHandler.request<TTask>('/tasks', 'put', body)
+	return handleRequest<TTask>('/tasks', 'put', body)
 }

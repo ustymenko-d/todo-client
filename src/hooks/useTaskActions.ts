@@ -14,7 +14,6 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 	const updateDialogTask = useAppStore((state) => state.updateDialogTask)
 
 	const { handleUpdateFolderTasks } = useUpdateFolderTasks(action)
-	// const previousFolderId = task?.folderId
 
 	const performAction = async (payload?: TTaskBase | TTask) => {
 		switch (action) {
