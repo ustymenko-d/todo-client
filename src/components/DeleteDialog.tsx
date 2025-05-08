@@ -44,11 +44,12 @@ const DeleteDialog = ({
 		<AlertDialogContent>
 			<AlertDialogHeader>
 				<AlertDialogTitle>
-					Are you sure you want to delete this {deleteTarget}?
+					Are you sure you want to delete this{' '}
+					{deleteTarget === 'task' ? 'task and all its subtask' : deleteTarget}?
 				</AlertDialogTitle>
 				<AlertDialogDescription>
 					This action cannot be undone. This will permanently delete your{' '}
-					{deleteTarget}.
+					{deleteTarget === 'task' ? 'task and all its subtask' : deleteTarget}.
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter>
