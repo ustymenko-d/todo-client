@@ -7,6 +7,6 @@ const getStorage = (): StateStorage =>
 				setItem: () => {},
 				removeItem: () => {},
 		  }
-		: window.sessionStorage
+		: window.localStorage
 
 export default getStorage

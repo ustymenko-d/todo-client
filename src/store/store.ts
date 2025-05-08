@@ -18,6 +18,10 @@ export const useAppStore = create<AppStore>()(
 			{
 				name: 'app-store',
 				storage: createJSONStorage(getStorage),
+				partialize: (state) => ({
+					accountInfo: state.accountInfo,
+					foldersWithTasks: state.foldersWithTasks,
+				}),
 			}
 		)
 	)

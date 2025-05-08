@@ -2,7 +2,6 @@
 
 import { ChangeEvent, useEffect, useMemo, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { debounce } from 'lodash'
 import useAppStore from '@/store/store'
 import useBreakpoints from '@/hooks/useBreakpoints'
 import { Input } from '@/components/ui/input'
@@ -15,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Loader2, Plus, Settings2 } from 'lucide-react'
 import { ITableComponentProps } from '@/components/TablePage/Table'
+import debounce from 'lodash.debounce'
 
 const defaultColumns = ['completed', 'title', 'actions']
 const columnLabels: Record<string, string> = {

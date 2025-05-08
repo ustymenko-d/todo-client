@@ -12,6 +12,7 @@ const AuthProvider = () => {
 	const authHydrated = useAppStore((state) => state.authHydrated)
 	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
+	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 
 	const [storeReady, setStoreReady] = useState(false)
 
@@ -26,6 +27,14 @@ const AuthProvider = () => {
 
 		return unsub
 	}, [])
+
+	useEffect(() => {
+		if (isStartPage) {
+			setAccountInfo(null)
+			setFoldersWithTasks([])
+			setAuthHydrated(false)
+		}
+	}, [isStartPage, setAccountInfo, setAuthHydrated, setFoldersWithTasks])
 
 	useEffect(() => {
 		if (!storeReady || authHydrated || isStartPage) return
