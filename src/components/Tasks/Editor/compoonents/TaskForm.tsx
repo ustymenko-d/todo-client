@@ -72,6 +72,7 @@ const TaskForm = () => {
 
 		const payload = { ...selectedTask, ...base }
 		delete payload.subtasks
+		delete payload.lastEdited
 		return payload
 	}
 

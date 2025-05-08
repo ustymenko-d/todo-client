@@ -95,7 +95,9 @@ const Body = () => {
 				...task,
 				folderId: String(newFolderId),
 			}
+
 			delete updatedTask.subtasks
+			delete updatedTask.lastEdited
 
 			handleTaskAction(setLoading, updatedTask as TTask, prevFolderId)
 			setActiveId(null)
