@@ -11,6 +11,9 @@ import {
 	DragEndEvent,
 	DragOverlay,
 	DragStartEvent,
+	TouchSensor,
+	useSensor,
+	useSensors,
 } from '@dnd-kit/core'
 import Task from './components/Task'
 import useTaskMove from '@/hooks/useTaskMove'
@@ -27,6 +30,14 @@ const Body = () => {
 	const [activeId, setActiveId] = useState<string | null>(null)
 
 	const { moveTask } = useTaskMove(setLoading)
+
+	const sensors = useSensors(
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				distance: 10,
+			},
+		})
+	)
 
 	const isFolderLoading = useCallback(
 		(id: string) => loadingArray.includes(id),
@@ -95,6 +106,7 @@ const Body = () => {
 	return (
 		<div className='grid w-full gap-2 mt-4 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>
 			<DndContext
+				sensors={sensors}
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				onDragCancel={handleDragCancel}>
