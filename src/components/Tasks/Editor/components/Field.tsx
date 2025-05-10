@@ -1,0 +1,41 @@
+import { ElementType } from 'react'
+import { UseFormReturn } from 'react-hook-form'
+import {
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
+import { TTaskBase } from '@/types/tasks'
+
+interface IFieldProps {
+	taskForm: UseFormReturn<TTaskBase>
+	Component: ElementType
+	name: keyof TTaskBase
+	placeholder: string
+}
+
+const Field = ({ taskForm, Component, name, placeholder }: IFieldProps) => (
+	<FormField
+		control={taskForm.control}
+		name={name}
+		render={({ field }) => (
+			<FormItem>
+				<FormLabel className='text-muted-foreground'>
+					{name.charAt(0).toUpperCase() + name.slice(1)}:
+				</FormLabel>
+				<FormControl>
+					<Component
+						{...field}
+						placeholder={placeholder}
+						value={field.value || ''}
+					/>
+				</FormControl>
+				<FormMessage />
+			</FormItem>
+		)}
+	/>
+)
+
+export default Field

@@ -47,9 +47,21 @@ const taskBaseSchema = z.object({
 
 	parentTaskId: z.string().uuid().nullable().optional(),
 
-	startDate: z.date().nullable().optional(),
+	startDate: z
+		.date()
+		.nullable()
+		.optional()
+		.refine((date) => !date || date > new Date(), {
+			message: 'Start date must be in the future.',
+		}),
 
-	expiresDate: z.date().nullable().optional(),
+	expiresDate: z
+		.date()
+		.nullable()
+		.optional()
+		.refine((date) => !date || date > new Date(), {
+			message: 'Expiration date must be in the future.',
+		}),
 
 	folderId: z.string().uuid().nullable().optional(),
 })
@@ -60,7 +72,6 @@ const task = taskBaseSchema
 	.extend({
 		id: z.string(),
 		userId: z.string(),
-		subtasks: z.array(z.lazy((): z.ZodSchema => task)),
 	})
 	.refine(validateDates, expiresAfterStartRefine)
 

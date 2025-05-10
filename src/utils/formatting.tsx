@@ -27,10 +27,13 @@ export const formatValue = (value: string | null | undefined): ReactNode => {
 export const formatDate = (dateString?: Date | null): string => {
 	if (!dateString) return '-'
 	const date = new Date(dateString)
-	return date.toLocaleDateString(undefined, {
+	return date.toLocaleString(undefined, {
 		year: 'numeric',
 		month: '2-digit',
-		day: 'numeric',
+		day: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: false,
 	})
 }
 

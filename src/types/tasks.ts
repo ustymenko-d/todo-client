@@ -4,8 +4,10 @@ import { IPagination } from './common'
 
 export type TGetTasksRequest = z.infer<typeof TasksValidation.getTasksRequest>
 export type TTaskBase = z.infer<typeof TasksValidation.taskBase>
-export type TTask = z.infer<typeof TasksValidation.task> & {
+export type TTaskPayload = z.infer<typeof TasksValidation.task>
+export type TTask = TTaskPayload & {
 	lastEdited: string
+	subtasks: TTask[]
 }
 
 export interface ITaskResponse {
