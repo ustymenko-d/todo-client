@@ -18,12 +18,12 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import DeleteDialog from '@/components/DeleteDialog'
-import { Label } from '@/components/ui/label'
 import { formatDate, formatValue } from '@/utils/formatting'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { TTask } from '@/types/tasks'
 import useTaskActions from '@/hooks/useTaskActions'
+import InfoBlock from './components/InfoBlock'
 
 const DetailsDialog = () => {
 	const taskDialogSettings = useAppStore((state) => state.taskDialogSettings)
@@ -39,7 +39,7 @@ const DetailsDialog = () => {
 		task || {}
 	const folder = folders?.find((f) => f.id === folderId) ?? null
 
-	const { handleTaskAction: chengeTaskStatus } = useTaskActions(
+	const { handleTaskAction: changeTaskStatus } = useTaskActions(
 		'changeStatus',
 		task as TTask
 	)
@@ -48,35 +48,35 @@ const DetailsDialog = () => {
 		task as TTask
 	)
 
+	const handleStatusChange = () => changeTaskStatus(setToggling)
+	const handleEdit = () => openTaskEditor('edit', task)
+	const handleAddSubtask = () => openTaskEditor('create', task)
+	const handleDelete = () => deleteTask(setDeleting)
+
 	return (
 		<Dialog
 			open={open}
 			onOpenChange={closeTaskDialog}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{title ?? 'Task title'}</DialogTitle>
+					<DialogTitle>{title || 'Task title'}</DialogTitle>
 				</DialogHeader>
 
 				<div className='flex flex-col gap-3 pt-4'>
-					<div className='flex flex-col gap-1'>
-						<p className='text-muted-foreground'>Description:</p>
+					<InfoBlock label='Description:'>
 						<DialogDescription className='text-current'>
 							{description || 'No description provided.'}
 						</DialogDescription>
-					</div>
+					</InfoBlock>
 
 					<div
 						role='group'
 						aria-labelledby='status-label'
 						className='flex flex-col gap-2'>
-						<Label
-							htmlFor='status-label'
-							className='text-muted-foreground'>
-							Status:
-						</Label>
+						<h4 className='text-muted-foreground'>Status:</h4>
 						<Select
 							disabled={toggling}
-							onValueChange={() => chengeTaskStatus(setToggling)}
+							onValueChange={handleStatusChange}
 							value={completed ? 'completed' : 'in-process'}>
 							<SelectTrigger className='w-[180px]'>
 								<SelectValue placeholder='Select status' />
@@ -100,54 +100,38 @@ const DetailsDialog = () => {
 					</div>
 
 					{startDate && (
-						<div className='flex flex-col gap-1'>
-							<Label
-								htmlFor='startDate'
-								className='text-muted-foreground'>
-								Start date:
-							</Label>
-							<span id='startDate'>{formatDate(startDate)}</span>
-						</div>
+						<InfoBlock label='Start date:'>
+							<span>{formatDate(startDate)}</span>
+						</InfoBlock>
 					)}
 
 					{expiresDate && (
-						<div className='flex flex-col gap-1'>
-							<Label
-								htmlFor='expiresDate'
-								className='text-muted-foreground'>
-								Expires date:
-							</Label>
-							<span id='expiresDate'>{formatDate(expiresDate)}</span>
-						</div>
+						<InfoBlock label='Expires date:'>
+							<span>{formatDate(expiresDate)}</span>
+						</InfoBlock>
 					)}
 
 					{folderId && (
-						<div className='flex flex-col gap-1'>
-							<Label
-								htmlFor='folder'
-								className='text-muted-foreground'>
-								Folder:
-							</Label>
-							<span id='folder'>{formatValue(folder?.name)}</span>
-						</div>
+						<InfoBlock label='Folder:'>
+							<span>{formatValue(folder?.name)}</span>
+						</InfoBlock>
 					)}
 				</div>
 
 				<DialogFooter className='gap-2 sm:space-x-0'>
 					<Button
 						variant='outline'
-						onClick={() => openTaskEditor('create', task)}>
+						onClick={handleAddSubtask}>
 						Add subtask
 					</Button>
 					<Button
 						variant='outline'
-						onClick={() => openTaskEditor('edit', task)}>
+						onClick={handleEdit}>
 						Edit
 					</Button>
 					<DeleteDialog
-						handleDelete={() => deleteTask(setDeleting)}
+						handleDelete={handleDelete}
 						loading={deleting}
-						// disabled={deleting === 'success'}
 						needTrigger
 						deleteTarget='task'
 					/>

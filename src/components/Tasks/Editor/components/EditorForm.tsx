@@ -1,6 +1,4 @@
-'use client'
-
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import useAppStore from '@/store/store'
@@ -13,16 +11,16 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import FormDatePicker from '@/components/Tasks/Editor/compoonents/FormDatePicker'
+import DatePicker from '@/components/Tasks/Editor/components/DatePicker/DatePicker'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import LoadingButton from '@/components/ui/LoadingButton'
-import Field from '@/components/Tasks/Editor/compoonents/Field'
-import FormSelect from '@/components/Tasks/Editor/compoonents/FormSelect'
+import Field from '@/components/Tasks/Editor/components/Field'
+import FormSelect from '@/components/Tasks/Editor/components/FormSelect'
 import { TTask, TTaskBase } from '@/types/tasks'
 import useTaskActions from '@/hooks/useTaskActions'
 
-const TaskForm = () => {
+const EditorForm = () => {
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
 	const selectedTask = useAppStore((state) => state.taskEditorSettings.target)
 
@@ -35,8 +33,9 @@ const TaskForm = () => {
 		selectedTask as TTask
 	)
 
-	const defaultValues = useMemo<TTaskBase>(
-		() => ({
+	const taskForm = useForm<TTaskBase>({
+		resolver: zodResolver(TasksValidation.taskBase),
+		defaultValues: {
 			title: isEditing ? selectedTask?.title || '' : '',
 			description: isEditing ? selectedTask?.description : '',
 			parentTaskId: isEditing
@@ -51,38 +50,26 @@ const TaskForm = () => {
 					? new Date(selectedTask.expiresDate)
 					: null,
 			folderId: isEditing ? selectedTask?.folderId : null,
-		}),
-		[isEditing, selectedTask]
-	)
-
-	const taskForm = useForm<TTaskBase>({
-		resolver: zodResolver(TasksValidation.taskBase),
-		defaultValues,
+		},
 	})
 
-	const createPayload = (values: TTaskBase): TTaskBase | TTask => {
-		const base: TTaskBase = {
+	const handleSubmit = async (values: TTaskBase) => {
+		const payload: TTaskBase = {
 			...values,
-			completed: !isEditing ? false : selectedTask?.completed ?? false,
+			completed: isEditing ? selectedTask?.completed ?? false : false,
 			startDate: values.startDate ? new Date(values.startDate) : null,
 			expiresDate: values.expiresDate ? new Date(values.expiresDate) : null,
 		}
 
-		if (mode === 'create') return base
-
-		const payload = { ...selectedTask, ...base }
-		delete payload.subtasks
-		delete payload.lastEdited
-		return payload
-	}
-
-	const handleSubmit = async (values: TTaskBase) => {
-		const payload = createPayload(values)
-
-		if (mode === 'create') {
-			createTask(setLoading, payload as TTaskBase)
+		if (isEditing) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { subtasks, lastEdited, ...editPayload } = {
+				...selectedTask!,
+				...payload,
+			}
+			editTask(setLoading, editPayload)
 		} else {
-			editTask(setLoading, payload as TTask)
+			createTask(setLoading, payload)
 		}
 	}
 
@@ -104,37 +91,24 @@ const TaskForm = () => {
 					/>
 
 					<div className='grid grid-cols-2 gap-3'>
-						<FormField
-							control={taskForm.control}
-							name='startDate'
-							render={({ field }) => (
-								<FormItem className='flex flex-col gap-1'>
-									<FormLabel className='text-muted-foreground'>
-										Start date:
-									</FormLabel>
-									<FormControl>
-										<FormDatePicker field={field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={taskForm.control}
-							name='expiresDate'
-							render={({ field }) => (
-								<FormItem className='flex flex-col gap-1'>
-									<FormLabel className='text-muted-foreground'>
-										Expires date:
-									</FormLabel>
-									<FormControl>
-										<FormDatePicker field={field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+						{['startDate', 'expiresDate'].map((name) => (
+							<FormField
+								key={name}
+								control={taskForm.control}
+								name={name as 'startDate' | 'expiresDate'}
+								render={({ field }) => (
+									<FormItem className='flex flex-col gap-1'>
+										<FormLabel className='text-muted-foreground'>
+											{`${name === 'startDate' ? 'Start' : 'Expires'} date:`}
+										</FormLabel>
+										<FormControl>
+											<DatePicker field={field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						))}
 					</div>
 
 					<FormField
@@ -161,4 +135,4 @@ const TaskForm = () => {
 	)
 }
 
-export default TaskForm
+export default EditorForm

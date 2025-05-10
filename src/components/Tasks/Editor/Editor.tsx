@@ -8,7 +8,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import TaskForm from './compoonents/TaskForm'
+import EditorForm from './components/EditorForm'
 
 const Editor = () => {
 	const open = useAppStore((state) => state.taskEditorSettings.open)
@@ -30,7 +30,7 @@ const Editor = () => {
 							: 'Complete the form below to add a new task. Title is required, other fields are optional.'}
 					</DialogDescription>
 				</DialogHeader>
-				<TaskForm />
+				<EditorForm />
 			</DialogContent>
 		</Dialog>
 	)

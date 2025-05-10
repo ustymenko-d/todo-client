@@ -1,9 +1,9 @@
 import { useRouter, usePathname } from 'next/navigation'
 import useAppStore from '@/store/store'
-import useUpdateFolderTasks from './useUpdateFolderTasks'
-import { TTask, TTaskAction, TTaskBase } from '@/types/tasks'
-import { toast } from 'sonner'
 import TasksService from '@/services/tasks.service'
+import useUpdateFolderTasks from './useUpdateFolderTasks'
+import { TTask, TTaskAction, TTaskBase, TTaskPayload } from '@/types/tasks'
+import { toast } from 'sonner'
 
 const useTaskActions = (action: TTaskAction, task?: TTask) => {
 	const router = useRouter()
@@ -20,7 +20,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 			case 'create':
 				return TasksService.createTask(payload as TTaskBase)
 			case 'edit':
-				return TasksService.editTask(payload as TTask)
+				return TasksService.editTask(payload as TTaskPayload)
 			case 'changeStatus':
 				return TasksService.toggleStatus(task?.id ?? '')
 			case 'delete':
@@ -32,7 +32,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 
 	const handleTaskAction = async (
 		setLoadingState: (state: boolean) => void,
-		payload?: TTaskBase | TTask,
+		payload?: TTaskBase | TTaskPayload,
 		previousFolderId?: string | null,
 		skipUpdate: boolean = false
 	) => {

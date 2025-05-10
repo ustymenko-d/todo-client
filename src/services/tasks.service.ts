@@ -2,8 +2,8 @@ import {
 	IGetTasksResponse,
 	ITaskResponse,
 	TGetTasksRequest,
-	TTask,
 	TTaskBase,
+	TTaskPayload,
 } from '@/types/tasks'
 import { ApiAxios } from './Axios'
 import { handleApiRequest } from '@/utils/requestHandler'
@@ -21,7 +21,7 @@ const TasksService = {
 			ApiAxios.post<ITaskResponse>(`${TASKS_API_URL}/create`, payload)
 		),
 
-	editTask: (payload: TTask) =>
+	editTask: (payload: TTaskPayload) =>
 		handleApiRequest(() =>
 			ApiAxios.put<ITaskResponse>(`${TASKS_API_URL}`, payload)
 		),
