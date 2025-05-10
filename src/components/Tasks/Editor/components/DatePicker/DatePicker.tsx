@@ -130,7 +130,7 @@ const DatePicker = ({ field }: DatePickerProps) => {
 					/>
 				</div>
 
-				<div className='grid sm:grid-cols-2 gap-2 sm:pl-2'>
+				<div className='grid grid-cols-2 gap-2 sm:pl-2'>
 					<TimeSelector
 						label='Hour'
 						values={hours}
