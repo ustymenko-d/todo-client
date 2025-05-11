@@ -41,10 +41,8 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 			const { data } = await performAction(payload)
 			const { success, task: updatedTask } = data
 
-			if (!success) {
-				toast.error('Something went wrong!')
-				return
-			}
+			if (!success)
+				throw new Error('Task action failed: response was not successful')
 
 			toast.success('Successfuly completed')
 
@@ -60,7 +58,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 			if (pathname === '/table') router.refresh()
 		} catch (error) {
 			console.error(`[useTaskActions] ${action} task error:`, error)
-			toast.error('Something went wrong!')
+			throw error
 		} finally {
 			setLoadingState(false)
 		}

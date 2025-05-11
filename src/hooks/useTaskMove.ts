@@ -12,19 +12,23 @@ const useTaskMove = (setLoading: (v: boolean) => void) => {
 		const taskId = task.id
 
 		setFoldersWithTasks((prev) =>
-			prev.map((folder) =>
-				folder.id === prevFolderId
-					? {
-							...folder,
-							tasks: folder.tasks.filter((t) => t.id !== taskId),
-					  }
-					: folder.id === newFolderId
-					? {
-							...folder,
-							tasks: [...folder.tasks, { ...task, folderId: newFolderId }],
-					  }
-					: folder
-			)
+			prev.map((folder) => {
+				if (folder.id === prevFolderId) {
+					return {
+						...folder,
+						tasks: folder.tasks.filter((t) => t.id !== taskId),
+						total: folder.total - 1,
+					}
+				}
+				if (folder.id === newFolderId) {
+					return {
+						...folder,
+						tasks: [...folder.tasks, { ...task, folderId: newFolderId }],
+						total: folder.total + 1,
+					}
+				}
+				return folder
+			})
 		)
 
 		const updatedTask: Partial<TTask> = {
@@ -39,19 +43,23 @@ const useTaskMove = (setLoading: (v: boolean) => void) => {
 			await handleTaskAction(setLoading, updatedTask as TTask, true)
 		} catch (error) {
 			setFoldersWithTasks((prev) =>
-				prev.map((folder) =>
-					folder.id === prevFolderId
-						? {
-								...folder,
-								tasks: [...folder.tasks, task],
-						  }
-						: folder.id === newFolderId
-						? {
-								...folder,
-								tasks: folder.tasks.filter((t) => t.id !== taskId),
-						  }
-						: folder
-				)
+				prev.map((folder) => {
+					if (folder.id === prevFolderId) {
+						return {
+							...folder,
+							tasks: [...folder.tasks, task],
+							total: folder.total + 1,
+						}
+					}
+					if (folder.id === newFolderId) {
+						return {
+							...folder,
+							tasks: folder.tasks.filter((t) => t.id !== taskId),
+							total: folder.total - 1,
+						}
+					}
+					return folder
+				})
 			)
 
 			toast.error('Failed to move the task. Please try again.')
