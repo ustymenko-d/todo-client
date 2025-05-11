@@ -1,20 +1,9 @@
-import { getSocketId } from '@/lib/socket'
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 
 const baseConfig = {
 	baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 	withCredentials: true,
 	timeout: 5000,
-}
-
-const addSocketIdToHeaders = (
-	config: InternalAxiosRequestConfig
-): InternalAxiosRequestConfig => {
-	const socketId = getSocketId()
-	if (socketId) {
-		config.headers['x-socket-id'] = socketId
-	}
-	return config
 }
 
 export const Axios: AxiosInstance = axios.create(baseConfig)
@@ -23,7 +12,17 @@ export const ApiAxios: AxiosInstance = axios.create({
 	baseURL: new URL('/api', process.env.NEXT_PUBLIC_FRONTEND_URL).toString(),
 })
 
-ApiAxios.interceptors.request.use(addSocketIdToHeaders)
+if (typeof window !== 'undefined') {
+	import('@/lib/socket').then(({ getSocketId }) => {
+		ApiAxios.interceptors.request.use((config) => {
+			const socketId = getSocketId()
+			if (socketId) {
+				config.headers['x-socket-id'] = socketId
+			}
+			return config
+		})
+	})
+}
 
 export const getServerAxios = async () => {
 	const { cookies } = await import('next/headers')
