@@ -36,7 +36,7 @@ const useTaskMove = (setLoading: (v: boolean) => void) => {
 		delete updatedTask.lastEdited
 
 		try {
-			await handleTaskAction(setLoading, updatedTask as TTask, prevFolderId, true)
+			await handleTaskAction(setLoading, updatedTask as TTask, true)
 		} catch (error) {
 			setFoldersWithTasks((prev) =>
 				prev.map((folder) =>

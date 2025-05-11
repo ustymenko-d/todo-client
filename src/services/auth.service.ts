@@ -1,5 +1,5 @@
 import { ApiAxios } from './Axios'
-import { handleApiRequest } from '@/utils/requestHandler'
+import { handleApiRequest } from '@/services/requestHandler'
 import {
 	IAuthResponse,
 	IUserInfo,

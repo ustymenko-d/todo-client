@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleRequest } from '@/utils/requestHandler'
+import { handleRequest } from '@/services/requestHandler'
 import { TGetTasksRequest } from '@/types/tasks'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {

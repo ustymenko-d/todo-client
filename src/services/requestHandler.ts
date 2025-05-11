@@ -15,9 +15,9 @@ interface ICustomAxiosRequestConfig extends AxiosRequestConfig {
 	skipRefresh?: boolean
 }
 
-export async function handleApiRequest<T>(
+export const handleApiRequest = async <T>(
 	apiRequest: () => Promise<AxiosResponse<MaybeWithNeedRefresh<T>>>
-): Promise<AxiosResponse<T>> {
+): Promise<AxiosResponse<T>> => {
 	const response = await apiRequest()
 
 	if (isNeedRefreshResponse(response.data)) {

@@ -6,7 +6,7 @@ import {
 	TTaskPayload,
 } from '@/types/tasks'
 import { ApiAxios } from './Axios'
-import { handleApiRequest } from '@/utils/requestHandler'
+import { handleApiRequest } from '@/services/requestHandler'
 
 const TASKS_API_URL = '/tasks'
 

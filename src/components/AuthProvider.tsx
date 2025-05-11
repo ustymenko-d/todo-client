@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import useAppStore from '@/store/store'
 import AuthService from '@/services/auth.service'
 
-const AuthProvider = () => {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const pathname = usePathname()
 	const isStartPage = pathname === '/' || pathname.startsWith('/auth')
 
@@ -58,7 +58,7 @@ const AuthProvider = () => {
 		fetchAccountData()
 	}, [authHydrated, isStartPage, setAccountInfo, setAuthHydrated, storeReady])
 
-	return null
+	return <>{children}</>
 }
 
 export default AuthProvider

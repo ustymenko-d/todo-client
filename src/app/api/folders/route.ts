@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleRequest } from '@/utils/requestHandler'
+import { handleRequest } from '@/services/requestHandler'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
-	return handleRequest('/folders', 'post', body)
+	const socketId = request.headers.get('x-socket-id') || undefined
+
+	return handleRequest('/folders', 'post', body, {
+		headers: {
+			'x-socket-id': socketId,
+		},
+	})
 }
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {

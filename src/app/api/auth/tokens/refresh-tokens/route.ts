@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleRequest } from '@/utils/requestHandler'
+import { handleRequest } from '@/services/requestHandler'
 import { splitCookiesString, parse } from 'set-cookie-parser'
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {

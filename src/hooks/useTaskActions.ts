@@ -33,7 +33,6 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 	const handleTaskAction = async (
 		setLoadingState: (state: boolean) => void,
 		payload?: TTaskBase | TTaskPayload,
-		previousFolderId?: string | null,
 		skipUpdate: boolean = false
 	) => {
 		try {
@@ -55,7 +54,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 				updateDialogTask(updatedTask)
 
 			if (!skipUpdate) {
-				handleUpdateFolderTasks(updatedTask, task?.folderId ?? previousFolderId)
+				handleUpdateFolderTasks(updatedTask)
 			}
 
 			if (pathname === '/table') router.refresh()
