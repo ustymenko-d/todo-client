@@ -11,6 +11,7 @@ import {
 	DragEndEvent,
 	DragOverlay,
 	DragStartEvent,
+	MouseSensor,
 	TouchSensor,
 	useSensor,
 	useSensors,
@@ -32,6 +33,11 @@ const Body = () => {
 	const { moveTask } = useTaskMove(setLoading)
 
 	const sensors = useSensors(
+		useSensor(MouseSensor, {
+			activationConstraint: {
+				distance: 0,
+			},
+		}),
 		useSensor(TouchSensor, {
 			activationConstraint: {
 				distance: 10,
