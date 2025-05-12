@@ -1,11 +1,9 @@
-// utils/cn.test.ts
-
 import { cn } from './utils'
 
 describe('cn', () => {
 	it('merges tailwind classes correctly', () => {
 		const result = cn('p-2', 'p-4')
-		expect(result).toBe('p-4') // tailwind-merge should override p-2
+		expect(result).toBe('p-4')
 	})
 
 	it('joins multiple class values', () => {

@@ -5,8 +5,8 @@ const verifyToken = (accessToken?: string): boolean => {
 
 	try {
 		const { exp }: { exp: number } = jwtDecode(accessToken)
-		const now = Math.floor(Date.now() / 1000)
-		return exp > now
+		const currentTime = Math.floor(Date.now() / 1000)
+		return exp > currentTime
 	} catch {
 		return false
 	}
