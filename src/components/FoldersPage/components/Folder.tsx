@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { cn } from '@/lib/utils'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import DeleteDialog from '@/components/DeleteDialog'
 import TaskList from './TaskList'
@@ -8,7 +9,6 @@ import { ListTodo, Loader2, PenLine, Trash2 } from 'lucide-react'
 import TasksService from '@/services/tasks.service'
 import useAppStore from '@/store/store'
 import { useDroppable } from '@dnd-kit/core'
-import clsx from 'clsx'
 import { TTask } from '@/types/tasks'
 
 interface FolderCardProps {
@@ -144,7 +144,7 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 	return (
 		<Card
 			ref={setNodeRef}
-			className={clsx(
+			className={cn(
 				'h-fit transition-colors duration-200',
 				isOver ? 'bg-accent/80' : 'bg-background'
 			)}>

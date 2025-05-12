@@ -1,10 +1,10 @@
 'use client'
 
+import { cn } from '@/lib/utils'
 import useAppStore from '@/store/store'
 import { TTask } from '@/types/tasks'
 import { formatValue } from '@/utils/formatting'
 import { useDraggable } from '@dnd-kit/core'
-import clsx from 'clsx'
 import { CircleCheck, GripVertical, Loader } from 'lucide-react'
 
 const Task = ({ task }: { task: TTask }) => {
@@ -20,7 +20,7 @@ const Task = ({ task }: { task: TTask }) => {
 			ref={setNodeRef}
 			{...attributes}
 			onClick={() => openTaskDialog(task)}
-			className={clsx(
+			className={cn(
 				'flex items-stretch pr-2 border rounded-md transition-opacity bg-white dark:bg-black hover:bg-accent',
 				isDragging && 'opacity-50'
 			)}>
