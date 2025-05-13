@@ -27,7 +27,7 @@ const columnLabels: Record<string, string> = {
 const Head = ({ table }: ITableComponentProps) => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
-	const breakpoints = useBreakpoints([639])
+	const breakpoints = useBreakpoints([640])
 	const [isPending, startTransition] = useTransition()
 	const searchTerm = useAppStore((state) => state.searchTerm)
 	const setSearchTerm = useAppStore((state) => state.setSearchTerm)
