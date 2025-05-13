@@ -24,8 +24,12 @@ describe('useCrossTabZustandSync', () => {
 		expect(setStateMock).not.toHaveBeenCalled()
 	})
 
-	it('should not update state if storage event value is invalid', () => {
+	it('should handle invalid JSON gracefully', () => {
 		const setStateMock = jest.spyOn(useAppStore, 'setState')
+		const consoleErrorMock = jest
+			.spyOn(console, 'error')
+			.mockImplementation(() => {})
+
 		renderHook(() => useCrossTabZustandSync())
 
 		act(() => {
@@ -37,7 +41,13 @@ describe('useCrossTabZustandSync', () => {
 			)
 		})
 
+		expect(consoleErrorMock).toHaveBeenCalledWith(
+			'[CrossTabSync] Failed to parse state:',
+			expect.any(SyntaxError)
+		)
 		expect(setStateMock).not.toHaveBeenCalled()
+
+		consoleErrorMock.mockRestore()
 	})
 
 	it('should update state if incoming state is different', () => {
@@ -54,7 +64,7 @@ describe('useCrossTabZustandSync', () => {
 								id: '123',
 								email: 'username@email.com',
 								username: 'username',
-								createdAt: new Date(),
+								createdAt: new Date().toISOString(),
 								isVerified: true,
 								folders: [],
 							},
