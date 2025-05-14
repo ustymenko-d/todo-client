@@ -28,7 +28,7 @@ import InfoBlock from './components/InfoBlock'
 const DetailsDialog = () => {
 	const taskDialogSettings = useAppStore((state) => state.taskDialogSettings)
 	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
-	const folders = useAppStore((state) => state.accountInfo?.folders)
+	const allFolders = useAppStore((state) => state.foldersWithTasks)
 	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
 
 	const [deleting, setDeleting] = useState(false)
@@ -37,7 +37,7 @@ const DetailsDialog = () => {
 	const { open, task } = taskDialogSettings
 	const { title, description, completed, startDate, folderId, expiresDate } =
 		task || {}
-	const folder = folders?.find((f) => f.id === folderId) ?? null
+	const taskFolder = allFolders.find((folder) => folder.id === folderId)
 
 	const { handleTaskAction: changeTaskStatus } = useTaskActions(
 		'changeStatus',
@@ -113,7 +113,7 @@ const DetailsDialog = () => {
 
 					{folderId && (
 						<InfoBlock label='Folder:'>
-							<span>{formatValue(folder?.name)}</span>
+							<span>{formatValue(taskFolder?.name)}</span>
 						</InfoBlock>
 					)}
 				</div>

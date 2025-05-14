@@ -1,7 +1,6 @@
 import { z, ZodSchema } from 'zod'
 import AuthValidation from '@/schemas/authForm.schema'
 import { IResponseStatus } from './common'
-import { IFolder } from './folders'
 
 export type TAuthForm = 'signin' | 'signup' | 'forgotPassword'
 export type TEmail = z.infer<typeof AuthValidation.email>
@@ -14,7 +13,6 @@ export interface IUserInfo {
 	username: string
 	createdAt: Date
 	isVerified: boolean
-	folders?: IFolder[]
 }
 
 export interface IAuthResponse extends IResponseStatus {

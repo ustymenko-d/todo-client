@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import DeleteDialog from '@/components/DeleteDialog'
 import TaskList from './TaskList'
 import TooltipButton from './TooltipButton'
-import { IFolder, IFolderWithTasks } from '@/types/folders'
+import { IFolderWithTasks } from '@/types/folders'
 import { ListTodo, Loader2, PenLine, Trash2 } from 'lucide-react'
 import TasksService from '@/services/tasks.service'
 import useAppStore from '@/store/store'
@@ -12,7 +12,7 @@ import { useDroppable } from '@dnd-kit/core'
 import { TTask } from '@/types/tasks'
 
 interface FolderCardProps {
-	folder: IFolder
+	folder: IFolderWithTasks
 	isLoading: boolean
 	onEdit: () => void
 	onDelete: () => void
@@ -21,47 +21,43 @@ interface FolderCardProps {
 const LIMIT = 10 as const
 
 const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
-	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
+	const { id, name, userId, tasks = [] } = folder
+	const { isOver, setNodeRef } = useDroppable({ id })
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
-
 	const [openAlert, setOpenAlert] = useState(false)
 	const [showTasks, setShowTasks] = useState(false)
 	const [taskLoading, setTaskLoading] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 	const [page, setPage] = useState(1)
 
-	const { isOver, setNodeRef } = useDroppable({ id: folder.id })
-
-	const folderWithTasks = foldersWithTasks.find((f) => f.id === folder.id)
-	const existingTasks = folderWithTasks?.tasks || []
-
 	const updateFoldersWithTasks = useCallback(
 		(newTasks: TTask[], currentPage: number, pages: number, total: number) => {
-			setFoldersWithTasks((prev: IFolderWithTasks[]) => {
-				const existing = prev.find((f) => f.id === folder.id)
+			setFoldersWithTasks((prev) => {
+				const existing = prev.find((folder) => folder.id === id)
 
 				if (existing) {
 					const uniqueNewTasks = newTasks.filter(
 						(task) => !existing.tasks?.some((t) => t.id === task.id)
 					)
-					return prev.map((f) =>
-						f.id === folder.id
+					return prev.map((folder) =>
+						folder.id === id
 							? {
-									...f,
+									...folder,
 									tasks: [...(existing.tasks || []), ...uniqueNewTasks],
 									pages,
 									total,
 									page: currentPage,
 							  }
-							: f
+							: folder
 					)
 				}
 
 				return [
 					...prev,
 					{
-						id: folder.id,
-						name: folder.name,
+						id,
+						name,
+						userId,
 						tasks: newTasks,
 						pages,
 						total,
@@ -71,7 +67,7 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 				]
 			})
 		},
-		[folder.id, folder.name, setFoldersWithTasks]
+		[id, name, userId, setFoldersWithTasks]
 	)
 
 	const fetchTasks = useCallback(
@@ -82,7 +78,7 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 				const { data } = await TasksService.getTasks({
 					page: currentPage,
 					limit: LIMIT,
-					folderId: folder.id,
+					folderId: id,
 				})
 				const { tasks: newTasks, pages, total } = data
 
@@ -94,7 +90,7 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 				setTaskLoading(false)
 			}
 		},
-		[folder.id, updateFoldersWithTasks]
+		[id, updateFoldersWithTasks]
 	)
 
 	const loadMoreTasks = () => {
@@ -109,7 +105,7 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 		const willShow = !showTasks
 		setShowTasks(willShow)
 
-		if (willShow && hasMore && !taskLoading && existingTasks.length === 0) {
+		if (willShow && hasMore && !taskLoading && tasks.length === 0) {
 			fetchTasks(1)
 		}
 	}
@@ -117,7 +113,7 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 	const renderTaskContent = () => {
 		if (!showTasks) return null
 
-		if (existingTasks.length === 0 && taskLoading) {
+		if (tasks.length === 0 && taskLoading) {
 			return (
 				<div className='flex items-center justify-center gap-2 px-6 py-4 border-t text-muted-foreground'>
 					<Loader2
@@ -132,8 +128,8 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 
 		return (
 			<TaskList
-				folderId={folder.id}
-				tasks={existingTasks}
+				folderId={id}
+				tasks={tasks}
 				hasMore={hasMore}
 				loadMoreTasks={loadMoreTasks}
 				taskLoading={taskLoading}
@@ -151,7 +147,7 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 			<CardHeader className='flex-row flex-wrap items-center justify-between gap-x-2 gap-y-1'>
 				<CardTitle className='flex flex-col gap-1'>
 					<p className='font-medium text-muted-foreground'>Folder name:</p>
-					<p>{folder.name}</p>
+					<p>{name}</p>
 				</CardTitle>
 				<div className='flex items-center gap-1'>
 					<TooltipButton

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import useAppStore from '@/store/store'
 import AuthService from '@/services/auth.service'
+import FoldersService from '@/services/folders.service'
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const pathname = usePathname()
@@ -9,6 +10,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const authHydrated = useAppStore((state) => state.authHydrated)
 	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
+	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 
@@ -39,13 +41,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 		const fetchAccountData = async () => {
 			try {
-				const { data } = await AuthService.getAccountInfo()
-
-				if (data?.username) {
+				if (!accountInfo) {
+					const { data } = await AuthService.getAccountInfo()
 					setAccountInfo(data)
-				} else {
-					throw new Error('No user data')
 				}
+
+				const { data: foldersData } = await FoldersService.getFolders({
+					page: 1,
+					limit: 25,
+				})
+
+				setFoldersWithTasks(foldersData.folders)
 			} catch {
 				setAccountInfo(null)
 				await AuthService.clearAuthCookies()
@@ -55,7 +61,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 
 		fetchAccountData()
-	}, [authHydrated, needResetAuth, setAccountInfo, setAuthHydrated, storeReady])
+	}, [
+		accountInfo,
+		authHydrated,
+		needResetAuth,
+		setAccountInfo,
+		setAuthHydrated,
+		setFoldersWithTasks,
+		storeReady,
+	])
 
 	return <>{children}</>
 }

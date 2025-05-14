@@ -7,8 +7,8 @@ import { Plus } from 'lucide-react'
 
 const Head = () => {
 	const openEditor = useAppStore((state) => state.openFolderEditor)
-	const accountInfo = useAppStore((state) => state.accountInfo)
-	const hasFolders = accountInfo?.folders && accountInfo.folders?.length > 0
+	const folders = useAppStore((state) => state.foldersWithTasks)
+	const hasFolders = folders.length > 0
 
 	return (
 		<div className='flex flex-wrap items-end justify-between gap-x-4 gap-y-2'>

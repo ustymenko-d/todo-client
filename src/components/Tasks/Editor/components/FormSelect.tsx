@@ -15,7 +15,7 @@ interface FormSelectProps {
 }
 
 const FormSelect = ({ field }: FormSelectProps) => {
-	const folders = useAppStore((state) => state.accountInfo?.folders)
+	const folders = useAppStore((state) => state.foldersWithTasks)
 
 	const handleChange = (value: string) => {
 		field.onChange(value === 'null' ? null : value)
@@ -33,7 +33,7 @@ const FormSelect = ({ field }: FormSelectProps) => {
 			<SelectContent>
 				<SelectItem value='null'>No Folder</SelectItem>
 
-				{folders?.map((folder) => (
+				{folders.map((folder) => (
 					<SelectItem
 						key={folder.id}
 						value={folder.id}>

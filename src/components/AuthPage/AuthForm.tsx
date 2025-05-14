@@ -17,12 +17,9 @@ import { formConfig } from '@/const'
 
 const AuthForm = () => {
 	const router = useRouter()
-
 	const authFormType = useAppStore((state) => state.authFormType)
 	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
-	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
-
 	const [loading, setLoading] = useState(false)
 
 	const { fields, buttonText, validationSchema, defaultValues } =
@@ -62,7 +59,6 @@ const AuthForm = () => {
 		authForm.reset(defaultValues)
 		toast.success(message)
 		setAccountInfo(userInfo)
-		setAuthHydrated(true)
 		router.push('/home')
 	}
 

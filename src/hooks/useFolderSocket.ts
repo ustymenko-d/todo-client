@@ -5,51 +5,28 @@ import useAppStore from '@/store/store'
 
 export const useFolderSocket = () => {
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
-	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 
 	const addFolder = useCallback(
 		(folder: IFolder) => {
-			setAccountInfo((prev) =>
-				prev ? { ...prev, folders: [folder, ...(prev.folders || [])] } : prev
-			)
+			setFoldersWithTasks((prev) => [folder, ...prev])
 		},
-		[setAccountInfo]
+		[setFoldersWithTasks]
 	)
 
 	const renameFolder = useCallback(
 		(folder: IFolder) => {
-			setAccountInfo((prev) =>
-				prev
-					? {
-							...prev,
-							folders: (prev.folders || []).map((f) =>
-								f.id === folder.id ? { ...f, name: folder.name } : f
-							),
-					  }
-					: prev
-			)
-
 			setFoldersWithTasks((prev) =>
 				prev.map((f) => (f.id === folder.id ? { ...f, name: folder.name } : f))
 			)
 		},
-		[setAccountInfo, setFoldersWithTasks]
+		[setFoldersWithTasks]
 	)
 
 	const deleteFolder = useCallback(
 		(folder: IFolder) => {
-			setAccountInfo((prev) =>
-				prev
-					? {
-							...prev,
-							folders: (prev.folders || []).filter((f) => f.id !== folder.id),
-					  }
-					: prev
-			)
-
 			setFoldersWithTasks((prev) => prev.filter((f) => f.id !== folder.id))
 		},
-		[setAccountInfo, setFoldersWithTasks]
+		[setFoldersWithTasks]
 	)
 
 	useEffect(() => {

@@ -26,7 +26,7 @@ const Task = ({ task }: { task: TTask }) => {
 			)}>
 			<div
 				{...listeners}
-				className='flex items-center justify-center px-2 text-muted-foreground border-r'>
+				className='cursor-grab flex items-center justify-center px-2 text-muted-foreground border-r'>
 				<GripVertical size={18} />
 			</div>
 			<h4 className='p-2 border-r grow'>{formatValue(title)}</h4>

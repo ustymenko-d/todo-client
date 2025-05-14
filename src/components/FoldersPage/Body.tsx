@@ -20,9 +20,7 @@ import Task from './components/Task'
 import useTaskMove from '@/hooks/useTaskMove'
 
 const Body = () => {
-	const accountInfo = useAppStore((state) => state.accountInfo)
 	const openEditor = useAppStore((state) => state.openFolderEditor)
-	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 
@@ -54,7 +52,7 @@ const Body = () => {
 		() =>
 			foldersWithTasks
 				.flatMap((folder) => folder.tasks)
-				.find((task) => task.id === activeId) || null,
+				.find((task) => task?.id === activeId) || null,
 		[foldersWithTasks, activeId]
 	)
 
@@ -65,12 +63,6 @@ const Body = () => {
 			const { success, message } = data
 			if (success) {
 				toast.success(message)
-				if (accountInfo) {
-					setAccountInfo((prev) => ({
-						...prev!,
-						folders: prev?.folders?.filter((folder) => folder.id !== id),
-					}))
-				}
 				setFoldersWithTasks((prev) => prev.filter((f) => f.id !== id))
 			}
 		} catch (error) {
@@ -93,7 +85,7 @@ const Body = () => {
 			const newFolderId = String(over.id)
 			const task = foldersWithTasks
 				.flatMap((folder) => folder.tasks)
-				.find((t) => t.id === taskId)
+				.find((task) => task?.id === taskId)
 
 			if (!task || task.folderId === newFolderId) return
 
@@ -107,7 +99,7 @@ const Body = () => {
 		if (!loading) setActiveId(null)
 	}
 
-	if (!accountInfo?.folders?.length) return <EmptyPlaceholder />
+	if (!foldersWithTasks?.length) return <EmptyPlaceholder />
 
 	return (
 		<div className='grid w-full gap-2 mt-4 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>
@@ -116,7 +108,7 @@ const Body = () => {
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				onDragCancel={handleDragCancel}>
-				{accountInfo.folders.map((folder) => (
+				{foldersWithTasks.map((folder) => (
 					<Folder
 						key={folder.id}
 						folder={folder}

@@ -25,8 +25,6 @@ const Form = () => {
 	const selectedFolder = useAppStore(
 		(state) => state.folderEditorSettings.target
 	)
-	const accountInfo = useAppStore((state) => state.accountInfo)
-	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const closeEditor = useAppStore((state) => state.closeFolderEditor)
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 	const [status, setStatus] = useState<TResponseState>('default')
@@ -44,27 +42,11 @@ const Form = () => {
 	})
 
 	const updateFoldersList = (folder: IFolder) => {
-		if (accountInfo) {
-			setAccountInfo((prev) => ({
-				...prev!,
-				folders: [folder, ...(prev?.folders ?? [])],
-			}))
-		}
+		setFoldersWithTasks((prev) => [folder, ...prev])
 	}
 
 	const updateFolderName = (newName: string) => {
-		if (!selectedFolder || !accountInfo?.folders) return
-
-		if (accountInfo) {
-			setAccountInfo((prev) => ({
-				...prev!,
-				folders: (prev?.folders ?? []).map((folder) =>
-					folder.id === selectedFolder.id
-						? { ...folder, name: newName }
-						: folder
-				),
-			}))
-		}
+		if (!selectedFolder) return
 
 		setFoldersWithTasks((prev) =>
 			prev.map((folder) =>
