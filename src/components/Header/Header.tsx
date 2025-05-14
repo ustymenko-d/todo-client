@@ -5,7 +5,7 @@ import { buttonVariants } from '@/components/ui/button'
 import useAppStore from '@/store/store'
 import Link from 'next/link'
 import MainMenu from '@/components/Header/components/MainMenu'
-import ThemeToggle from '@/components/theme/ThemeToggle'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 import { ChevronLeft } from 'lucide-react'
 
 const Header = () => {

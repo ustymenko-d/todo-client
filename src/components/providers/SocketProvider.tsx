@@ -1,5 +1,3 @@
-'use client'
-
 import { useFolderSocket } from '@/hooks/useFolderSocket'
 import { useTaskSocket } from '@/hooks/useTaskSocket'
 
