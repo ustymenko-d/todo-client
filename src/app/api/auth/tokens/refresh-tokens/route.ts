@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { handleRequest } from '@/services/requestHandler'
 import { splitCookiesString, parse } from 'set-cookie-parser'
+import clearAuthCookies from '@/utils/clearAuthCookies'
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {
-	const redirectPath = request.nextUrl.searchParams.get('redirect') || '/home'
-	const redirectUrl = new URL(redirectPath, request.nextUrl.origin)
-
-	console.log('[Refresh] Starting token refresh...')
-	console.log('[Refresh] Redirecting to:', redirectUrl.toString())
+	const redirectUrl = getRedirectUrl(request)
+	logRefreshAttempt(redirectUrl)
 
 	try {
 		const response = await handleRequest('/auth/tokens/refresh-tokens', 'get', {
@@ -16,10 +14,7 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 
 		const setCookie = response.headers.get('set-cookie')
 
-		if (setCookie) {
-			console.log('[Refresh] Tokens refreshed successfully')
-			return buildRedirectResponse(redirectUrl, setCookie)
-		}
+		if (setCookie) return processSuccessfulRefresh(setCookie, redirectUrl)
 	} catch (error) {
 		console.error('[Refresh] Token refresh failed:', {
 			error,
@@ -30,6 +25,24 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 	return buildFallbackResponse(request)
 }
 
+const getRedirectUrl = (request: NextRequest) => {
+	const redirectPath = request.nextUrl.searchParams.get('redirect') || '/home'
+	return new URL(redirectPath, request.nextUrl.origin)
+}
+
+const logRefreshAttempt = (redirectUrl: URL) => {
+	console.log('[Refresh] Starting token refresh...')
+	console.log('[Refresh] Redirecting to:', redirectUrl.toString())
+}
+
+const processSuccessfulRefresh = (
+	setCookieHeader: string,
+	redirectUrl: URL
+) => {
+	console.log('[Refresh] Tokens refreshed successfully')
+	return buildRedirectResponse(redirectUrl, setCookieHeader)
+}
+
 const buildRedirectResponse = (
 	url: URL,
 	setCookieHeader: string
@@ -37,50 +50,55 @@ const buildRedirectResponse = (
 	const response = NextResponse.redirect(url)
 	const cookies = splitCookiesString(setCookieHeader)
 
-	for (const rawCookie of cookies) {
+	cookies.forEach((rawCookie) => {
 		const { name, value, ...options } = parse(rawCookie)[0]
-
-		let sameSite: 'lax' | 'strict' | 'none' | undefined
-		switch ((options.sameSite || '').toLowerCase()) {
-			case 'lax':
-				sameSite = 'lax'
-				break
-			case 'strict':
-				sameSite = 'strict'
-				break
-			case 'none':
-				sameSite = 'none'
-				break
-			default:
-				sameSite = undefined
-		}
-
-		response.cookies.set(name, value, {
-			httpOnly: options.httpOnly,
-			sameSite,
-			path: options.path || '/',
-			maxAge: options.maxAge,
-			secure: options.secure,
-		})
-	}
+		response.cookies.set(name, value, parseCookieOptions(options))
+	})
 
 	response.cookies.set('refreshed', 'true', {
 		httpOnly: true,
 		path: '/',
 		sameSite: 'lax',
-		maxAge: 60,
+		maxAge: 60 * 5,
 	})
 
 	return response
+}
+
+const parseCookieOptions = (options: {
+	httpOnly?: boolean
+	secure?: boolean
+	path?: string
+	maxAge?: number
+	sameSite?: string
+}) => ({
+	httpOnly: options.httpOnly,
+	secure: options.secure,
+	path: options.path || '/',
+	maxAge: options.maxAge,
+	sameSite: parseSameSite(options.sameSite),
+})
+
+const parseSameSite = (
+	sameSite?: string
+): 'lax' | 'strict' | 'none' | undefined => {
+	const validSameSite = {
+		lax: 'lax' as const,
+		strict: 'strict' as const,
+		none: 'none' as const,
+	}
+
+	return (
+		validSameSite[sameSite?.toLowerCase() as keyof typeof validSameSite] ??
+		undefined
+	)
 }
 
 const buildFallbackResponse = (request: NextRequest): NextResponse => {
 	const fallbackUrl = new URL('/', request.nextUrl.origin)
 	const response = NextResponse.redirect(fallbackUrl)
 
-	response.cookies.set('access_token', '', { maxAge: 0, path: '/' })
-	response.cookies.set('refresh_token', '', { maxAge: 0, path: '/' })
-	response.cookies.set('refreshed', '', { maxAge: 0, path: '/' })
+	clearAuthCookies(response)
 	console.warn('[Refresh] Redirected to fallback, tokens cleared.')
 
 	return response
