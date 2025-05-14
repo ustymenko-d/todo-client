@@ -5,7 +5,7 @@ import AuthService from '@/services/auth.service'
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const pathname = usePathname()
-	const isStartPage = pathname === '/' || pathname.startsWith('/auth')
+	const needResetAuth = pathname === '/' || pathname.startsWith('/auth')
 
 	const authHydrated = useAppStore((state) => state.authHydrated)
 	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
@@ -27,19 +27,20 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	}, [])
 
 	useEffect(() => {
-		if (isStartPage) {
+		if (needResetAuth) {
 			setAccountInfo(null)
 			setFoldersWithTasks([])
 			setAuthHydrated(false)
 		}
-	}, [isStartPage, setAccountInfo, setAuthHydrated, setFoldersWithTasks])
+	}, [needResetAuth, setAccountInfo, setAuthHydrated, setFoldersWithTasks])
 
 	useEffect(() => {
-		if (!storeReady || authHydrated || isStartPage) return
+		if (!storeReady || authHydrated || needResetAuth) return
 
 		const fetchAccountData = async () => {
 			try {
 				const { data } = await AuthService.getAccountInfo()
+
 				if (data?.username) {
 					setAccountInfo(data)
 				} else {
@@ -54,7 +55,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 
 		fetchAccountData()
-	}, [authHydrated, isStartPage, setAccountInfo, setAuthHydrated, storeReady])
+	}, [authHydrated, needResetAuth, setAccountInfo, setAuthHydrated, storeReady])
 
 	return <>{children}</>
 }
