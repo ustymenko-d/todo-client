@@ -9,6 +9,7 @@ interface ITaskListProps {
 	hasMore: boolean
 	loadMoreTasks: () => void
 	taskLoading: boolean
+	length?: number
 }
 
 const TaskList = ({

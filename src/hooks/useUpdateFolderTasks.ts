@@ -1,6 +1,7 @@
 import useAppStore from '@/store/store'
 import { TTask, TTaskAction } from '@/types/tasks'
 import { IFolderWithTasks } from '@/types/folders'
+import { TASK_FETCH_LIMIT } from '@/components/FoldersPage/components/Folder'
 
 type THandlerProps = (
 	folders: IFolderWithTasks[],
@@ -61,23 +62,13 @@ const handleEdit: THandlerProps = (folders, updatedTask) => {
 					tasks: (folder.tasks ?? []).filter(
 						(task) => task.id !== updatedTask.id
 					),
-					total: folder.total ? folder.total - 1 : 0,
+					total: Math.max((folder.total ?? 0) - 1, 0),
+					pages: Math.ceil(
+						Math.max((folder.total ?? 0) - 1, 0) / TASK_FETCH_LIMIT
+					),
 			  }
 			: folder
 	)
-
-	if (fromId === toId) {
-		return folders.map((folder) =>
-			folder.id === fromId
-				? {
-						...folder,
-						tasks: (folder.tasks ?? []).map((t) =>
-							t.id === updatedTask.id ? updatedTask : t
-						),
-				  }
-				: folder
-		)
-	}
 
 	if (toId) {
 		return foldersWithoutTask.map((folder) =>
@@ -85,7 +76,8 @@ const handleEdit: THandlerProps = (folders, updatedTask) => {
 				? {
 						...folder,
 						tasks: [updatedTask, ...(folder.tasks ?? [])],
-						total: folder.total ? folder.total + 1 : 1,
+						total: (folder.total ?? 0) + 1,
+						pages: Math.ceil(((folder.total ?? 0) + 1) / TASK_FETCH_LIMIT),
 				  }
 				: folder
 		)
@@ -128,11 +120,14 @@ const handleDelete: THandlerProps = (folders, updatedTask) => {
 
 	return folders.map((folder) => {
 		const remainingTasks = folder?.tasks?.filter((t) => !idsToDelete.has(t.id))
+		const newTotal = remainingTasks?.length || 0
+		const newPages = Math.ceil(newTotal / TASK_FETCH_LIMIT)
 
 		return {
 			...folder,
 			tasks: remainingTasks,
-			total: remainingTasks?.length,
+			total: newTotal,
+			pages: newPages,
 		}
 	})
 }

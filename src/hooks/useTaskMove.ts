@@ -42,7 +42,7 @@ const updateTaskInFolders = (
 			if (id === toFolderId) {
 				return {
 					...folder,
-					tasks: tasks ? [...tasks, movedTask] : [movedTask],
+					tasks: tasks ? [movedTask, ...tasks] : [movedTask],
 					total: total ? total + 1 : 1,
 				}
 			}

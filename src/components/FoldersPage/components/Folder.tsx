@@ -9,7 +9,7 @@ import { ListTodo, Loader2, PenLine, Trash2 } from 'lucide-react'
 import TasksService from '@/services/tasks.service'
 import useAppStore from '@/store/store'
 import { useDroppable } from '@dnd-kit/core'
-import { TTask } from '@/types/tasks'
+import { IGetTasksResponse } from '@/types/tasks'
 
 interface FolderCardProps {
 	folder: IFolderWithTasks
@@ -18,7 +18,7 @@ interface FolderCardProps {
 	onDelete: () => void
 }
 
-const LIMIT = 10 as const
+export const TASK_FETCH_LIMIT = 20 as const
 
 const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 	const { id, name, userId, tasks = [] } = folder
@@ -28,15 +28,16 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 	const [showTasks, setShowTasks] = useState(false)
 	const [taskLoading, setTaskLoading] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
-	const [page, setPage] = useState(1)
 
 	const updateFoldersWithTasks = useCallback(
-		(newTasks: TTask[], currentPage: number, pages: number, total: number) => {
+		(getTaskResponse: IGetTasksResponse) => {
+			const { limit, tasks, page, pages, total } = getTaskResponse
+
 			setFoldersWithTasks((prev) => {
 				const existing = prev.find((folder) => folder.id === id)
 
 				if (existing) {
-					const uniqueNewTasks = newTasks.filter(
+					const uniqueNewTasks = tasks.filter(
 						(task) => !existing.tasks?.some((t) => t.id === task.id)
 					)
 					return prev.map((folder) =>
@@ -46,7 +47,8 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 									tasks: [...(existing.tasks || []), ...uniqueNewTasks],
 									pages,
 									total,
-									page: currentPage,
+									page,
+									limit,
 							  }
 							: folder
 					)
@@ -58,11 +60,11 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 						id,
 						name,
 						userId,
-						tasks: newTasks,
+						tasks,
 						pages,
 						total,
-						page: currentPage,
-						limit: LIMIT,
+						page,
+						limit,
 					},
 				]
 			})
@@ -71,19 +73,19 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 	)
 
 	const fetchTasks = useCallback(
-		async (currentPage: number) => {
+		async (page: number) => {
 			try {
 				setTaskLoading(true)
 
 				const { data } = await TasksService.getTasks({
-					page: currentPage,
-					limit: LIMIT,
+					page,
+					limit: TASK_FETCH_LIMIT,
 					folderId: id,
 				})
-				const { tasks: newTasks, pages, total } = data
 
-				updateFoldersWithTasks(newTasks, currentPage, pages, total)
-				setHasMore(currentPage < pages)
+				updateFoldersWithTasks(data)
+
+				setHasMore(page < data.pages)
 			} catch (error) {
 				console.error('[Folder] Fetch tasks error: ', error)
 			} finally {
@@ -95,17 +97,16 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 
 	const loadMoreTasks = () => {
 		if (hasMore && !taskLoading) {
-			const nextPage = page + 1
-			setPage(nextPage)
-			fetchTasks(nextPage)
+			const nextPage = tasks.length / TASK_FETCH_LIMIT + 1
+			fetchTasks(Math.floor(nextPage))
 		}
 	}
 
-	const handleToggleTasks = () => {
+	const handleShowTasks = () => {
 		const willShow = !showTasks
 		setShowTasks(willShow)
 
-		if (willShow && hasMore && !taskLoading && tasks.length === 0) {
+		if (willShow && hasMore && !taskLoading) {
 			fetchTasks(1)
 		}
 	}
@@ -154,7 +155,7 @@ const Folder = ({ folder, isLoading, onEdit, onDelete }: FolderCardProps) => {
 						size='icon'
 						variant='outline'
 						label='Show tasks'
-						onClick={handleToggleTasks}>
+						onClick={handleShowTasks}>
 						<ListTodo />
 					</TooltipButton>
 
