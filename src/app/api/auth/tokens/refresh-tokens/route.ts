@@ -76,12 +76,14 @@ const parseCookieOptions = (options: {
 	path?: string
 	maxAge?: number
 	sameSite?: string
+	partitioned?: boolean
 }) => ({
 	httpOnly: options.httpOnly,
 	secure: options.secure,
 	path: options.path || '/',
 	maxAge: options.maxAge,
 	sameSite: parseSameSite(options.sameSite),
+	partitioned: options.partitioned,
 })
 
 const parseSameSite = (
