@@ -24,7 +24,7 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 
 		const setCookie = response.headers.get('set-cookie')
 
-		if (setCookie) return processSuccessfulRefresh(setCookie, redirectUrl)
+		if (setCookie) return buildRedirectResponse(setCookie, redirectUrl)
 	} catch (error) {
 		console.error('[Refresh] Token refresh failed:', {
 			error,
@@ -45,19 +45,14 @@ const logRefreshAttempt = (redirectUrl: URL) => {
 	console.log('[Refresh] Redirecting to:', redirectUrl.toString())
 }
 
-const processSuccessfulRefresh = (
-	setCookieHeader: string,
-	redirectUrl: URL
-) => {
-	console.log('[Refresh] Tokens refreshed successfully')
-	return buildRedirectResponse(redirectUrl, setCookieHeader)
-}
-
 const buildRedirectResponse = (
-	url: URL,
-	setCookieHeader: string
+	setCookieHeader: string,
+	url: URL
 ): NextResponse => {
 	const response = NextResponse.redirect(url)
+
+	clearAuthCookies(response)
+
 	const cookies = splitCookiesString(setCookieHeader)
 
 	cookies.forEach((rawCookie) => {
