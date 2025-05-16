@@ -55,7 +55,8 @@ const handleInvalidToken = (
 	tokens: ReturnType<typeof getTokens>,
 	request: NextRequest
 ) => {
-	if (tokens.refreshToken && !tokens.wasRefreshed) return refreshTokens(request)
+	if (tokens.accessToken && tokens.refreshToken && !tokens.wasRefreshed)
+		return refreshTokens(request)
 
 	const response = redirectTo('/', request)
 	return clearAuthCookies(response)

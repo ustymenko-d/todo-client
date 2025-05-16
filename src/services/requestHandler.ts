@@ -16,14 +16,20 @@ interface ICustomAxiosRequestConfig extends AxiosRequestConfig {
 }
 
 export const handleApiRequest = async <T>(
-	apiRequest: () => Promise<AxiosResponse<MaybeWithNeedRefresh<T>>>
+	apiRequest: () => Promise<AxiosResponse<MaybeWithNeedRefresh<T>>>,
+	allowRetry = true
 ): Promise<AxiosResponse<T>> => {
 	const response = await apiRequest()
 
 	if (isNeedRefreshResponse(response.data)) {
+		if (!allowRetry) {
+			await AuthService.clearAuthCookies()
+			throw new Error('Token refresh failed after retry')
+		}
+
 		try {
 			await AuthService.refreshToken()
-			return (await apiRequest()) as AxiosResponse<T>
+			return handleApiRequest(apiRequest, false)
 		} catch (error) {
 			await AuthService.clearAuthCookies()
 			throw error

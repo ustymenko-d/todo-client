@@ -59,7 +59,7 @@ const buildRedirectResponse = (
 		httpOnly: true,
 		path: '/',
 		sameSite: 'lax',
-		maxAge: 60 * 5,
+		maxAge: 60 * 3,
 	})
 
 	return response
