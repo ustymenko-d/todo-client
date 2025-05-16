@@ -7,7 +7,9 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 	const redirectUrl = getRedirectUrl(request)
 	const cookie = request.headers.get('cookie') || ''
 
-	logRefreshAttempt(redirectUrl)
+	console.log('[Refresh] Starting token refresh...')
+	console.log('[Refresh] Redirecting to:', redirectUrl.toString())
+	console.log('Sent Cookie:', cookie)
 
 	try {
 		const response = await handleRequest(
@@ -36,13 +38,8 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 }
 
 const getRedirectUrl = (request: NextRequest) => {
-	const redirectPath = request.nextUrl.searchParams.get('redirect') || '/home'
+	const redirectPath = request.nextUrl.searchParams.get('redirect') || '/'
 	return new URL(redirectPath, request.nextUrl.origin)
-}
-
-const logRefreshAttempt = (redirectUrl: URL) => {
-	console.log('[Refresh] Starting token refresh...')
-	console.log('[Refresh] Redirecting to:', redirectUrl.toString())
 }
 
 const buildRedirectResponse = (
