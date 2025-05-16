@@ -1,6 +1,13 @@
 import { jwtDecode } from 'jwt-decode'
+import { NextRequest, NextResponse } from 'next/server'
 
-const verifyToken = (accessToken?: string): boolean => {
+export const getTokens = (cookies: NextRequest['cookies']) => ({
+	accessToken: cookies.get('access_token')?.value,
+	refreshToken: cookies.get('refresh_token')?.value,
+	wasRefreshed: cookies.get('refreshed')?.value === 'true',
+})
+
+export const verifyToken = (accessToken?: string): boolean => {
 	if (!accessToken) return false
 
 	try {
@@ -12,4 +19,8 @@ const verifyToken = (accessToken?: string): boolean => {
 	}
 }
 
-export default verifyToken
+export const refreshTokens = (request: NextRequest) => {
+	const refreshUrl = new URL('/api/auth/tokens/refresh-tokens', request.url)
+	refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
+	return NextResponse.redirect(refreshUrl)
+}

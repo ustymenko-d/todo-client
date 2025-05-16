@@ -1,77 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server'
-import verifyToken from './utils/tokens'
+import { getTokens, refreshTokens, verifyToken } from './utils/tokens'
 import clearAuthCookies from './utils/clearAuthCookies'
 
 export async function middleware(request: NextRequest) {
-	const { nextUrl, cookies } = request
-	const { pathname, searchParams } = nextUrl
-	const tokens = getTokens(cookies)
-
-	if (isVerificationPage(pathname, searchParams))
+	if (shouldBypassMiddleware(request))
 		return finalizeResponse(NextResponse.next())
 
-	if (needsResetToken(pathname, searchParams)) return redirectTo('/', request)
+	return handlePageRouting(request)
+}
 
-	if (isStartPage(pathname)) return handleStartPage(tokens, request)
+const shouldBypassMiddleware = (request: NextRequest) => {
+	const { pathname, searchParams } = request.nextUrl
+	return (
+		(pathname === '/verification' && searchParams.has('verificationToken')) ||
+		(pathname === '/auth/reset-password' && !searchParams.has('resetToken'))
+	)
+}
 
-	if (!tokens.accessToken && !isStartPage(pathname))
-		return handleNoAccessToken(request)
+const handlePageRouting = (request: NextRequest) => {
+	const tokens = getTokens(request.cookies)
+	const { pathname } = request.nextUrl
+
+	if (isStartPage(pathname) && tokens.accessToken && tokens.refreshToken)
+		return finalizeResponse(redirectTo('/home', request))
+
+	if (!tokens.accessToken) {
+		return isStartPage(pathname)
+			? finalizeResponse(NextResponse.next(), true)
+			: finalizeResponse(redirectTo('/', request), true)
+	}
 
 	if (!verifyToken(tokens.accessToken))
 		return handleInvalidToken(tokens, request)
-
-	return finalizeResponse(NextResponse.next())
 }
-
-const getTokens = (cookies: NextRequest['cookies']) => ({
-	accessToken: cookies.get('access_token')?.value,
-	refreshToken: cookies.get('refresh_token')?.value,
-	wasRefreshed: cookies.get('refreshed')?.value === 'true',
-})
-
-const isVerificationPage = (pathname: string, searchParams: URLSearchParams) =>
-	pathname === '/verification' && searchParams.get('verificationToken')
-
-const needsResetToken = (pathname: string, searchParams: URLSearchParams) =>
-	pathname === '/auth/reset-password' && !searchParams.get('resetToken')
 
 const isStartPage = (pathname: string) =>
 	pathname === '/' || pathname.startsWith('/auth')
-
-const handleStartPage = (
-	tokens: ReturnType<typeof getTokens>,
-	request: NextRequest
-) => {
-	if (verifyToken(tokens.accessToken)) return redirectTo('/home', request)
-
-	if (tokens.accessToken && tokens.refreshToken && !tokens.wasRefreshed)
-		return refreshTokens(request)
-
-	const response = NextResponse.next()
-	response.headers.set('Cache-Control', 'no-store')
-	return clearAuthCookies(response)
-}
-
-const handleNoAccessToken = (request: NextRequest) => {
-	const response = redirectTo('/', request)
-	return clearAuthCookies(response)
-}
 
 const handleInvalidToken = (
 	tokens: ReturnType<typeof getTokens>,
 	request: NextRequest
 ) => {
-	if (tokens.accessToken && tokens.refreshToken && !tokens.wasRefreshed)
-		return refreshTokens(request)
+	const { accessToken, refreshToken, wasRefreshed } = tokens
 
-	const response = redirectTo('/', request)
-	return clearAuthCookies(response)
-}
-
-const refreshTokens = (request: NextRequest) => {
-	const refreshUrl = new URL('/api/auth/tokens/refresh-tokens', request.url)
-	refreshUrl.searchParams.set('redirect', request.nextUrl.pathname)
-	return NextResponse.redirect(refreshUrl)
+	return accessToken && refreshToken && !wasRefreshed
+		? refreshTokens(request)
+		: finalizeResponse(redirectTo('/', request), true)
 }
 
 const redirectTo = (url: string, request: NextRequest) =>
@@ -90,6 +64,7 @@ export const config = {
 		'/verification',
 		'/home',
 		'/table',
+		'/folders',
 		'/settings',
 	],
 }
