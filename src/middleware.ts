@@ -7,10 +7,16 @@ export async function middleware(request: NextRequest) {
 	const { pathname, searchParams } = nextUrl
 	const tokens = getTokens(cookies)
 
-	if (isVerificationPage(pathname, searchParams)) return allowVerification()
+	if (isVerificationPage(pathname, searchParams))
+		return finalizeResponse(NextResponse.next())
+
 	if (needsResetToken(pathname, searchParams)) return redirectTo('/', request)
+
 	if (isStartPage(pathname)) return handleStartPage(tokens, request)
-	if (!tokens.accessToken) return handleNoAccessToken(request)
+
+	if (!tokens.accessToken && !isStartPage(pathname))
+		return handleNoAccessToken(request)
+
 	if (!verifyToken(tokens.accessToken))
 		return handleInvalidToken(tokens, request)
 
@@ -26,8 +32,6 @@ const getTokens = (cookies: NextRequest['cookies']) => ({
 const isVerificationPage = (pathname: string, searchParams: URLSearchParams) =>
 	pathname === '/verification' && searchParams.get('verificationToken')
 
-const allowVerification = () => finalizeResponse(NextResponse.next())
-
 const needsResetToken = (pathname: string, searchParams: URLSearchParams) =>
 	pathname === '/auth/reset-password' && !searchParams.get('resetToken')
 
@@ -39,7 +43,9 @@ const handleStartPage = (
 	request: NextRequest
 ) => {
 	if (verifyToken(tokens.accessToken)) return redirectTo('/home', request)
-	if (tokens.refreshToken && !tokens.wasRefreshed) return refreshTokens(request)
+
+	if (tokens.accessToken && tokens.refreshToken && !tokens.wasRefreshed)
+		return refreshTokens(request)
 
 	const response = NextResponse.next()
 	response.headers.set('Cache-Control', 'no-store')
