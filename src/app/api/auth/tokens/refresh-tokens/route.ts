@@ -5,12 +5,22 @@ import clearAuthCookies from '@/utils/clearAuthCookies'
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {
 	const redirectUrl = getRedirectUrl(request)
+	const cookie = request.headers.get('cookie') || ''
+
 	logRefreshAttempt(redirectUrl)
 
 	try {
-		const response = await handleRequest('/auth/tokens/refresh-tokens', 'get', {
-			skipRefresh: true,
-		})
+		const response = await handleRequest(
+			'/auth/tokens/refresh-tokens',
+			'get',
+			undefined,
+			{
+				skipRefresh: true,
+				headers: {
+					Cookie: cookie,
+				},
+			}
+		)
 
 		const setCookie = response.headers.get('set-cookie')
 
@@ -59,7 +69,7 @@ const buildRedirectResponse = (
 		httpOnly: true,
 		path: '/',
 		sameSite: 'lax',
-		maxAge: 6,
+		maxAge: 30,
 	})
 
 	return response

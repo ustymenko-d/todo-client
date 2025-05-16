@@ -19,12 +19,13 @@ const shouldBypassMiddleware = (request: NextRequest) => {
 
 const handlePageRouting = (request: NextRequest) => {
 	const tokens = getTokens(request.cookies)
+	const { accessToken, refreshToken } = tokens
 	const { pathname } = request.nextUrl
 
-	if (isStartPage(pathname) && tokens.accessToken && tokens.refreshToken)
-		return finalizeResponse(redirectTo('/home', request))
+	if (isStartPage(pathname) && accessToken && refreshToken)
+		return redirectTo('/home', request)
 
-	if (!tokens.accessToken) {
+	if (!accessToken) {
 		return isStartPage(pathname)
 			? finalizeResponse(NextResponse.next(), true)
 			: finalizeResponse(redirectTo('/', request), true)

@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server'
 
+const COOKIES_TO_CLEAN = [
+	'accessToken',
+	'refreshToken',
+	'refreshed',
+	'rememberMe',
+]
+
 const clearAuthCookies = (response: NextResponse): NextResponse => {
-	;['access_token', 'refresh_token', 'refreshed'].forEach((cookie) =>
+	COOKIES_TO_CLEAN.forEach((cookie) =>
 		response.cookies.set(cookie, '', { path: '/', maxAge: 0 })
 	)
 	return response
