@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import useAppStore from '@/store/store'
 import FoldersService from '@/services/folders.service'
+import useUpdateTasks from '@/hooks/useUpdateTasks'
 import { toast } from 'sonner'
 import TooltipButton from './TooltipButton'
 import DeleteDialog from '@/components/DeleteDialog'
@@ -16,10 +17,11 @@ const FolderActions = ({
 	showTasks: () => void
 }) => {
 	const openEditor = useAppStore((state) => state.openFolderEditor)
-	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 	const [loading, setLoading] = useState<TResponseState>('default')
 	const { id } = folder
+
+	const { handleUpdateFolders } = useUpdateTasks()
 
 	const handleEdit = () => {
 		openEditor('edit', folder)
@@ -29,10 +31,10 @@ const FolderActions = ({
 		try {
 			setLoading('pending')
 			const { data } = await FoldersService.deleteFolder(id)
-			const { success, message } = data
+			const { success, message, folder } = data
 			if (success) {
 				toast.success(message)
-				setFoldersWithTasks((prev) => prev.filter((f) => f.id !== id))
+				handleUpdateFolders('delete', folder)
 			}
 		} catch (error) {
 			setLoading('error')

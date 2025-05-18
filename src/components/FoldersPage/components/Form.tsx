@@ -3,6 +3,7 @@ import useAppStore from '@/store/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import FoldersService from '@/services/folders.service'
+import useUpdateTasks from '@/hooks/useUpdateTasks'
 import { toast } from 'sonner'
 import {
 	Form as RHForm,
@@ -16,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/ui/LoadingButton'
 import FoldersValidation from '@/schemas/folders.schema'
 import { TResponseState } from '@/types/common'
-import { IFolder, TFolderName } from '@/types/folders'
+import { TFolderName } from '@/types/folders'
 
 const Form = () => {
 	const mode = useAppStore((state) => state.folderEditorSettings.mode)
@@ -24,9 +25,10 @@ const Form = () => {
 		(state) => state.folderEditorSettings.target
 	)
 	const closeEditor = useAppStore((state) => state.closeFolderEditor)
-	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 	const [status, setStatus] = useState<TResponseState>('default')
 	const isEditing = mode === 'edit'
+
+	const { handleUpdateFolders } = useUpdateTasks()
 
 	const folderForm = useForm<TFolderName>({
 		resolver: zodResolver(FoldersValidation.folderName),
@@ -34,16 +36,6 @@ const Form = () => {
 			name: isEditing ? selectedFolder?.name : '',
 		},
 	})
-
-	const updateFoldersList = (folder: IFolder) => {
-		setFoldersWithTasks((prev) =>
-			isEditing
-				? prev.map((f) =>
-						f.id === selectedFolder?.id ? { ...f, name: folder.name } : f
-				  )
-				: [folder, ...prev]
-		)
-	}
 
 	const handleAction = async (values: TFolderName) => {
 		try {
@@ -64,7 +56,8 @@ const Form = () => {
 
 			toast.success(isEditing ? 'Folder renamed' : 'Folder created')
 			setStatus('success')
-			updateFoldersList(data.folder)
+
+			handleUpdateFolders(isEditing ? 'rename' : 'create', data.folder)
 			folderForm.reset()
 			closeEditor()
 		} catch (error) {

@@ -2,7 +2,7 @@ import useAppStore from '@/store/store'
 import { IGetTasksResponse } from '@/types/tasks'
 
 const useMergeFetchedTasks = () => {
-	const setFoldersWithTasks = useAppStore((s) => s.setFoldersWithTasks)
+	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 
 	const mergeFetchedTasks = (folderId: string, data: IGetTasksResponse) => {
 		const { tasks, page, pages, limit, total } = data

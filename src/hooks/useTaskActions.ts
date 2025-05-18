@@ -13,7 +13,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
 	const updateDialogTask = useAppStore((state) => state.updateDialogTask)
 
-	const { handleUpdateFolderTasks } = useUpdateFolderTasks(action)
+	const { handleUpdateFolderTasks } = useUpdateFolderTasks()
 
 	const performAction = async (payload?: TTaskBase | TTask) => {
 		switch (action) {
@@ -51,9 +51,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 			if (['edit', 'changeStatus'].includes(action))
 				updateDialogTask(updatedTask)
 
-			if (!skipUpdate) {
-				handleUpdateFolderTasks(updatedTask)
-			}
+			if (!skipUpdate) handleUpdateFolderTasks(action, updatedTask)
 
 			if (pathname === '/table') router.refresh()
 		} catch (error) {

@@ -9,7 +9,7 @@ type THandlerProps = (
 	task: TTask
 ) => IFolderWithTasks[]
 
-const useUpdateFolderTasks = (action: TTaskAction) => {
+const useUpdateFolderTasks = () => {
 	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 
@@ -20,12 +20,10 @@ const useUpdateFolderTasks = (action: TTaskAction) => {
 		delete: handleDelete,
 	}
 
-	const handleUpdateFolderTasks = (updatedTask: TTask) => {
-		if (!updatedTask || !Array.isArray(foldersWithTasks)) return
-
+	const handleUpdateFolderTasks = (action: TTaskAction, updatedTask: TTask) => {
 		const handler = handlers[action]
 
-		if (!handler || isHydrated(action, foldersWithTasks, updatedTask)) return
+		if (isHydrated(action, foldersWithTasks, updatedTask)) return
 
 		setFoldersWithTasks((prev) => handler(prev, updatedTask))
 	}
