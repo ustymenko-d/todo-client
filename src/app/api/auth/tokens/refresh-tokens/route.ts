@@ -61,7 +61,8 @@ const buildRedirectResponse = (
 		httpOnly: true,
 		path: '/',
 		sameSite: 'lax',
-		maxAge: 60 * 5,
+		// maxAge: 60 * 5,
+		maxAge: 30,
 	})
 
 	return response
@@ -99,11 +100,20 @@ const parseSameSite = (
 }
 
 const buildFallbackResponse = (request: NextRequest): NextResponse => {
-	const fallbackUrl = new URL('/', request.nextUrl.origin)
-	const response = NextResponse.redirect(fallbackUrl)
+	// const fallbackUrl = new URL('/', request.nextUrl.origin)
+	const clearUrl = new URL(
+		'/api/auth/cookies/clear-auth-cookies',
+		request.nextUrl.origin
+	)
 
-	clearAuthCookies(response)
-	console.warn('[Refresh] Redirected to fallback, tokens cleared.')
+	console.warn(
+		'[Refresh] Redirected to fallback, tokens cleared. Fallback URL:',
+		clearUrl.toString()
+	)
 
-	return response
+	// const response = NextResponse.redirect(fallbackUrl)
+	// clearAuthCookies(response)
+	// return response
+
+	return NextResponse.redirect(clearUrl)
 }

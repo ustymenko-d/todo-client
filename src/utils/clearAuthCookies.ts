@@ -9,6 +9,7 @@ const COOKIES_TO_CLEAN = [
 
 const clearAuthCookies = (response: NextResponse): NextResponse => {
 	COOKIES_TO_CLEAN.forEach((cookie) => {
+		console.log(`[ClearCookies] Clearing: ${cookie}`)
 		response.cookies.set(cookie, '', { path: '/', maxAge: 0 })
 		response.cookies.delete(cookie)
 	})
