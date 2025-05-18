@@ -4,29 +4,36 @@ import { IFolder } from '@/types/folders'
 import useAppStore from '@/store/store'
 
 export const useFolderSocket = () => {
+	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 
 	const addFolder = useCallback(
 		(folder: IFolder) => {
+			if (!!foldersWithTasks?.find((f) => f.id === folder.id)) return
 			setFoldersWithTasks((prev) => [folder, ...prev])
 		},
-		[setFoldersWithTasks]
+		[foldersWithTasks, setFoldersWithTasks]
 	)
 
 	const renameFolder = useCallback(
 		(folder: IFolder) => {
+			const exists = foldersWithTasks?.find((f) => f.id === folder.id)
+			if (exists?.name === folder.name) return
 			setFoldersWithTasks((prev) =>
 				prev.map((f) => (f.id === folder.id ? { ...f, name: folder.name } : f))
 			)
 		},
-		[setFoldersWithTasks]
+		[foldersWithTasks, setFoldersWithTasks]
 	)
 
 	const deleteFolder = useCallback(
 		(folder: IFolder) => {
+			const exists = foldersWithTasks?.some((f) => f.id === folder.id)
+			if (!exists) return
+
 			setFoldersWithTasks((prev) => prev.filter((f) => f.id !== folder.id))
 		},
-		[setFoldersWithTasks]
+		[setFoldersWithTasks, foldersWithTasks]
 	)
 
 	useEffect(() => {
