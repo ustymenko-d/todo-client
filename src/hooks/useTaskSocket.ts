@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { getSocket } from '@/lib/socket'
 import { TTask } from '@/types/tasks'
-import useUpdateFolderTasks from './useUpdateFolderTasks'
+import useUpdateTasks from './useUpdateTasks'
 
 export const useTaskSocket = () => {
-	const { handleUpdateFolderTasks } = useUpdateFolderTasks()
+	const { handleUpdateTasks } = useUpdateTasks()
 
 	useEffect(() => {
 		const socket = getSocket()
@@ -12,19 +12,19 @@ export const useTaskSocket = () => {
 		const handlers = {
 			'task:created': (data: TTask) => {
 				console.log('Task created:', data)
-				handleUpdateFolderTasks('create', data)
+				handleUpdateTasks('create', data)
 			},
 			'task:updated': (data: TTask) => {
 				console.log('Task updated:', data)
-				handleUpdateFolderTasks('edit', data)
+				handleUpdateTasks('edit', data)
 			},
 			'task:toggleStatus': (data: TTask) => {
 				console.log('Task status change:', data)
-				handleUpdateFolderTasks('changeStatus', data)
+				handleUpdateTasks('changeStatus', data)
 			},
 			'task:deleted': (data: TTask) => {
 				console.log('Task deleted:', data)
-				handleUpdateFolderTasks('delete', data)
+				handleUpdateTasks('delete', data)
 			},
 		}
 
@@ -37,5 +37,5 @@ export const useTaskSocket = () => {
 				socket.off(event, handler)
 			}
 		}
-	}, [handleUpdateFolderTasks])
+	}, [handleUpdateTasks])
 }

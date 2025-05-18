@@ -1,7 +1,7 @@
 import { useRouter, usePathname } from 'next/navigation'
 import useAppStore from '@/store/store'
 import TasksService from '@/services/tasks.service'
-import useUpdateFolderTasks from './useUpdateFolderTasks'
+import useUpdateTasks from './useUpdateTasks'
 import { TTask, TTaskAction, TTaskBase, TTaskPayload } from '@/types/tasks'
 import { toast } from 'sonner'
 
@@ -13,7 +13,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
 	const updateDialogTask = useAppStore((state) => state.updateDialogTask)
 
-	const { handleUpdateFolderTasks } = useUpdateFolderTasks()
+	const { handleUpdateTasks } = useUpdateTasks()
 
 	const performAction = async (payload?: TTaskBase | TTask) => {
 		switch (action) {
@@ -32,8 +32,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 
 	const handleTaskAction = async (
 		setLoadingState: (state: boolean) => void,
-		payload?: TTaskBase | TTaskPayload,
-		skipUpdate: boolean = false
+		payload?: TTaskBase | TTaskPayload
 	) => {
 		try {
 			setLoadingState(true)
@@ -51,7 +50,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 			if (['edit', 'changeStatus'].includes(action))
 				updateDialogTask(updatedTask)
 
-			if (!skipUpdate) handleUpdateFolderTasks(action, updatedTask)
+			handleUpdateTasks(action, updatedTask)
 
 			if (pathname === '/table') router.refresh()
 		} catch (error) {

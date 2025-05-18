@@ -3,7 +3,7 @@ import useAppStore from '@/store/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import FoldersService from '@/services/folders.service'
-import useUpdateTasks from '@/hooks/useUpdateTasks'
+import useUpdateFolders from '@/hooks/useUpdateFolders'
 import { toast } from 'sonner'
 import {
 	Form as RHForm,
@@ -28,7 +28,7 @@ const Form = () => {
 	const [status, setStatus] = useState<TResponseState>('default')
 	const isEditing = mode === 'edit'
 
-	const { handleUpdateFolders } = useUpdateTasks()
+	const { handleUpdateFolders } = useUpdateFolders()
 
 	const folderForm = useForm<TFolderName>({
 		resolver: zodResolver(FoldersValidation.folderName),

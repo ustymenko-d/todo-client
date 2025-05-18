@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { getSocket } from '@/lib/socket'
 import { IFolder } from '@/types/folders'
-import useUpdateTasks from './useUpdateTasks'
+import useUpdateFolders from './useUpdateFolders'
 
 export const useFolderSocket = () => {
-	const { handleUpdateFolders } = useUpdateTasks()
+	const { handleUpdateFolders } = useUpdateFolders()
 
 	useEffect(() => {
 		const socket = getSocket()
