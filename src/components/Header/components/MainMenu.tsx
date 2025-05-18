@@ -1,51 +1,19 @@
-import { useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
 import useAppStore from '@/store/store'
-import AuthService from '@/services/auth.service'
-import { toast } from 'sonner'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuGroup,
-	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { Loader2, LogOut, Menu } from 'lucide-react'
-import Link from 'next/link'
-import { navItems } from '@/const'
-import VerificationBadge from '@/components/SettingsPage/components/VerificationBadge'
+import VerificationBadge from '@/components/ui/VerificationBadge'
+import NavigationGroup from './NavigationGroup'
+import LogoutButton from './LogoutButton'
+import { Menu } from 'lucide-react'
 
 const MainMenu = () => {
-	const router = useRouter()
-	const pathname = usePathname()
-
 	const accountInfo = useAppStore((state) => state.accountInfo)
-	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
-	const authHydrated = useAppStore((state) => state.authHydrated)
-	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
-
-	const [loading, setLoading] = useState(false)
-
-	const handleLogout = async () => {
-		try {
-			setLoading(true)
-			const { data } = await AuthService.logout()
-			const { success, message } = data
-			if (success) {
-				toast.success(message)
-				setAccountInfo(null)
-				if (!authHydrated) setAuthHydrated(true)
-				router.push('/')
-			}
-		} catch (error) {
-			toast.error('Something went wrong!')
-			console.error('Error:', error)
-		} finally {
-			setLoading(false)
-		}
-	}
 
 	return (
 		<DropdownMenu>
@@ -57,9 +25,7 @@ const MainMenu = () => {
 					<span className='unvisible sm:visible'>Menu</span>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent
-				align='start'
-				className=''>
+			<DropdownMenuContent align='start'>
 				<DropdownMenuGroup className='flex flex-col px-3 py-2'>
 					<div className='flex items-center gap-2'>
 						<span className='font-medium'>{accountInfo?.username}</span>
@@ -70,57 +36,9 @@ const MainMenu = () => {
 					</span>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<DropdownMenuGroup className='flex flex-col gap-1'>
-					{navItems.map(({ href, label, icon: Icon }) => {
-						const isActive = pathname === href
-
-						return (
-							<DropdownMenuItem
-								key={href}
-								asChild
-								className={isActive ? 'cursor-default' : ''}>
-								{isActive ? (
-									<div className='flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm bg-muted text-primary font-medium'>
-										<Icon
-											strokeWidth={1.5}
-											className='!w-5 !h-5 opacity-60'
-										/>
-										{label}
-									</div>
-								) : (
-									<Link
-										href={href}
-										className='flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm hover:bg-accent'>
-										<Icon
-											strokeWidth={1.5}
-											className='!w-5 !h-5 opacity-60'
-										/>
-										{label}
-									</Link>
-								)}
-							</DropdownMenuItem>
-						)
-					})}
-				</DropdownMenuGroup>
-
+				<NavigationGroup />
 				<DropdownMenuSeparator />
-				<DropdownMenuItem
-					disabled={loading || !accountInfo}
-					onClick={handleLogout}
-					className='flex items-center gap-2'>
-					{loading ? (
-						<Loader2
-							strokeWidth={1.5}
-							className='!w-5 !h-5 animate-spin opacity-60'
-						/>
-					) : (
-						<LogOut
-							strokeWidth={1.5}
-							className='!w-5 !h-5 opacity-60'
-						/>
-					)}
-					Log out
-				</DropdownMenuItem>
+				<LogoutButton />
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)

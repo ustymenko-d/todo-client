@@ -24,6 +24,14 @@ const PasswordInput = ({
 	const authFormType = useAppStore((state) => state.authFormType)
 	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
 
+	const handleForgotPassword = () => {
+		setAuthFormType('forgotPassword')
+	}
+
+	const toggleShowPassword = () => {
+		setShowPassword((prev) => !prev)
+	}
+
 	return (
 		<div className='grid gap-2'>
 			<div className='flex items-center'>
@@ -31,7 +39,7 @@ const PasswordInput = ({
 				{authFormType === 'signin' && forgotBtn && (
 					<Button
 						type='button'
-						onClick={() => setAuthFormType('forgotPassword')}
+						onClick={handleForgotPassword}
 						variant='link'
 						size='none'
 						className='inline-block ml-auto text-sm underline-offset-4 hover:underline'>
@@ -51,7 +59,7 @@ const PasswordInput = ({
 						<TooltipTrigger asChild>
 							<button
 								type='button'
-								onClick={() => setShowPassword(!showPassword)}
+								onClick={toggleShowPassword}
 								className='absolute right-0 flex items-center justify-center h-full text-gray-500 -translate-y-1/2 top-1/2 aspect-square hover:text-gray-700'>
 								{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
 							</button>

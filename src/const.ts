@@ -20,7 +20,7 @@ export const navItems: TNavItem[] = [
 		href: '/folders',
 		label: 'Folders',
 		icon: Folder,
-		description: 'Manage and organize your folders efficiently',
+		description: 'Manage and organize your folders',
 	},
 	{
 		href: '/settings',
@@ -61,3 +61,5 @@ export const formConfig: Record<TAuthForm, IFormConfig> = {
 		},
 	},
 }
+
+export const TASK_FETCH_LIMIT: number = 25 as const

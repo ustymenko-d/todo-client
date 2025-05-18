@@ -8,7 +8,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import Form from './Form'
+import Form from './components/Form'
 
 const Editor = () => {
 	const { open: isOpen, mode } = useAppStore(

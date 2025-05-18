@@ -1,5 +1,4 @@
-import { useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import useAppStore from '@/store/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -20,7 +19,6 @@ import { TResponseState } from '@/types/common'
 import { IFolder, TFolderName } from '@/types/folders'
 
 const Form = () => {
-	const router = useRouter()
 	const mode = useAppStore((state) => state.folderEditorSettings.mode)
 	const selectedFolder = useAppStore(
 		(state) => state.folderEditorSettings.target
@@ -30,28 +28,20 @@ const Form = () => {
 	const [status, setStatus] = useState<TResponseState>('default')
 	const isEditing = mode === 'edit'
 
-	const defaultValues = useMemo<TFolderName>(
-		() => ({
-			name: isEditing ? selectedFolder?.name || '' : '',
-		}),
-		[isEditing, selectedFolder?.name]
-	)
 	const folderForm = useForm<TFolderName>({
 		resolver: zodResolver(FoldersValidation.folderName),
-		defaultValues,
+		defaultValues: {
+			name: isEditing ? selectedFolder?.name : '',
+		},
 	})
 
 	const updateFoldersList = (folder: IFolder) => {
-		setFoldersWithTasks((prev) => [folder, ...prev])
-	}
-
-	const updateFolderName = (newName: string) => {
-		if (!selectedFolder) return
-
 		setFoldersWithTasks((prev) =>
-			prev.map((folder) =>
-				folder.id === selectedFolder.id ? { ...folder, name: newName } : folder
-			)
+			isEditing
+				? prev.map((f) =>
+						f.id === selectedFolder?.id ? { ...f, name: folder.name } : f
+				  )
+				: [folder, ...prev]
 		)
 	}
 
@@ -73,19 +63,14 @@ const Form = () => {
 			}
 
 			toast.success(isEditing ? 'Folder renamed' : 'Folder created')
+			setStatus('success')
+			updateFoldersList(data.folder)
 			folderForm.reset()
 			closeEditor()
-			setStatus('success')
-			if (isEditing) {
-				updateFolderName(values.name)
-			} else {
-				updateFoldersList(data.folder)
-			}
-			router.refresh()
 		} catch (error) {
-			setStatus('error')
-			toast.error('Something went wrong!')
 			console.error(`Error while creating a task: ${error}`)
+			toast.error('Something went wrong!')
+			setStatus('error')
 		}
 	}
 

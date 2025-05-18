@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import useAppStore from '@/store/store'
+import Link from 'next/link'
 import { TAuthForm } from '@/types/auth'
 
 const signupSuggestion = {
@@ -30,13 +30,17 @@ const AuthFormSuggestion = () => {
 		newType,
 	} = suggestionConfig[authFormType]
 
+	const handleChangeFormType = () => {
+		setAuthFormType(newType)
+	}
+
 	return (
 		<div className='flex flex-wrap gap-2 mt-4 text-sm text-center'>
 			<span>{suggestionText}</span>
 			<Link
 				href='/auth'
 				className='underline underline-offset-4'
-				onClick={() => setAuthFormType(newType)}>
+				onClick={handleChangeFormType}>
 				{linkText}
 			</Link>
 		</div>

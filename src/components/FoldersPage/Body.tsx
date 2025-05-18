@@ -2,9 +2,7 @@
 
 import useAppStore from '@/store/store'
 import { useCallback, useMemo, useState } from 'react'
-import { toast } from 'sonner'
-import FoldersService from '@/services/folders.service'
-import EmptyPlaceholder from './EmptyPlaceholder'
+import EmptyPlaceholder from './components/EmptyPlaceholder'
 import Folder from './components/Folder'
 import {
 	DndContext,
@@ -20,11 +18,7 @@ import Task from './components/Task'
 import useTaskMove from '@/hooks/useTaskMove'
 
 const Body = () => {
-	const openEditor = useAppStore((state) => state.openFolderEditor)
 	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
-	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
-
-	const [loadingArray, setLoadingArray] = useState<string[]>([])
 	const [loading, setLoading] = useState(false)
 	const [activeId, setActiveId] = useState<string | null>(null)
 
@@ -43,11 +37,6 @@ const Body = () => {
 		})
 	)
 
-	const isFolderLoading = useCallback(
-		(id: string) => loadingArray.includes(id),
-		[loadingArray]
-	)
-
 	const activeTask = useMemo(
 		() =>
 			foldersWithTasks
@@ -55,23 +44,6 @@ const Body = () => {
 				.find((task) => task?.id === activeId) || null,
 		[foldersWithTasks, activeId]
 	)
-
-	const handleDeleteFolder = async (id: string) => {
-		try {
-			setLoadingArray((prev) => [...prev, id])
-			const { data } = await FoldersService.deleteFolder(id)
-			const { success, message } = data
-			if (success) {
-				toast.success(message)
-				setFoldersWithTasks((prev) => prev.filter((f) => f.id !== id))
-			}
-		} catch (error) {
-			toast.error('Something went wrong!')
-			console.error('Delete Folder Error:', error)
-		} finally {
-			setLoadingArray((prev) => prev.filter((element) => element !== id))
-		}
-	}
 
 	const handleDragStart = ({ active }: DragStartEvent) => {
 		if (!loading) setActiveId(String(active.id))
@@ -112,9 +84,6 @@ const Body = () => {
 					<Folder
 						key={folder.id}
 						folder={folder}
-						isLoading={isFolderLoading(folder.id)}
-						onEdit={() => openEditor('edit', folder)}
-						onDelete={() => handleDeleteFolder(folder.id)}
 					/>
 				))}
 

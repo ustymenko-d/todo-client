@@ -36,7 +36,7 @@ const EditorForm = () => {
 	const taskForm = useForm<TTaskBase>({
 		resolver: zodResolver(TasksValidation.taskBase),
 		defaultValues: {
-			title: isEditing ? selectedTask?.title || '' : '',
+			title: isEditing ? selectedTask?.title : '',
 			description: isEditing ? selectedTask?.description : '',
 			parentTaskId: isEditing
 				? selectedTask?.parentTaskId
@@ -53,10 +53,10 @@ const EditorForm = () => {
 		},
 	})
 
-	const handleSubmit = async (values: TTaskBase) => {
+	const onSubmit = async (values: TTaskBase) => {
 		const payload: TTaskBase = {
 			...values,
-			completed: isEditing ? selectedTask?.completed ?? false : false,
+			completed: isEditing ? selectedTask?.completed : false,
 			startDate: values.startDate ? new Date(values.startDate) : null,
 			expiresDate: values.expiresDate ? new Date(values.expiresDate) : null,
 		}
@@ -75,7 +75,7 @@ const EditorForm = () => {
 
 	return (
 		<Form {...taskForm}>
-			<form onSubmit={taskForm.handleSubmit(handleSubmit)}>
+			<form onSubmit={taskForm.handleSubmit(onSubmit)}>
 				<div className='flex flex-col gap-4'>
 					<Field
 						taskForm={taskForm}

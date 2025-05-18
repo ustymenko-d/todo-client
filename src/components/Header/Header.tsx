@@ -1,9 +1,9 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { buttonVariants } from '@/components/ui/button'
 import useAppStore from '@/store/store'
 import Link from 'next/link'
+import { buttonVariants } from '@/components/ui/button'
 import MainMenu from '@/components/Header/components/MainMenu'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import { ChevronLeft } from 'lucide-react'
@@ -11,6 +11,7 @@ import { ChevronLeft } from 'lucide-react'
 const Header = () => {
 	const pathname = usePathname()
 	const accountInfo = useAppStore((state) => state.accountInfo)
+	const isStartPage = pathname === '/' || pathname.startsWith('/auth')
 
 	return (
 		<header className='sticky top-0 z-10 border-b border-dashed backdrop-blur'>
@@ -25,9 +26,7 @@ const Header = () => {
 						<ChevronLeft />
 					</Link>
 				)}
-				{accountInfo && !pathname.startsWith('/auth') && pathname !== '/' && (
-					<MainMenu />
-				)}
+				{accountInfo && !isStartPage && <MainMenu />}
 				<ThemeToggle />
 			</div>
 		</header>

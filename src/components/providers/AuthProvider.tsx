@@ -6,69 +6,66 @@ import FoldersService from '@/services/folders.service'
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const pathname = usePathname()
-	const needResetAuth = pathname === '/' || pathname.startsWith('/auth')
 
 	const authHydrated = useAppStore((state) => state.authHydrated)
 	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
-	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 
-	const [storeReady, setStoreReady] = useState(false)
+	const [storeHydrated, setStoreHydrated] = useState(false)
+
+	const isStartRoute = pathname === '/' || pathname.startsWith('/auth')
 
 	useEffect(() => {
 		const unsub = useAppStore.persist.onFinishHydration(() => {
-			setStoreReady(true)
+			setStoreHydrated(true)
 		})
 
 		if (useAppStore.persist.hasHydrated()) {
-			setStoreReady(true)
+			setStoreHydrated(true)
 		}
 
 		return unsub
 	}, [])
 
 	useEffect(() => {
-		if (needResetAuth) {
-			setAccountInfo(null)
-			setFoldersWithTasks([])
-			setAuthHydrated(false)
-		}
-	}, [needResetAuth, setAccountInfo, setAuthHydrated, setFoldersWithTasks])
+		if (!isStartRoute) return
+
+		setAccountInfo(null)
+		setFoldersWithTasks([])
+		setAuthHydrated(false)
+	}, [isStartRoute, setAccountInfo, setAuthHydrated, setFoldersWithTasks])
 
 	useEffect(() => {
-		if (!storeReady || authHydrated || needResetAuth) return
+		if (!storeHydrated || authHydrated || isStartRoute) return
 
-		const fetchAccountData = async () => {
+		const hydrateAccount = async () => {
 			try {
-				if (!accountInfo) {
-					const { data } = await AuthService.getAccountInfo()
-					setAccountInfo(data)
-				}
+				const { data: account } = await AuthService.getAccountInfo()
+				setAccountInfo(account)
 
 				const { data: foldersData } = await FoldersService.getFolders({
 					page: 1,
 					limit: 25,
 				})
-
 				setFoldersWithTasks(foldersData.folders)
 			} catch {
 				setAccountInfo(null)
+				setFoldersWithTasks([])
 				await AuthService.clearAuthCookies()
 			} finally {
 				setAuthHydrated(true)
 			}
 		}
 
-		fetchAccountData()
+		hydrateAccount()
 	}, [
-		accountInfo,
+		storeHydrated,
 		authHydrated,
-		needResetAuth,
+		isStartRoute,
 		setAccountInfo,
-		setAuthHydrated,
 		setFoldersWithTasks,
-		storeReady,
+		setAuthHydrated,
 	])
 
 	return <>{children}</>

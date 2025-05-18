@@ -11,12 +11,12 @@ import { TTaskBase } from '@/types/tasks'
 
 interface IFieldProps {
 	taskForm: UseFormReturn<TTaskBase>
-	Component: ElementType
 	name: keyof TTaskBase
+	Component: ElementType
 	placeholder: string
 }
 
-const Field = ({ taskForm, Component, name, placeholder }: IFieldProps) => (
+const Field = ({ taskForm, name, Component, placeholder }: IFieldProps) => (
 	<FormField
 		control={taskForm.control}
 		name={name}

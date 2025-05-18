@@ -15,11 +15,15 @@ const Task = ({ task }: { task: TTask }) => {
 	})
 	const isDragging = !!transform
 
+	const handleOpenDetails = () => {
+		openTaskDialog(task)
+	}
+
 	return (
 		<div
 			ref={setNodeRef}
 			{...attributes}
-			onClick={() => openTaskDialog(task)}
+			onClick={handleOpenDetails}
 			className={cn(
 				'flex items-stretch pr-2 border rounded-md transition-opacity bg-white dark:bg-black hover:bg-accent',
 				isDragging && 'opacity-50'

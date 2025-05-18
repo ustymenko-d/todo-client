@@ -4,7 +4,7 @@ import useAppStore from '@/store/store'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
 
-const HomeLink = ({ type }: { type: 'signin' | 'signup' }) => {
+const AuthLink = ({ type }: { type: 'signin' | 'signup' }) => {
 	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
 
 	const handleClick = () => {
@@ -23,4 +23,4 @@ const HomeLink = ({ type }: { type: 'signin' | 'signup' }) => {
 	)
 }
 
-export default HomeLink
+export default AuthLink

@@ -14,13 +14,13 @@ import AuthService from '@/services/auth.service'
 import RememberMe from '@/components/AuthPage/components/RememberMe'
 import { AxiosError } from 'axios'
 import { formConfig } from '@/const'
+import { TResponseState } from '@/types/common'
 
 const AuthForm = () => {
 	const router = useRouter()
 	const authFormType = useAppStore((state) => state.authFormType)
-	const accountInfo = useAppStore((state) => state.accountInfo)
 	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState<TResponseState>('default')
 
 	const { fields, buttonText, validationSchema, defaultValues } =
 		formConfig[authFormType]
@@ -35,10 +35,12 @@ const AuthForm = () => {
 		const { success, message } = data
 
 		if (!success) {
+			setLoading('error')
 			toast.error(message)
 			return
 		}
 
+		setLoading('default')
 		toast.success(message)
 		authForm.reset(defaultValues)
 	}
@@ -52,22 +54,21 @@ const AuthForm = () => {
 		const { success, message, userInfo } = data
 
 		if (!success) {
+			setLoading('error')
 			toast.error(message)
 			return
 		}
 
+		setLoading('success')
 		authForm.reset(defaultValues)
 		toast.success(message)
 		setAccountInfo(userInfo)
 		router.push('/home')
 	}
 
-	const onSubmit = async (
-		values: z.infer<typeof validationSchema>
-	): Promise<void> => {
+	const onSubmit = async (values: z.infer<typeof validationSchema>) => {
 		try {
-			setLoading(true)
-
+			setLoading('pending')
 			if (authFormType === 'forgotPassword') {
 				await handleForgotPassword({ email: values.email })
 			} else {
@@ -79,6 +80,7 @@ const AuthForm = () => {
 				})
 			}
 		} catch (error) {
+			setLoading('error')
 			const axiosError = error as AxiosError
 			const message =
 				(axiosError.response?.data as { message?: string })?.message ||
@@ -88,14 +90,14 @@ const AuthForm = () => {
 			toast.error(
 				typeof message === 'string' ? message : JSON.stringify(message)
 			)
+
 			console.error(`${authFormType} error:`, error)
-		} finally {
-			setLoading(false)
 		}
 	}
 
 	useEffect(() => {
 		authForm.reset(defaultValues)
+		setLoading('default')
 	}, [authForm, authFormType, defaultValues])
 
 	return (
@@ -112,7 +114,6 @@ const AuthForm = () => {
 							<AuthFormInput
 								key={field}
 								name={field}
-								label={field}
 								control={authForm.control}
 							/>
 						)
@@ -120,8 +121,8 @@ const AuthForm = () => {
 
 					<LoadingButton
 						type='submit'
-						loading={loading}
-						disabled={!!accountInfo}>
+						loading={loading === 'pending'}
+						disabled={loading === 'success'}>
 						{buttonText}
 					</LoadingButton>
 				</div>

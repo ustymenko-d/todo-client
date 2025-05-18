@@ -1,7 +1,8 @@
 import useAppStore from '@/store/store'
 import { TTask, TTaskAction } from '@/types/tasks'
 import { IFolderWithTasks } from '@/types/folders'
-import { TASK_FETCH_LIMIT } from '@/components/FoldersPage/components/Folder'
+import { TASK_FETCH_LIMIT } from '@/const'
+import isEqual from 'lodash.isequal'
 
 type THandlerProps = (
 	folders: IFolderWithTasks[],
@@ -23,7 +24,8 @@ const useUpdateFolderTasks = (action: TTaskAction) => {
 		if (!updatedTask || !Array.isArray(foldersWithTasks)) return
 
 		const handler = handlers[action]
-		if (!handler) return
+
+		if (!handler || isHydrated(action, foldersWithTasks, updatedTask)) return
 
 		setFoldersWithTasks((prev) => handler(prev, updatedTask))
 	}
@@ -31,59 +33,65 @@ const useUpdateFolderTasks = (action: TTaskAction) => {
 	return { handleUpdateFolderTasks }
 }
 
-const handleCreate: THandlerProps = (folders, task) => {
-	if (!task.folderId) return folders
+const findTaskById = (folders: IFolderWithTasks[], taskId: string) =>
+	folders
+		.flatMap((folder) => folder.tasks ?? [])
+		.find((task) => task.id === taskId)
 
-	return folders.map((folder) =>
-		folder.id === task.folderId
-			? {
-					...folder,
-					tasks: [task, ...(folder.tasks ?? [])],
-					total: folder.total ? folder.total + 1 : 1,
-			  }
-			: folder
+const isHydrated = (
+	action: TTaskAction,
+	folders: IFolderWithTasks[],
+	task: TTask
+) => {
+	const existingTask = findTaskById(folders, task.id)
+	if (!existingTask) return false
+
+	return (
+		{
+			create: true,
+			changeStatus: existingTask.completed === task.completed,
+			edit: isEqual(existingTask, task),
+			delete: !existingTask,
+		}[action] ?? false
 	)
 }
 
-const handleEdit: THandlerProps = (folders, updatedTask) => {
-	const fromFolder = folders.find((folder) =>
-		folder?.tasks?.some((t) => t.id === updatedTask.id)
-	)
-
-	if (!fromFolder) return folders
-
-	const fromId = fromFolder.id
-	const toId = updatedTask.folderId
-
-	const foldersWithoutTask = folders.map((folder) =>
-		folder.id === fromId
+const updateFoldersWithTask = (
+	folders: IFolderWithTasks[],
+	updatedTask: TTask,
+	remove = false
+) =>
+	folders.map((folder) =>
+		folder.id === updatedTask.folderId
 			? {
 					...folder,
-					tasks: (folder.tasks ?? []).filter(
-						(task) => task.id !== updatedTask.id
-					),
-					total: Math.max((folder.total ?? 0) - 1, 0),
+					tasks: remove
+						? (folder.tasks ?? []).filter((t) => t.id !== updatedTask.id)
+						: [updatedTask, ...(folder.tasks ?? [])],
+					total: Math.max((folder.total ?? 0) + (remove ? -1 : 1), 0),
 					pages: Math.ceil(
-						Math.max((folder.total ?? 0) - 1, 0) / TASK_FETCH_LIMIT
+						Math.max((folder.total ?? 0) + (remove ? -1 : 1), 0) /
+							TASK_FETCH_LIMIT
 					),
 			  }
 			: folder
 	)
 
-	if (toId) {
-		return foldersWithoutTask.map((folder) =>
-			folder.id === toId
-				? {
-						...folder,
-						tasks: [updatedTask, ...(folder.tasks ?? [])],
-						total: (folder.total ?? 0) + 1,
-						pages: Math.ceil(((folder.total ?? 0) + 1) / TASK_FETCH_LIMIT),
-				  }
-				: folder
-		)
-	}
+const handleCreate: THandlerProps = (folders, task) =>
+	task.folderId && !findTaskById(folders, task.id)
+		? updateFoldersWithTask(folders, task)
+		: folders
 
-	return foldersWithoutTask
+const handleEdit: THandlerProps = (folders, updatedTask) => {
+	const fromFolderId = findTaskById(folders, updatedTask.id)?.folderId
+
+	const withoutOldTask = fromFolderId
+		? updateFoldersWithTask(folders, updatedTask, true)
+		: folders
+
+	return updatedTask.folderId
+		? updateFoldersWithTask(withoutOldTask, updatedTask)
+		: withoutOldTask
 }
 
 const handleChangeStatus: THandlerProps = (folders, updatedTask) =>
@@ -91,9 +99,9 @@ const handleChangeStatus: THandlerProps = (folders, updatedTask) =>
 		folder.id === updatedTask.folderId
 			? {
 					...folder,
-					tasks: folder?.tasks?.map((task) =>
+					tasks: folder.tasks?.map((task) =>
 						task.id === updatedTask.id
-							? { ...task, completed: !task.completed }
+							? { ...task, completed: updatedTask.completed }
 							: task
 					),
 			  }
@@ -105,31 +113,31 @@ const handleDelete: THandlerProps = (folders, updatedTask) => {
 
 	const collectAllTaskIds = (taskId: string): string[] => {
 		const directChildren = allTasks.filter(
-			(task) => task?.parentTaskId === taskId
+			(task) => task?.parentTaskId === taskId && task !== undefined
 		)
 
 		return [
 			taskId,
-			...directChildren
-				.filter((child): child is TTask => child !== undefined)
-				.flatMap((child) => collectAllTaskIds(child.id)),
+			...directChildren.flatMap((child) =>
+				child ? collectAllTaskIds(child.id) : []
+			),
 		]
 	}
 
 	const idsToDelete = new Set(collectAllTaskIds(updatedTask.id))
 
-	return folders.map((folder) => {
-		const remainingTasks = folder?.tasks?.filter((t) => !idsToDelete.has(t.id))
-		const newTotal = remainingTasks?.length || 0
-		const newPages = Math.ceil(newTotal / TASK_FETCH_LIMIT)
-
-		return {
-			...folder,
-			tasks: remainingTasks,
-			total: newTotal,
-			pages: newPages,
-		}
-	})
+	return folders.map((folder) => ({
+		...folder,
+		tasks: folder.tasks?.filter((t) => !idsToDelete.has(t.id)),
+		total: Math.max(
+			folder.tasks?.filter((t) => !idsToDelete.has(t.id)).length ?? 0,
+			0
+		),
+		pages: Math.ceil(
+			(folder.tasks?.filter((t) => !idsToDelete.has(t.id)).length ?? 0) /
+				TASK_FETCH_LIMIT
+		),
+	}))
 }
 
 export default useUpdateFolderTasks

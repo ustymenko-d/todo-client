@@ -1,5 +1,4 @@
 import { Control } from 'react-hook-form'
-import EmailInput from '@/components/AuthPage/components/EmailInput'
 import {
 	FormControl,
 	FormField,
@@ -7,16 +6,17 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
+import EmailInput from '@/components/AuthPage/components/EmailInput'
 import PasswordInput from '@/components/AuthPage/components/PasswordInput'
 import { TBaseFields } from '@/types/auth'
 
-interface AuthFormInputProps {
-	name: TBaseFields
-	label: string
+const AuthFormInput = ({
+	control,
+	name,
+}: {
 	control: Control
-}
-
-const AuthFormInput = ({ name, control }: AuthFormInputProps) => (
+	name: TBaseFields
+}) => (
 	<FormField
 		control={control}
 		name={name}
@@ -27,7 +27,7 @@ const AuthFormInput = ({ name, control }: AuthFormInputProps) => (
 					{name === 'email' ? (
 						<EmailInput
 							{...field}
-							value={field.value || ''}
+							value={field.value ?? ''}
 						/>
 					) : (
 						<PasswordInput
@@ -40,7 +40,7 @@ const AuthFormInput = ({ name, control }: AuthFormInputProps) => (
 									<FormLabel>Confirm Password</FormLabel>
 								)
 							}
-							value={field.value || ''}
+							value={field.value ?? ''}
 						/>
 					)}
 				</FormControl>

@@ -1,4 +1,4 @@
-import HomeLink from '@/components/HomePage/HomeLink'
+import AuthLink from '@/components/ui/AuthLink'
 
 const RootPage = () => (
 	<div className='flex flex-col gap-2 mb-6'>
@@ -15,8 +15,8 @@ const RootPage = () => (
 			</p>
 
 			<div className='grid grid-cols-2 gap-2 mx-auto w-fit'>
-				<HomeLink type='signin' />
-				<HomeLink type='signup' />
+				<AuthLink type='signin' />
+				<AuthLink type='signup' />
 			</div>
 		</div>
 	</div>

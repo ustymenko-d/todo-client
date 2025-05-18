@@ -26,29 +26,32 @@ import useTaskActions from '@/hooks/useTaskActions'
 import InfoBlock from './components/InfoBlock'
 
 const DetailsDialog = () => {
-	const taskDialogSettings = useAppStore((state) => state.taskDialogSettings)
-	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
-	const allFolders = useAppStore((state) => state.foldersWithTasks)
+	const { open, task } = useAppStore((state) => state.taskDialogSettings)
+	const folders = useAppStore((state) => state.foldersWithTasks)
 	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
+	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
 
 	const [deleting, setDeleting] = useState(false)
 	const [toggling, setToggling] = useState(false)
 
-	const { open, task } = taskDialogSettings
-	const { title, description, completed, startDate, folderId, expiresDate } =
-		task || {}
-	const taskFolder = allFolders.find((folder) => folder.id === folderId)
-
-	const { handleTaskAction: changeTaskStatus } = useTaskActions(
+	const { handleTaskAction: changeStatus } = useTaskActions(
 		'changeStatus',
 		task as TTask
 	)
+	
 	const { handleTaskAction: deleteTask } = useTaskActions(
 		'delete',
 		task as TTask
 	)
+	
+	if (!task) return null
 
-	const handleStatusChange = () => changeTaskStatus(setToggling)
+	const { title, description, completed, startDate, folderId, expiresDate } =
+		task
+
+	const taskFolder = folders.find((folder) => folder.id === folderId)
+
+	const handleStatusChange = () => changeStatus(setToggling)
 	const handleEdit = () => openTaskEditor('edit', task)
 	const handleAddSubtask = () => openTaskEditor('create', task)
 	const handleDelete = () => deleteTask(setDeleting)

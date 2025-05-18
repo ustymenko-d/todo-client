@@ -36,7 +36,12 @@ const Row = ({ row }: { row: TanstackRow<TTask> }) => {
 		'changeStatus',
 		task
 	)
+
 	const { handleTaskAction: deleteTask } = useTaskActions('delete', task)
+
+	const handleOpenDetails = () => {
+		openTaskDialog(task)
+	}
 
 	const openDeleteDialog = () => setTimeout(() => setOpenAlert(true), 0)
 
@@ -45,7 +50,7 @@ const Row = ({ row }: { row: TanstackRow<TTask> }) => {
 			<ContextMenu>
 				<ContextMenuTrigger asChild>
 					<TableRow
-						onClick={() => openTaskDialog(task)}
+						onClick={handleOpenDetails}
 						className={cn(depthBgMap[row.depth])}>
 						{row.getVisibleCells().map((cell: Cell<TTask, unknown>) => (
 							<TableCell

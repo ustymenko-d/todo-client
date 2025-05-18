@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import {
 	Form,
 	FormControl,
@@ -40,52 +40,41 @@ const ResetPasswordForm = () => {
 		defaultValues,
 	})
 
-	const handleResetPassword = useCallback(
-		async (payload: TPassword) => {
-			try {
-				setStatus('pending')
-				const resetToken = searchParams.get('resetToken')
-				const { data } = await AuthService.resetPassword(payload, resetToken)
-				const { success, message } = data
+	const handleResetPassword = async (
+		values: z.infer<typeof validationSchema>
+	) => {
+		try {
+			setStatus('pending')
+			const payload: TPassword = { password: values.password }
+			const resetToken = searchParams.get('resetToken')
+			const { data } = await AuthService.resetPassword(payload, resetToken)
+			const { success, message } = data
 
-				setStatus(success ? 'success' : 'error')
-
-				if (!success) {
-					if (message) {
-						toast.error(message)
-						throw new Error(message)
-					}
-					throw new Error()
-				}
-
-				toast.success('Your password has been changed successfully!', {
-					description:
-						'You will be automatically redirected to the main page in 3 seconds.',
-				})
-				resetPasswordForm.reset(defaultValues)
-				setTimeout(() => {
-					router.push('/')
-				}, 3000)
-			} catch (error) {
-				toast.error('Something went wrong!')
-				console.error('Change password error:', error)
-			} finally {
-				setStatus('default')
+			if (!success) {
+				setStatus('error')
+				if (message) toast.error(message)
+				throw new Error(message || 'Reset failed')
 			}
-		},
-		[defaultValues, resetPasswordForm, router, searchParams]
-	)
 
-	const onSubmit = useCallback(
-		async (values: z.infer<typeof validationSchema>) => {
-			handleResetPassword({ password: values.password })
-		},
-		[handleResetPassword]
-	)
+			setStatus('success')
+			toast.success('Your password has been changed successfully!', {
+				description:
+					'You will be automatically redirected to the main page in 3 seconds.',
+			})
+			resetPasswordForm.reset(defaultValues)
+			setTimeout(() => {
+				router.push('/')
+			}, 3000)
+		} catch (error) {
+			setStatus('error')
+			toast.error('Something went wrong!')
+			console.error('Change password error:', error)
+		}
+	}
 
 	return (
 		<Form {...resetPasswordForm}>
-			<form onSubmit={resetPasswordForm.handleSubmit(onSubmit)}>
+			<form onSubmit={resetPasswordForm.handleSubmit(handleResetPassword)}>
 				<div className='flex flex-col gap-6'>
 					{(['password', 'confirmPassword'] as const).map((element) => (
 						<FormField

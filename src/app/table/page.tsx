@@ -52,7 +52,10 @@ const TablePage = async ({ searchParams }: TablePageProps) => {
 
 	return (
 		<PageSection>
-			<PageHead subject='tasks' />
+			<PageHead
+				title='Manage and organize your tasks'
+				description='You can view the details of the task by clicking on it or you can edit the task using the context menu (right click)'
+			/>
 
 			{data ? (
 				<Table
