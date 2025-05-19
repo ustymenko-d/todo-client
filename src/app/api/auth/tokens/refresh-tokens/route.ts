@@ -100,7 +100,6 @@ const parseSameSite = (
 }
 
 const buildFallbackResponse = (request: NextRequest): NextResponse => {
-	// const fallbackUrl = new URL('/', request.nextUrl.origin)
 	const clearUrl = new URL(
 		'/api/auth/cookies/clear-auth-cookies',
 		request.nextUrl.origin
@@ -110,10 +109,6 @@ const buildFallbackResponse = (request: NextRequest): NextResponse => {
 		'[Refresh] Redirected to fallback, tokens cleared. Fallback URL:',
 		clearUrl.toString()
 	)
-
-	// const response = NextResponse.redirect(fallbackUrl)
-	// clearAuthCookies(response)
-	// return response
 
 	return NextResponse.redirect(clearUrl)
 }

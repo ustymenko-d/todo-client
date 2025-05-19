@@ -1,16 +1,15 @@
-import useUpdateTasks from './useUpdateTasks'
+// import useUpdateTasks from './useUpdateTasks'
 import useTaskActions from './useTaskActions'
 import { toast } from 'sonner'
 import { TTask, TTaskPayload } from '@/types/tasks'
 
 const useTaskMove = (setLoading: (loading: boolean) => void) => {
-	const { handleUpdateTasks } = useUpdateTasks()
+	// const { handleUpdateTasks } = useUpdateTasks()
 	const { handleTaskAction } = useTaskActions('edit')
 
 	const moveTask = async (task: TTask, newFolderId: string) => {
 		try {
-			handleUpdateTasks('delete', task)
-			handleUpdateTasks('create', { ...task, folderId: newFolderId })
+			// handleUpdateTasks('edit', { ...task, folderId: newFolderId })
 			await handleTaskAction(setLoading, createPayload(task, newFolderId))
 		} catch (error) {
 			toast.error('Failed to move the task. Please try again.')
