@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import isEqual from 'lodash.isequal'
 import useAppStore from '@/store/store'
+import isEqual from 'lodash.isequal'
 
 export const useCrossTabZustandSync = () => {
 	const setState = useAppStore.setState
@@ -17,7 +17,6 @@ export const useCrossTabZustandSync = () => {
 
 				const currentState = {
 					accountInfo: getState().accountInfo,
-					foldersWithTasks: getState().foldersWithTasks,
 				}
 
 				if (isEqual(currentState, incomingState)) return

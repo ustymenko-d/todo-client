@@ -19,9 +19,7 @@ export const useAppStore = create<AppStore>()(
 				name: 'app-store',
 				storage: createJSONStorage(getStorage),
 				partialize: (state) => ({
-					authHydrated: state.authHydrated,
 					accountInfo: state.accountInfo,
-					foldersWithTasks: state.foldersWithTasks,
 				}),
 			}
 		)

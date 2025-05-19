@@ -3,6 +3,9 @@ import { IFolder, IFolderWithTasks } from '@/types/folders'
 import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 
 export interface FoldersSlice {
+	foldersHydrated: boolean
+	setFoldersHydrated: (newValue: boolean) => void
+
 	foldersWithTasks: IFolderWithTasks[]
 	setFoldersWithTasks: (
 		value:
@@ -27,6 +30,9 @@ const createFoldersSlice = (
 			| ((state: FoldersSlice) => Partial<FoldersSlice>)
 	) => void
 ): FoldersSlice => ({
+	foldersHydrated: false,
+	setFoldersHydrated: (foldersHydrated) => set({ foldersHydrated }),
+
 	foldersWithTasks: [],
 	setFoldersWithTasks: (value) =>
 		set((state) => ({

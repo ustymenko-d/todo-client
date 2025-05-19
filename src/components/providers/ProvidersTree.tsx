@@ -4,12 +4,14 @@ import buildProvidersTree from '@/utils/buildProvidersTree'
 import ZustandProvider from './ZustandProvider'
 import SocketProvider from './SocketProvider'
 import AuthProvider from './AuthProvider'
+import FoldersProvider from './FoldersProvider'
 import ThemeProvider from './ThemeProvider'
 
 const Tree = buildProvidersTree([
 	[ZustandProvider],
 	[SocketProvider],
 	[AuthProvider],
+	[FoldersProvider],
 	[
 		ThemeProvider,
 		{
