@@ -32,7 +32,8 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 
 	const handleTaskAction = async (
 		setLoadingState: (state: boolean) => void,
-		payload?: TTaskBase | TTaskPayload
+		payload?: TTaskBase | TTaskPayload,
+		skipHandleUpdateTasks: boolean = false
 	) => {
 		try {
 			setLoadingState(true)
@@ -50,7 +51,7 @@ const useTaskActions = (action: TTaskAction, task?: TTask) => {
 			if (['edit', 'changeStatus'].includes(action))
 				updateDialogTask(updatedTask)
 
-			handleUpdateTasks(action, updatedTask)
+			if (!skipHandleUpdateTasks) handleUpdateTasks(action, updatedTask)
 
 			if (pathname === '/table') router.refresh()
 		} catch (error) {

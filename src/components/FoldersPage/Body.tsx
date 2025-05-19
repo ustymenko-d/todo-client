@@ -15,14 +15,14 @@ import {
 	useSensors,
 } from '@dnd-kit/core'
 import Task from './components/Task'
-import useTaskActions from '@/hooks/useTaskActions'
+import useTaskMove from '@/hooks/useTaskMove'
 
 const Body = () => {
 	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
 	const [loading, setLoading] = useState(false)
 	const [activeId, setActiveId] = useState<string | null>(null)
 
-	const { handleTaskAction } = useTaskActions('edit')
+	const { moveTask } = useTaskMove(setLoading)
 
 	const sensors = useSensors(
 		useSensor(MouseSensor, {
@@ -60,10 +60,12 @@ const Body = () => {
 				.find((task) => task?.id === taskId)
 
 			if (!task || task.folderId === newFolderId) return
-			handleTaskAction(setLoading, { ...task, folderId: newFolderId })
+
+			await moveTask(task, newFolderId)
+
 			setActiveId(null)
 		},
-		[foldersWithTasks, handleTaskAction, loading]
+		[foldersWithTasks, loading, moveTask]
 	)
 
 	const handleDragCancel = () => {

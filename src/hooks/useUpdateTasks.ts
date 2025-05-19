@@ -54,42 +54,73 @@ const isHydrated = (
 	)
 }
 
-const updateFoldersWithTask = (
-	folders: IFolderWithTasks[],
-	updatedTask: TTask,
-	remove = false
-) =>
-	folders.map((folder) =>
-		folder.id === updatedTask.folderId
-			? {
-					...folder,
-					tasks: remove
-						? (folder.tasks ?? []).filter((t) => t.id !== updatedTask.id)
-						: [updatedTask, ...(folder.tasks ?? [])],
-					total: Math.max((folder.total ?? 0) + (remove ? -1 : 1), 0),
-					pages: Math.ceil(
-						Math.max((folder.total ?? 0) + (remove ? -1 : 1), 0) /
-							TASK_FETCH_LIMIT
-					),
-			  }
-			: folder
-	)
-
 const handleCreate: THandlerProps = (folders, task) =>
 	task.folderId && !findTaskById(folders, task.id)
-		? updateFoldersWithTask(folders, task)
+		? folders.map((folder) =>
+				folder.id === task.folderId
+					? {
+							...folder,
+							tasks: [task, ...(folder.tasks ?? [])],
+							total: Math.max((folder.total ?? 0) + 1, 0),
+							pages: Math.ceil(
+								Math.max((folder.total ?? 0) + 1, 0) / TASK_FETCH_LIMIT
+							),
+					  }
+					: folder
+		  )
 		: folders
 
 const handleEdit: THandlerProps = (folders, updatedTask) => {
-	const fromFolderId = findTaskById(folders, updatedTask.id)?.folderId
+	const existingTask = findTaskById(folders, updatedTask.id)
+	if (!existingTask) return folders
 
-	const withoutOldTask = fromFolderId
-		? updateFoldersWithTask(folders, updatedTask, true)
-		: folders
+	const folderIdChanged = existingTask.folderId !== updatedTask.folderId
 
-	return updatedTask.folderId
-		? updateFoldersWithTask(withoutOldTask, updatedTask)
-		: withoutOldTask
+	let updatedFolders = folders
+
+	if (folderIdChanged) {
+		// Видалити з усіх папок (переміщення)
+		updatedFolders = folders.map((folder) => ({
+			...folder,
+			tasks: folder.tasks?.filter((t) => t.id !== updatedTask.id),
+			total: Math.max(
+				folder.tasks?.filter((t) => t.id !== updatedTask.id).length ?? 0,
+				0
+			),
+			pages: Math.ceil(
+				(folder.tasks?.filter((t) => t.id !== updatedTask.id).length ?? 0) /
+					TASK_FETCH_LIMIT
+			),
+		}))
+
+		// Додати в нову папку
+		updatedFolders = updatedFolders.map((folder) =>
+			folder.id === updatedTask.folderId
+				? {
+						...folder,
+						tasks: [updatedTask, ...(folder.tasks ?? [])],
+						total: Math.max((folder.total ?? 0) + 1, 0),
+						pages: Math.ceil(
+							Math.max((folder.total ?? 0) + 1, 0) / TASK_FETCH_LIMIT
+						),
+				  }
+				: folder
+		)
+	} else {
+		// Просто оновити в тій самій папці
+		updatedFolders = folders.map((folder) =>
+			folder.id === updatedTask.folderId
+				? {
+						...folder,
+						tasks: folder.tasks?.map((t) =>
+							t.id === updatedTask.id ? { ...t, ...updatedTask } : t
+						),
+				  }
+				: folder
+		)
+	}
+
+	return updatedFolders
 }
 
 const handleChangeStatus: THandlerProps = (folders, updatedTask) =>
