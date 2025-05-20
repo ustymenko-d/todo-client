@@ -54,7 +54,9 @@ const TablePage = async ({ searchParams }: TablePageProps) => {
 		<PageSection>
 			<PageHead
 				title='Manage and organize your tasks'
-				description='You can view the details of the task by clicking on it or you can edit the task using the context menu (right click)'
+				description={
+					'You can view the details of the task by clicking on it or you can edit the task using the context\u00A0menu (right\u00A0click)'
+				}
 			/>
 
 			{data ? (

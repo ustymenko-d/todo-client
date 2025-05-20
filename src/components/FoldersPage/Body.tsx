@@ -16,8 +16,10 @@ import {
 } from '@dnd-kit/core'
 import Task from './components/Task'
 import useTaskMove from '@/hooks/useTaskMove'
+import Loader from '../ui/Loader'
 
 const Body = () => {
+	const foldersHydrated = useAppStore((state) => state.foldersHydrated)
 	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
 	const [loading, setLoading] = useState(false)
 	const [activeId, setActiveId] = useState<string | null>(null)
@@ -72,10 +74,11 @@ const Body = () => {
 		if (!loading) setActiveId(null)
 	}
 
-	if (!foldersWithTasks?.length) return <EmptyPlaceholder />
+	if (!foldersWithTasks?.length)
+		return foldersHydrated ? <EmptyPlaceholder /> : <Loader />
 
 	return (
-		<div className='grid w-full gap-2 mt-4 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>
+		<div className='grid w-full gap-2 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>
 			<DndContext
 				sensors={sensors}
 				onDragStart={handleDragStart}

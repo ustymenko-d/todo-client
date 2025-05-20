@@ -15,7 +15,7 @@ const Head = () => {
 	}
 
 	return (
-		<div className='flex flex-wrap items-end justify-between gap-x-4 gap-y-2'>
+		<div className='flex flex-wrap items-end justify-between mb-4 gap-x-4 gap-y-2'>
 			<PageHead
 				title='Manage and organize your folders'
 				description='You can view the list of tasks contained in folders, edit them, and drag them between folders'
