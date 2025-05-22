@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { getSocket } from '@/lib/socket'
+import { useQueryClient } from '@tanstack/react-query'
+import useUpdate from './useUpdate'
 import { TTask } from '@/types/tasks'
-import useUpdateTasks from './useUpdateTasks'
 
-export const useTaskSocket = () => {
-	const { handleUpdateTasks } = useUpdateTasks()
+const useSocket = () => {
+	const { handleUpdateTasks } = useUpdate()
+	const queryClient = useQueryClient()
 
 	useEffect(() => {
 		const socket = getSocket()
@@ -13,18 +15,22 @@ export const useTaskSocket = () => {
 			'task:created': (data: TTask) => {
 				console.log('Task created:', data)
 				handleUpdateTasks('create', data)
+				queryClient.invalidateQueries({ queryKey: ['tasks'] })
 			},
 			'task:updated': (data: TTask) => {
 				console.log('Task updated:', data)
 				handleUpdateTasks('edit', data)
+				queryClient.invalidateQueries({ queryKey: ['tasks'] })
 			},
 			'task:toggleStatus': (data: TTask) => {
 				console.log('Task status change:', data)
 				handleUpdateTasks('changeStatus', data)
+				queryClient.invalidateQueries({ queryKey: ['tasks'] })
 			},
 			'task:deleted': (data: TTask) => {
 				console.log('Task deleted:', data)
 				handleUpdateTasks('delete', data)
+				queryClient.invalidateQueries({ queryKey: ['tasks'] })
 			},
 		}
 
@@ -37,5 +43,7 @@ export const useTaskSocket = () => {
 				socket.off(event, handler)
 			}
 		}
-	}, [handleUpdateTasks])
+	}, [handleUpdateTasks, queryClient])
 }
+
+export default useSocket

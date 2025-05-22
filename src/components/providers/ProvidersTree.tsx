@@ -1,14 +1,16 @@
 'use client'
 
 import buildProvidersTree from '@/utils/buildProvidersTree'
-import ZustandProvider from './ZustandProvider'
-import SocketProvider from './SocketProvider'
-import AuthProvider from './AuthProvider'
-import FoldersProvider from './FoldersProvider'
-import ThemeProvider from './ThemeProvider'
+import ZustandProvider from './Zustand.provider'
+import QueryProvider from './Query.provider'
+import SocketProvider from './Socket.provider'
+import AuthProvider from './Auth.provider'
+import FoldersProvider from './Folders.provider'
+import ThemeProvider from './Theme.provider'
 
 const Tree = buildProvidersTree([
 	[ZustandProvider],
+	[QueryProvider],
 	[SocketProvider],
 	[AuthProvider],
 	[FoldersProvider],

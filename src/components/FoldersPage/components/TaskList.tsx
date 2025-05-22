@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import useMergeFetchedTasks from '@/hooks/useMergeFetchedTasks'
+import useMergeFetchedTasks from '@/hooks/folders/useMergeFetchedTasks'
 import TasksService from '@/services/tasks.service'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Task from './Task'

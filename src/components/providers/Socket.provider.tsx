@@ -1,8 +1,8 @@
-import { useFolderSocket } from '@/hooks/useFolderSocket'
-import { useTaskSocket } from '@/hooks/useTaskSocket'
+import useFolderSocket from '@/hooks/folders/useSocket'
+import useTasksSocket from '@/hooks/tasks/useSocket'
 
 const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-	useTaskSocket()
+	useTasksSocket()
 	useFolderSocket()
 
 	return <>{children}</>

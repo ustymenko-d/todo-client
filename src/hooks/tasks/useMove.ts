@@ -1,11 +1,11 @@
-import useTaskActions from './useTaskActions'
+import useActions from './useActions'
 import { toast } from 'sonner'
 import { TTask, TTaskPayload } from '@/types/tasks'
-import useUpdateTasks from './useUpdateTasks'
+import useUpdate from './useUpdate'
 
-const useTaskMove = (setLoading: (loading: boolean) => void) => {
-	const { handleUpdateTasks } = useUpdateTasks()
-	const { handleTaskAction } = useTaskActions('edit')
+const useMove = (setLoading: (loading: boolean) => void) => {
+	const { handleUpdateTasks } = useUpdate()
+	const { handleTaskAction } = useActions('edit')
 
 	const moveTask = async (task: TTask, newFolderId: string) => {
 		try {
@@ -30,4 +30,4 @@ const createPayload = (task: TTask, newFolderId: string): TTaskPayload => {
 	return updatedTask
 }
 
-export default useTaskMove
+export default useMove

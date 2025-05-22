@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import useAppStore from '@/store/store'
 import FoldersService from '@/services/folders.service'
-import useUpdateFolders from '@/hooks/useUpdateFolders'
+import useUpdate from '@/hooks/folders/useUpdate'
 import { toast } from 'sonner'
 import TooltipButton from './TooltipButton'
 import DeleteDialog from '@/components/DeleteDialog'
@@ -21,7 +21,7 @@ const FolderActions = ({
 	const [loading, setLoading] = useState<TResponseState>('default')
 	const { id } = folder
 
-	const { handleUpdateFolders } = useUpdateFolders()
+	const { handleUpdateFolders } = useUpdate()
 
 	const handleEdit = () => {
 		openEditor('edit', folder)

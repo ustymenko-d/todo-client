@@ -9,7 +9,7 @@ type THandlerProps = (
 	task: TTask
 ) => IFolderWithTasks[]
 
-const useUpdateTasks = () => {
+const useUpdate = () => {
 	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
 	const setFoldersWithTasks = useAppStore((state) => state.setFoldersWithTasks)
 
@@ -169,4 +169,4 @@ const handleDelete: THandlerProps = (folders, updatedTask) => {
 	}))
 }
 
-export default useUpdateTasks
+export default useUpdate

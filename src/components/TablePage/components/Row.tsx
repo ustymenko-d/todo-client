@@ -14,7 +14,7 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import DeleteDialog from '@/components/DeleteDialog'
 import { TTask } from '@/types/tasks'
 import { cn } from '@/lib/utils'
-import useTaskActions from '@/hooks/useTaskActions'
+import useActions from '@/hooks/tasks/useActions'
 
 const depthBgMap: Record<number, string> = {
 	0: 'bg-white dark:bg-neutral-900',
@@ -32,12 +32,12 @@ const Row = ({ row }: { row: TanstackRow<TTask> }) => {
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [togglingLoading, setTogglingLoading] = useState(false)
 
-	const { handleTaskAction: chengeTaskStatus } = useTaskActions(
+	const { handleTaskAction: chengeTaskStatus } = useActions(
 		'changeStatus',
 		task
 	)
 
-	const { handleTaskAction: deleteTask } = useTaskActions('delete', task)
+	const { handleTaskAction: deleteTask } = useActions('delete', task)
 
 	const handleOpenDetails = () => {
 		openTaskDialog(task)

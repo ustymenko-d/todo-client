@@ -15,7 +15,7 @@ import {
 	useSensors,
 } from '@dnd-kit/core'
 import Task from './components/Task'
-import useTaskMove from '@/hooks/useTaskMove'
+import useMove from '@/hooks/tasks/useMove'
 import Loader from '../ui/Loader'
 
 const Body = () => {
@@ -24,7 +24,7 @@ const Body = () => {
 	const [loading, setLoading] = useState(false)
 	const [activeId, setActiveId] = useState<string | null>(null)
 
-	const { moveTask } = useTaskMove(setLoading)
+	const { moveTask } = useMove(setLoading)
 
 	const sensors = useSensors(
 		useSensor(MouseSensor, {

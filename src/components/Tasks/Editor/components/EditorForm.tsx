@@ -18,7 +18,7 @@ import LoadingButton from '@/components/ui/LoadingButton'
 import Field from '@/components/Tasks/Editor/components/Field'
 import FormSelect from '@/components/Tasks/Editor/components/FormSelect'
 import { TTask, TTaskBase } from '@/types/tasks'
-import useTaskActions from '@/hooks/useTaskActions'
+import useActions from '@/hooks/tasks/useActions'
 
 const EditorForm = () => {
 	const mode = useAppStore((state) => state.taskEditorSettings.mode)
@@ -27,8 +27,8 @@ const EditorForm = () => {
 	const [loading, setLoading] = useState(false)
 	const isEditing = mode === 'edit'
 
-	const { handleTaskAction: createTask } = useTaskActions('create')
-	const { handleTaskAction: editTask } = useTaskActions(
+	const { handleTaskAction: createTask } = useActions('create')
+	const { handleTaskAction: editTask } = useActions(
 		'edit',
 		selectedTask as TTask
 	)

@@ -22,7 +22,7 @@ import { formatDate, formatValue } from '@/utils/formatting'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { TTask } from '@/types/tasks'
-import useTaskActions from '@/hooks/useTaskActions'
+import useActions from '@/hooks/tasks/useActions'
 import InfoBlock from './components/InfoBlock'
 
 const DetailsDialog = () => {
@@ -34,12 +34,12 @@ const DetailsDialog = () => {
 	const [deleting, setDeleting] = useState(false)
 	const [toggling, setToggling] = useState(false)
 
-	const { handleTaskAction: changeStatus } = useTaskActions(
+	const { handleTaskAction: changeStatus } = useActions(
 		'changeStatus',
 		task as TTask
 	)
 	
-	const { handleTaskAction: deleteTask } = useTaskActions(
+	const { handleTaskAction: deleteTask } = useActions(
 		'delete',
 		task as TTask
 	)
