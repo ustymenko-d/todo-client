@@ -22,7 +22,7 @@ const headProps = {
 const TablePage = async ({ searchParams }: TablePageProps) => {
 	const {
 		page = 1,
-		limit = 5,
+		limit = 25,
 		title,
 		topLayerTasks = true,
 	} = await searchParams

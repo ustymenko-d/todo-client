@@ -9,7 +9,7 @@ import { ITableComponentProps } from '@/components/TablePage/Table'
 
 const PaginationSelect = ({ table }: ITableComponentProps) => {
 	const pageSize = table.getState().pagination.pageSize
-	const pageSizes = [5, 25, 50, 75, 100]
+	const pageSizes = [25, 50, 75, 100]
 
 	return (
 		<div className='flex items-center space-x-2'>
