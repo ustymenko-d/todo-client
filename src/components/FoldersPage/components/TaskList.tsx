@@ -3,9 +3,9 @@ import useMergeFetchedTasks from '@/hooks/folders/useMergeFetchedTasks'
 import TasksService from '@/services/tasks.service'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Task from './Task'
-import { Loader2 } from 'lucide-react'
 import { TASK_FETCH_LIMIT } from '@/const'
 import { IFolderWithTasks } from '@/types/folders'
+import Loader from '@/components/ui/Loader'
 
 const TaskList = ({
 	folder,
@@ -57,18 +57,7 @@ const TaskList = ({
 
 	if (!showTasks) return null
 
-	if (tasks.length === 0 && loading) {
-		return (
-			<div className='flex items-center justify-center gap-2 px-6 py-4 border-t text-muted-foreground'>
-				<Loader2
-					strokeWidth={1.5}
-					className='animate-spin'
-					size={16}
-				/>
-				<p>Loading...</p>
-			</div>
-		)
-	}
+	if (tasks.length === 0 && loading) return <Loader />
 
 	return (
 		<div
@@ -94,16 +83,7 @@ const TaskList = ({
 							/>
 						))}
 					</ul>
-					{loading && (
-						<div className='flex items-center justify-center gap-2 mt-4 text-muted-foreground'>
-							<Loader2
-								strokeWidth={1.5}
-								className='animate-spin'
-								size={16}
-							/>
-							<p>Loading...</p>
-						</div>
-					)}
+					{loading && <Loader />}
 				</InfiniteScroll>
 			) : (
 				<p className='text-center text-muted-foreground'>
