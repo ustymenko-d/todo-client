@@ -12,9 +12,10 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Loader2, Plus, Settings2 } from 'lucide-react'
+import { Plus, Settings2 } from 'lucide-react'
 import { ITableComponentProps } from '@/components/TablePage/Table'
 import debounce from 'lodash.debounce'
+import Loader from '@/components/ui/Loader'
 
 const defaultColumns = ['completed', 'title', 'actions']
 const columnLabels: Record<string, string> = {
@@ -92,15 +93,7 @@ const Head = ({ table }: ITableComponentProps) => {
 					onChange={(e) => handleChange(e)}
 					placeholder='Search by title...'
 				/>
-				{isPending && (
-					<div className='flex items-center gap-2'>
-						<Loader2
-							strokeWidth={1.5}
-							className='w-5 h-5 text-gray-500 animate-spin'
-						/>
-						<span className='text-muted-foreground'>Searching...</span>
-					</div>
-				)}
+				{isPending && <Loader text='Searching' />}
 			</div>
 
 			<Button onClick={() => openTaskEditor('create', null)}>

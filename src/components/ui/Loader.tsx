@@ -1,12 +1,19 @@
+import { cn } from '@/lib/utils'
 import { Loader2 } from 'lucide-react'
 
-const Loader = () => (
-	<div className='flex items-center gap-2 text-muted-foreground'>
+interface ILoaderProps extends React.HTMLAttributes<HTMLDivElement> {
+	text?: string
+}
+
+const Loader = ({ text = 'Loading', className, ...props }: ILoaderProps) => (
+	<div
+		className={cn('flex items-center gap-2 text-muted-foreground', className)}
+		{...props}>
 		<Loader2
-			strokeWidth={1.5}
-			className='animate-spin'
+			strokeWidth={1.25}
+			className='w-5 h-5 text-gray-500 animate-spin'
 		/>
-		<p className='text-xl font-medium'>Loading...</p>
+		<span>{text + '\u2026'}</span>
 	</div>
 )
 

@@ -7,9 +7,9 @@ import Table from '@/components/TablePage/Table'
 import { TGetTasksRequest } from '@/types/tasks'
 
 const Body = (searchparams: TGetTasksRequest) => {
-	const { data, isLoading } = useFetch(searchparams)
+	const { data, isLoading, isFetching } = useFetch(searchparams)
 
-	if (isLoading) return <Loader />
+	if (isLoading) return <Loader className='pt-4 text-lg' />
 
 	if (!data) return <EmptyPlaceholder />
 
@@ -18,6 +18,7 @@ const Body = (searchparams: TGetTasksRequest) => {
 	return (
 		<Table
 			data={tasks}
+			isFetching={isFetching}
 			pagination={{ ...searchparams, pages }}
 		/>
 	)

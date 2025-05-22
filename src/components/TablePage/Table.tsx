@@ -19,9 +19,11 @@ import Head from '@/components/TablePage/components/Head'
 import Body from '@/components/TablePage/components/Body'
 import Pagination from '@/components/TablePage/components/Pagination/Pagination'
 import { TTask } from '@/types/tasks'
+import Loader from '../ui/Loader'
 
 interface TableProps {
 	data: TTask[] | []
+	isFetching: boolean
 	pagination: {
 		page: number
 		limit: number
@@ -33,7 +35,7 @@ export interface ITableComponentProps {
 	table: TanstackTable<TTask>
 }
 
-const Table = ({ data, pagination }: TableProps) => {
+const Table = ({ data, isFetching, pagination }: TableProps) => {
 	const router = useRouter()
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -77,8 +79,17 @@ const Table = ({ data, pagination }: TableProps) => {
 	return (
 		<div className='container mx-auto'>
 			<Head table={table} />
+
 			<Body table={table} />
+
 			<Pagination table={table} />
+
+			{isFetching && (
+				<Loader
+					className='justify-end'
+					text='Data is fetching'
+				/>
+			)}
 		</div>
 	)
 }

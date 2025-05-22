@@ -1,9 +1,5 @@
 import Loader from '@/components/ui/Loader'
 
-const RootLoading = () => (
-	<div className='flex items-center justify-center'>
-		<Loader />
-	</div>
-)
+const RootLoading = () => <Loader className='justify-center text-xl' />
 
 export default RootLoading
