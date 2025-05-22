@@ -57,7 +57,10 @@ const TaskList = ({
 
 	if (!showTasks) return null
 
-	if (tasks.length === 0 && loading) return <Loader />
+	if (tasks.length === 0 && loading)
+		return (
+			<Loader className='flex items-center justify-center px-6 py-4 border-t' />
+		)
 
 	return (
 		<div
