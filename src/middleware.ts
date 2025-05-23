@@ -11,10 +11,14 @@ export async function middleware(request: NextRequest) {
 
 const shouldBypassMiddleware = (request: NextRequest) => {
 	const { pathname, searchParams } = request.nextUrl
-	return (
-		(pathname === '/verification' && searchParams.has('verificationToken')) ||
-		(pathname === '/auth/reset-password' && !searchParams.has('resetToken'))
-	)
+	const bypassConditions: Record<string, string> = {
+		'/auth/reset-password': 'resetToken',
+		'/verification': 'verificationToken',
+	}
+
+	return bypassConditions[pathname]
+		? searchParams.has(bypassConditions[pathname])
+		: false
 }
 
 const handlePageRouting = (request: NextRequest) => {
@@ -36,7 +40,7 @@ const handlePageRouting = (request: NextRequest) => {
 }
 
 const isStartPage = (pathname: string) =>
-	pathname === '/' || pathname.startsWith('/auth')
+	pathname === '/' || pathname === '/auth'
 
 const handleInvalidToken = (
 	tokens: ReturnType<typeof getTokens>,
