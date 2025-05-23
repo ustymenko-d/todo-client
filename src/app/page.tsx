@@ -6,13 +6,13 @@ const RootPage = () => (
 			Welcome to UpTodo!
 		</h1>
 
-		<div className='flex flex-col gap-2'>
+		<div className='flex flex-col gap-1'>
 			<p className='w-11/12 mx-auto text-xl font-bold text-center lg:w-full sm:text-2xl lg:text-3xl'>
 				Manage and organize your{'\u00A0'}tasks
 			</p>
 
 			<p className='w-3/4 mx-auto mb-4 text-base text-center xl:text-lg text-muted-foreground'>
-				Please log in to your account or create a new one to{'\u00A0'}continue.
+				Please log in to your account or create a new one to{'\u00A0'}continue
 			</p>
 
 			<div className='grid grid-cols-2 gap-4 mx-auto w-fit'>

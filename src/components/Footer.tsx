@@ -14,7 +14,7 @@ const Footer = () => (
 							variant: 'link',
 							size: 'none',
 						}),
-						'text-base'
+						'rounded-none text-base hover:no-underline animated-underline'
 					)}
 					target='_blank'>
 					Denys Ustymenko

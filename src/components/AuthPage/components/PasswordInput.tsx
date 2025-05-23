@@ -42,7 +42,7 @@ const PasswordInput = ({
 						onClick={handleForgotPassword}
 						variant='link'
 						size='none'
-						className='inline-block ml-auto text-sm underline-offset-4 hover:underline'>
+						className='inline-block ml-auto text-sm rounded-none hover:no-underline animated-underline'>
 						Forgot your password?
 					</Button>
 				)}

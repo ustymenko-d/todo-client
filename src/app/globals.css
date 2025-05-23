@@ -121,3 +121,28 @@ body {
 .list-with-title::before {
 	content: attr(aria-label);
 }
+
+.animated-underline {
+	text-decoration: none;
+	background-image: linear-gradient(currentColor, currentColor);
+	background-position: 0% 100%;
+	background-repeat: no-repeat;
+	background-size: 0% 1px;
+	transition: background-size 0.4s;
+
+	&:focus-visible {
+		background-size: 100% 1px;
+	}
+
+	@media (hover: hover) {
+		&:hover {
+			background-size: 100% 1px;
+		}
+	}
+
+	@media (hover: none) {
+		&:active {
+			background-size: 100% 1px;
+		}
+	}
+}

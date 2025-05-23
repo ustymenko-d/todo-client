@@ -10,7 +10,7 @@ const RememberMe = ({ control }: { control: Control }) => (
 			<FormItem>
 				<FormControl>
 					<div className='flex items-center space-x-2'>
-						<label className='flex items-center gap-2 text-base font-medium leading-none cursor-pointer text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+						<label className='flex items-center gap-2 text-base leading-none cursor-pointer text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
 							<Checkbox
 								{...field}
 								checked={field.value}

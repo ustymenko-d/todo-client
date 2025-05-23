@@ -39,7 +39,7 @@ const AuthFormSuggestion = () => {
 			<span className='text-muted-foreground'>{suggestionText}</span>
 			<Link
 				href='/auth'
-				className='underline underline-offset-4'
+				className='animated-underline'
 				onClick={handleChangeFormType}>
 				{linkText}
 			</Link>
