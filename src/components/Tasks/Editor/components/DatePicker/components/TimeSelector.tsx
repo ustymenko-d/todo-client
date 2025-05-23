@@ -1,3 +1,5 @@
+import useBreakpoints from '@/hooks/useBreakpoints'
+import { cn } from '@/lib/utils'
 import {
 	Select,
 	SelectContent,
@@ -21,6 +23,7 @@ const TimeSelector = ({
 	selectedValue,
 	internalDate,
 }: TimeSelectorProps) => {
+	const { heightIndex } = useBreakpoints({ height: [800] })
 	const now = new Date()
 	const isToday = internalDate?.toDateString() === now.toDateString()
 
@@ -45,7 +48,7 @@ const TimeSelector = ({
 				<SelectTrigger>
 					<SelectValue placeholder='--' />
 				</SelectTrigger>
-				<SelectContent>
+				<SelectContent className={cn(!heightIndex && 'max-h-[70vh]')}>
 					{values.map((value) => (
 						<SelectItem
 							key={value}

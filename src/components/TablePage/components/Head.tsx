@@ -28,7 +28,7 @@ const columnLabels: Record<string, string> = {
 const Head = ({ table }: ITableComponentProps) => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
-	const breakpoints = useBreakpoints([640])
+	const { widthIndex } = useBreakpoints({ width: [640] })
 	const [isPending, startTransition] = useTransition()
 	const searchTerm = useAppStore((state) => state.searchTerm)
 	const setSearchTerm = useAppStore((state) => state.setSearchTerm)
@@ -99,7 +99,7 @@ const Head = ({ table }: ITableComponentProps) => {
 			<Button onClick={() => openTaskEditor('create', null)}>
 				<Plus />
 				<span className='text-sm sm:text-base'>
-					{!!breakpoints ? 'Add task' : 'Add'}
+					{!!widthIndex ? 'Add task' : 'Add'}
 				</span>
 			</Button>
 
@@ -108,9 +108,9 @@ const Head = ({ table }: ITableComponentProps) => {
 					<Button
 						variant='outline'
 						className='ml-auto min-w-9'
-						size={!!breakpoints ? 'default' : 'icon'}>
+						size={!!widthIndex ? 'default' : 'icon'}>
 						<Settings2 />
-						{!!breakpoints && <span className='hidden sm:block'>View</span>}
+						{!!widthIndex && <span className='hidden sm:block'>View</span>}
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end'>
