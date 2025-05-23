@@ -6,7 +6,7 @@ const Head = () => {
 	const accountInfo = useAppStore((state) => state.accountInfo)
 
 	return (
-		<div className='flex flex-col'>
+		<div className='flex flex-col gap-1'>
 			<h1 className='text-xl font-semibold tracking-tight'>
 				Welcome back
 				{accountInfo?.username ? `, ${accountInfo?.username}!` : '!'}

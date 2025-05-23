@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const Footer = () => (
 	<footer className='border-t border-dashed'>
@@ -8,14 +9,16 @@ const Footer = () => (
 				Built&nbsp;by{' '}
 				<Link
 					href='https://ustymenko.vercel.app'
-					className={buttonVariants({
-						variant: 'link',
-						size: 'none',
-					})}
+					className={cn(
+						buttonVariants({
+							variant: 'link',
+							size: 'none',
+						}),
+						'text-base'
+					)}
 					target='_blank'>
 					Denys Ustymenko
 				</Link>
-				.
 			</p>
 		</div>
 	</footer>

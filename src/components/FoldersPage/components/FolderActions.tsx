@@ -5,7 +5,7 @@ import useUpdate from '@/hooks/folders/useUpdate'
 import { toast } from 'sonner'
 import TooltipButton from './TooltipButton'
 import DeleteDialog from '@/components/DeleteDialog'
-import { ListTodo, Loader2, PenLine, Trash2 } from 'lucide-react'
+import { ListCheck, Loader2, PenLine, Trash2 } from 'lucide-react'
 import { IFolderWithTasks } from '@/types/folders'
 import { TResponseState } from '@/types/common'
 
@@ -50,7 +50,7 @@ const FolderActions = ({
 				variant='outline'
 				label='Show tasks'
 				onClick={showTasks}>
-				<ListTodo />
+				<ListCheck />
 			</TooltipButton>
 
 			<TooltipButton

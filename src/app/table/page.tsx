@@ -16,7 +16,7 @@ interface TablePageProps {
 const headProps = {
 	title: 'Manage and organize your tasks',
 	description:
-		'You can view the details of the task by clicking on it or you can edit the task using the context\u00A0menu (right\u00A0click)',
+		'You can view the details of the task by clicking on it or you can edit the task using the\u00A0context\u00A0menu (right\u00A0click)',
 } as const
 
 const TablePage = async ({ searchParams }: TablePageProps) => {

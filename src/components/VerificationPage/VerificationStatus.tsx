@@ -30,7 +30,7 @@ const VerificationStatus = ({ message }: { message: string }) => {
 	}, [accountInfo?.isVerified, router])
 
 	return (
-		<CardDescription className='text-base'>
+		<CardDescription>
 			{accountInfo?.isVerified ? 'Your email has been verified.' : message}
 			<br />
 			Redirecting to the home page in&nbsp;

@@ -45,7 +45,7 @@ const DeleteSection = () => {
 		<>
 			<h2 className='text-xl font-semibold text-red-600'>Delete account</h2>
 			<Separator />
-			<p>
+			<p className='mb-2'>
 				Once you delete your account, there is no going back. Please be certain.
 			</p>
 			<Button

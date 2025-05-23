@@ -18,7 +18,7 @@ const HomePage = () => (
 					className='opacity-50'
 				/>
 				<CardTitle>Home</CardTitle>
-				<CardDescription className='hidden sm:inline-block'>
+				<CardDescription className='hidden text-sm sm:inline-block'>
 					Access the main navigation and overview of the application
 				</CardDescription>
 			</Card>
