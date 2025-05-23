@@ -55,7 +55,7 @@ const Row = ({ row }: { row: TanstackRow<TTask> }) => {
 						{row.getVisibleCells().map((cell: Cell<TTask, unknown>) => (
 							<TableCell
 								key={cell.id}
-								className='border-r cursor-pointer select-none last:border-none'>
+								className='border-r cursor-pointer select-none lg:text-base last:border-none'>
 								{flexRender(cell.column.columnDef.cell, cell.getContext())}
 							</TableCell>
 						))}

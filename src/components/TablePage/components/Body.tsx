@@ -22,7 +22,7 @@ const Body = ({ table }: ITableComponentProps) => {
 				{headerGroup.headers.map((header) => (
 					<TableHead
 						key={header.id}
-						className='text-center border-r last:border-none'>
+						className='text-center border-r lg:text-base last:border-none'>
 						{!header.isPlaceholder &&
 							flexRender(header.column.columnDef.header, header.getContext())}
 					</TableHead>

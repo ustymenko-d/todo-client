@@ -47,7 +47,7 @@ const Pagination = ({ table }: ITableComponentProps) => {
 					<ChevronLeft />
 				)}
 
-				<div className='flex w-[100px] items-center justify-center text-sm font-medium'>
+				<div className='flex w-[100px] items-center justify-center text-sm sm:text-base font-medium'>
 					Page {pageIndex + 1} of {totalPages}
 				</div>
 

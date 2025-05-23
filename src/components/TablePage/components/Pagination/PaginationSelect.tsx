@@ -13,7 +13,7 @@ const PaginationSelect = ({ table }: ITableComponentProps) => {
 
 	return (
 		<div className='flex items-center space-x-2'>
-			<p className='text-sm font-medium'>Rows per page</p>
+			<p className='text-sm font-medium sm:text-base'>Rows per page</p>
 			<Select
 				value={`${pageSize}`}
 				onValueChange={(value) => {
