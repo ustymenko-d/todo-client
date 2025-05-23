@@ -8,7 +8,7 @@ const RootPage = () => (
 
 		<div className='flex flex-col gap-2'>
 			<p className='w-11/12 mx-auto text-xl font-bold text-center lg:w-full sm:text-2xl lg:text-3xl'>
-				Manage and organize your{'\u00A0'}tasks.
+				Manage and organize your{'\u00A0'}tasks
 			</p>
 
 			<p className='w-3/4 mx-auto mb-4 text-base text-center xl:text-lg text-muted-foreground'>

@@ -98,7 +98,9 @@ const Head = ({ table }: ITableComponentProps) => {
 
 			<Button onClick={() => openTaskEditor('create', null)}>
 				<Plus />
-				<span>{!!breakpoints ? 'Add task' : 'Add'}</span>
+				<span className='text-sm sm:text-base'>
+					{!!breakpoints ? 'Add task' : 'Add'}
+				</span>
 			</Button>
 
 			<DropdownMenu>
