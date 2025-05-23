@@ -1,49 +1,61 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { getSocket } from '@/lib/socket'
 import { useQueryClient } from '@tanstack/react-query'
 import useUpdate from './useUpdate'
-import { TTask } from '@/types/tasks'
+import { TTask, TTaskAction } from '@/types/tasks'
+import useAppStore from '@/store/store'
 
 const useSocket = () => {
 	const { handleUpdateTasks } = useUpdate()
 	const queryClient = useQueryClient()
+	const { open, task } = useAppStore((state) => state.taskDialogSettings)
+	const updateDialogTask = useAppStore((state) => state.updateDialogTask)
+	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
+
+	const handleTaskEvent = useCallback(
+		(eventType: TTaskAction, data: TTask) => {
+			console.log(`Task ${eventType}: `, data)
+			handleUpdateTasks(eventType, data)
+			queryClient.invalidateQueries({ queryKey: ['tasks'] })
+
+			if (open && task?.id === data.id) {
+				if (eventType === 'create') return
+				if (eventType === 'delete') closeTaskDialog()
+				else updateDialogTask(data)
+			}
+		},
+		[
+			handleUpdateTasks,
+			queryClient,
+			open,
+			task,
+			updateDialogTask,
+			closeTaskDialog,
+		]
+	)
 
 	useEffect(() => {
 		const socket = getSocket()
-
-		const handlers = {
-			'task:created': (data: TTask) => {
-				console.log('Task created:', data)
-				handleUpdateTasks('create', data)
-				queryClient.invalidateQueries({ queryKey: ['tasks'] })
-			},
-			'task:updated': (data: TTask) => {
-				console.log('Task updated:', data)
-				handleUpdateTasks('edit', data)
-				queryClient.invalidateQueries({ queryKey: ['tasks'] })
-			},
-			'task:toggleStatus': (data: TTask) => {
-				console.log('Task status change:', data)
-				handleUpdateTasks('changeStatus', data)
-				queryClient.invalidateQueries({ queryKey: ['tasks'] })
-			},
-			'task:deleted': (data: TTask) => {
-				console.log('Task deleted:', data)
-				handleUpdateTasks('delete', data)
-				queryClient.invalidateQueries({ queryKey: ['tasks'] })
-			},
+		const events: Record<TTaskAction, string> = {
+			create: 'task:created',
+			edit: 'task:updated',
+			changeStatus: 'task:toggleStatus',
+			delete: 'task:deleted',
 		}
 
-		for (const [event, handler] of Object.entries(handlers)) {
-			socket.on(event, handler)
-		}
+		const listeners = Object.entries(events).map(([action, event]) => {
+			const listener = (data: TTask) =>
+				handleTaskEvent(action as TTaskAction, data)
+			socket.on(event, listener)
+			return { event, listener }
+		})
 
 		return () => {
-			for (const [event, handler] of Object.entries(handlers)) {
-				socket.off(event, handler)
-			}
+			listeners.forEach(({ event, listener }) => {
+				socket.off(event, listener)
+			})
 		}
-	}, [handleUpdateTasks, queryClient])
+	}, [handleTaskEvent])
 }
 
 export default useSocket
