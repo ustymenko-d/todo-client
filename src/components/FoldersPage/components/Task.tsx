@@ -30,6 +30,7 @@ const Task = ({ task }: { task: TTask }) => {
 			)}>
 			<div
 				{...listeners}
+				onClick={(e) => e.stopPropagation()}
 				className='cursor-grab flex items-center justify-center px-2 text-muted-foreground border-r'>
 				<GripVertical size={18} />
 			</div>

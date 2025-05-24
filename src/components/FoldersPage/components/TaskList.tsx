@@ -86,7 +86,7 @@ const TaskList = ({
 							/>
 						))}
 					</ul>
-					{loading && <Loader />}
+					{loading && <Loader className='justify-center py-2' />}
 				</InfiniteScroll>
 			) : (
 				<p className='text-center text-muted-foreground'>
