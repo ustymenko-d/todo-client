@@ -45,7 +45,7 @@ const TimeSelector = ({
 			<Select
 				onValueChange={onValueChange}
 				value={selectedValue?.toString()}>
-				<SelectTrigger>
+				<SelectTrigger className='text-sm'>
 					<SelectValue placeholder='--' />
 				</SelectTrigger>
 				<SelectContent className={cn(!heightIndex && 'max-h-[70vh]')}>
