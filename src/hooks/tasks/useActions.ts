@@ -41,10 +41,12 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 			setLoadingState(true)
 
 			const { data } = await performAction(payload)
-			const { success, task: updatedTask } = data
+			const { success, message, task: updatedTask } = data
 
-			if (!success)
+			if (!success) {
+				toast.error(message ?? 'Something went wrong')
 				throw new Error('Task action failed: response was not successful')
+			}
 
 			toast.success('Successfuly completed')
 
