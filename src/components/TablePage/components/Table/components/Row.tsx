@@ -1,8 +1,7 @@
-'use client'
-
-import { useState } from 'react'
-import useAppStore from '@/store/store'
 import { Cell, flexRender, Row as TanstackRow } from '@tanstack/react-table'
+import { useState } from 'react'
+
+import DeleteDialog from '@/components/DeleteDialog'
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -11,10 +10,10 @@ import {
 	ContextMenuTrigger,
 } from '@/components/ui/context-menu'
 import { TableCell, TableRow } from '@/components/ui/table'
-import DeleteDialog from '@/components/DeleteDialog'
-import { TTask } from '@/types/tasks'
-import { cn } from '@/lib/utils'
 import useActions from '@/hooks/tasks/useActions'
+import { cn } from '@/lib/utils'
+import useAppStore from '@/store/store'
+import { TTask } from '@/types/tasks'
 
 const depthBgMap: Record<number, string> = {
 	0: 'bg-white dark:bg-neutral-900',
@@ -26,8 +25,10 @@ const depthBgMap: Record<number, string> = {
 
 const Row = ({ row }: { row: TanstackRow<TTask> }) => {
 	const task = row.original
-	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
-	const openTaskDialog = useAppStore((state) => state.openTaskDialog)
+
+	const openTaskEditor = useAppStore((s) => s.openTaskEditor)
+	const openTaskDialog = useAppStore((s) => s.openTaskDialog)
+
 	const [openAlert, setOpenAlert] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [togglingLoading, setTogglingLoading] = useState(false)
@@ -39,9 +40,7 @@ const Row = ({ row }: { row: TanstackRow<TTask> }) => {
 
 	const { handleTaskAction: deleteTask } = useActions('delete', task)
 
-	const handleOpenDetails = () => {
-		openTaskDialog(task)
-	}
+	const handleOpenDetails = () => openTaskDialog(task)
 
 	const openDeleteDialog = () => setTimeout(() => setOpenAlert(true), 0)
 

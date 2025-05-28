@@ -1,11 +1,12 @@
 import React from 'react'
+import { ReactNode } from 'react'
+
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { ReactNode } from 'react'
 
 export const formatValue = (value: string | null | undefined): ReactNode => {
 	if (!value) return '-'

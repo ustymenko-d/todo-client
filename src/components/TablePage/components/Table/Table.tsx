@@ -1,7 +1,3 @@
-'use client'
-
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import {
 	ColumnFiltersState,
 	getCoreRowModel,
@@ -14,12 +10,16 @@ import {
 	useReactTable,
 	VisibilityState,
 } from '@tanstack/react-table'
-import columns from '@/components/TablePage/components/Columns/Columns'
-import Head from '@/components/TablePage/components/Head'
-import Body from '@/components/TablePage/components/Body'
-import Pagination from '@/components/TablePage/components/Pagination/Pagination'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+
+import Body from '@/components/TablePage/components/Table/components/Body'
+import columns from '@/components/TablePage/components/Table/components/Columns/Columns'
+import Head from '@/components/TablePage/components/Table/components/Head'
+import Pagination from '@/components/TablePage/components/Table/components/Pagination/Pagination'
 import { TTask } from '@/types/tasks'
-import Loader from '../ui/Loader'
+
+import Loader from '../../../ui/Loader'
 
 interface TableProps {
 	data: TTask[] | []
@@ -37,9 +37,11 @@ export interface ITableComponentProps {
 
 const Table = ({ data, isFetching, pagination }: TableProps) => {
 	const router = useRouter()
+
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
 	const { page, limit, pages } = pagination
 
 	const table = useReactTable({

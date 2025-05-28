@@ -1,20 +1,21 @@
-import { useRouter, usePathname } from 'next/navigation'
-import useAppStore from '@/store/store'
-import TasksService from '@/services/tasks.service'
-import { TTask, TTaskAction, TTaskBase, TTaskPayload } from '@/types/tasks'
-import { toast } from 'sonner'
-import useUpdate from './useUpdate'
+'use client'
+
 import { useQueryClient } from '@tanstack/react-query'
+import { usePathname,useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+
+import TasksService from '@/services/tasks.service'
+import useAppStore from '@/store/store'
+import { TTask, TTaskAction, TTaskBase, TTaskPayload } from '@/types/tasks'
 
 const useActions = (action: TTaskAction, task?: TTask) => {
 	const router = useRouter()
 	const pathname = usePathname()
 
-	const closeTaskEditor = useAppStore((state) => state.closeTaskEditor)
-	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
-	const updateDialogTask = useAppStore((state) => state.updateDialogTask)
+	const closeTaskEditor = useAppStore((s) => s.closeTaskEditor)
+	const closeTaskDialog = useAppStore((s) => s.closeTaskDialog)
+	const updateDialogTask = useAppStore((s) => s.updateDialogTask)
 
-	const { handleUpdateTasks } = useUpdate()
 	const queryClient = useQueryClient()
 
 	const performAction = async (payload?: TTaskBase | TTask) => {
@@ -34,8 +35,7 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 
 	const handleTaskAction = async (
 		setLoadingState: (state: boolean) => void,
-		payload?: TTaskBase | TTaskPayload,
-		skipHandleUpdateTasks: boolean = false
+		payload?: TTaskBase | TTaskPayload
 	) => {
 		try {
 			setLoadingState(true)
@@ -56,8 +56,6 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 			if (['create', 'edit'].includes(action)) closeTaskEditor()
 			if (['edit', 'changeStatus'].includes(action))
 				updateDialogTask(updatedTask)
-
-			if (!skipHandleUpdateTasks) handleUpdateTasks(action, updatedTask)
 
 			if (pathname === '/table') router.refresh()
 		} catch (error) {

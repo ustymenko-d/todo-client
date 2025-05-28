@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import getIdFromRequest from '@/utils/getIdFromRequest'
+
 import { handleRequest } from '@/services/requestHandler'
+import getIdFromRequest from '@/utils/getIdFromRequest'
 
 export const PATCH = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()

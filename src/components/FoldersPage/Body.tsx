@@ -1,9 +1,5 @@
 'use client'
 
-import useAppStore from '@/store/store'
-import { useCallback, useMemo, useState } from 'react'
-import EmptyPlaceholder from './components/EmptyPlaceholder'
-import Folder from './components/Folder'
 import {
 	DndContext,
 	DragEndEvent,
@@ -14,15 +10,27 @@ import {
 	useSensor,
 	useSensors,
 } from '@dnd-kit/core'
-import Task from './components/Task'
+import { useCallback, useState } from 'react'
+
+import useFetch from '@/hooks/folders/useFetch'
 import useMove from '@/hooks/tasks/useMove'
+import useAppStore from '@/store/store'
+
 import Loader from '../ui/Loader'
+import EmptyPlaceholder from './components/EmptyPlaceholder'
+import Folder from './components/Folder'
+import Task from './components/Task'
 
 const Body = () => {
-	const foldersHydrated = useAppStore((state) => state.foldersHydrated)
-	const foldersWithTasks = useAppStore((state) => state.foldersWithTasks)
+	const { data, isLoading, isSuccess, isError } = useFetch({
+		page: 1,
+		limit: 25,
+	})
+
+	const taskInMotion = useAppStore((s) => s.taskInMotion)
+	const setTaskInMotion = useAppStore((s) => s.setTaskInMotion)
+
 	const [loading, setLoading] = useState(false)
-	const [activeId, setActiveId] = useState<string | null>(null)
 
 	const { moveTask } = useMove(setLoading)
 
@@ -39,43 +47,36 @@ const Body = () => {
 		})
 	)
 
-	const activeTask = useMemo(
-		() =>
-			foldersWithTasks
-				.flatMap((folder) => folder.tasks)
-				.find((task) => task?.id === activeId) || null,
-		[foldersWithTasks, activeId]
-	)
-
 	const handleDragStart = ({ active }: DragStartEvent) => {
-		if (!loading) setActiveId(String(active.id))
+		const task = active.data?.current?.task
+		if (task && !loading) setTaskInMotion(task)
 	}
 
 	const handleDragEnd = useCallback(
 		async ({ active, over }: DragEndEvent) => {
 			if (loading || !over) return
 
-			const taskId = String(active.id)
+			const { task } = active.data.current ?? {}
 			const newFolderId = String(over.id)
-			const task = foldersWithTasks
-				.flatMap((folder) => folder.tasks)
-				.find((task) => task?.id === taskId)
 
 			if (!task || task.folderId === newFolderId) return
 
 			await moveTask(task, newFolderId)
 
-			setActiveId(null)
+			setTaskInMotion(null)
 		},
-		[foldersWithTasks, loading, moveTask]
+		[loading, moveTask, setTaskInMotion]
 	)
 
 	const handleDragCancel = () => {
-		if (!loading) setActiveId(null)
+		if (!loading) setTaskInMotion(null)
 	}
 
-	if (!foldersWithTasks?.length)
-		return foldersHydrated ? <EmptyPlaceholder /> : <Loader />
+	if (isLoading) return <Loader />
+
+	if (isSuccess && data.folders.length === 0) return <EmptyPlaceholder />
+
+	if (isError) return <button>reload</button>
 
 	return (
 		<div className='grid w-full gap-2 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>
@@ -84,14 +85,18 @@ const Body = () => {
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				onDragCancel={handleDragCancel}>
-				{foldersWithTasks.map((folder) => (
+				{data?.folders.map((folder) => (
 					<Folder
 						key={folder.id}
 						folder={folder}
 					/>
 				))}
 
-				<DragOverlay>{activeTask && <Task task={activeTask} />}</DragOverlay>
+				{taskInMotion && (
+					<DragOverlay>
+						<Task task={taskInMotion} />
+					</DragOverlay>
+				)}
 			</DndContext>
 		</div>
 	)

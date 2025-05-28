@@ -1,5 +1,7 @@
 import { z, ZodSchema } from 'zod'
+
 import AuthValidation from '@/schemas/authForm.schema'
+
 import { IResponseStatus } from './common'
 
 export type TAuthForm = 'signin' | 'signup' | 'forgotPassword'
@@ -19,8 +21,7 @@ export interface IAuthResponse extends IResponseStatus {
 	userInfo: IUserInfo
 }
 
-export type TBaseFields = 'email' | 'password' | 'confirmPassword'
-type TFields = TBaseFields | 'rememberMe'
+type TFields = 'email' | 'password' | 'confirmPassword' | 'rememberMe'
 
 export interface IFormConfig {
 	fields: TFields[]

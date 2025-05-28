@@ -1,18 +1,18 @@
 'use client'
 
-import useAppStore from '@/store/store'
-import PageHead from '@/components/PageHead'
-import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 
-const Head = () => {
-	const openEditor = useAppStore((state) => state.openFolderEditor)
-	const folders = useAppStore((state) => state.foldersWithTasks)
-	const hasFolders = folders.length > 0
+import PageHead from '@/components/PageHead'
+import { Button } from '@/components/ui/button'
+import useFetch from '@/hooks/folders/useFetch'
+import useAppStore from '@/store/store'
 
-	const handleOpenEditor = () => {
-		openEditor('create', null)
-	}
+const Head = () => {
+	const { data } = useFetch({ page: 1, limit: 25 })
+
+	const openEditor = useAppStore((s) => s.openFolderEditor)
+
+	const handleOpenEditor = () => openEditor('create', null)
 
 	return (
 		<div className='flex flex-wrap items-end justify-between mb-4 gap-x-4 gap-y-2'>
@@ -21,7 +21,7 @@ const Head = () => {
 				description='You can view the list of tasks contained in folders, edit them, and drag them between folders'
 			/>
 
-			{!!hasFolders && (
+			{!!data?.total && (
 				<Button
 					variant='outline'
 					onClick={handleOpenEditor}>

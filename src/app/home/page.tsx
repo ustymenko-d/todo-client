@@ -1,10 +1,11 @@
-import PageSection from '@/components/ui/PageSection'
+import { LayoutGrid } from 'lucide-react'
+
 import Head from '@/components/HomePage/Head'
-import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import NavigationItem from '@/components/HomePage/NavigationItem'
 import UnverifiedAlert from '@/components/HomePage/UnverifiedAlert'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card'
+import PageSection from '@/components/ui/PageSection'
 import { navItems } from '@/const'
-import { LayoutGrid } from 'lucide-react'
 import { TNavItem } from '@/types/common'
 
 const HomePage = () => (

@@ -1,15 +1,16 @@
 'use client'
 
-import { CardDescription } from '@/components/ui/card'
-import useAppStore from '@/store/store'
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-const REDIRECT_DELAY = 15 * 1000
+import { CardDescription } from '@/components/ui/card'
+import useAccountInfo from '@/hooks/useAccountInfo'
+
+const REDIRECT_DELAY = 15000
 
 const VerificationStatus = ({ message }: { message: string }) => {
 	const router = useRouter()
-	const accountInfo = useAppStore((state) => state.accountInfo)
+	const { data } = useAccountInfo()
 	const [secondsRemaining, setSecondsRemaining] = useState(
 		REDIRECT_DELAY / 1000
 	)
@@ -27,11 +28,11 @@ const VerificationStatus = ({ message }: { message: string }) => {
 			clearTimeout(timeout)
 			clearInterval(interval)
 		}
-	}, [accountInfo?.isVerified, router])
+	}, [data?.isVerified, router])
 
 	return (
 		<CardDescription>
-			{accountInfo?.isVerified ? 'Your email has been verified.' : message}
+			{data?.isVerified ? 'Your email has been verified.' : message}
 			<br />
 			Redirecting to the home page in&nbsp;
 			<strong>

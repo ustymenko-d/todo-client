@@ -1,13 +1,4 @@
-import { HTMLAttributes } from 'react'
-import { cn } from '@/lib/utils'
 import { Column } from '@tanstack/react-table'
-import { Button } from '@/components/ui/button'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import {
 	ArrowDown,
 	ArrowDownUp,
@@ -15,6 +6,16 @@ import {
 	ArrowUp,
 	ArrowUpNarrowWide,
 } from 'lucide-react'
+import { HTMLAttributes } from 'react'
+
+import { Button } from '@/components/ui/button'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
 
 interface ColumnHeaderProps<TData, TValue>
 	extends HTMLAttributes<HTMLDivElement> {

@@ -1,18 +1,19 @@
 'use client'
 
+import { BadgeAlert, BadgeCheck } from 'lucide-react'
+
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
-import useAppStore from '@/store/store'
-import { BadgeAlert, BadgeCheck } from 'lucide-react'
+import useAccountInfo from '@/hooks/useAccountInfo'
 
 const VerificationBadge = () => {
-	const accountInfo = useAppStore((state) => state.accountInfo)
-	const tooltipText = accountInfo?.isVerified ? 'Verified' : 'Unverified'
-	const BadgeIcon = accountInfo?.isVerified ? BadgeCheck : BadgeAlert
+	const { data } = useAccountInfo()
+	const tooltipText = data?.isVerified ? 'Verified' : 'Unverified'
+	const BadgeIcon = data?.isVerified ? BadgeCheck : BadgeAlert
 
 	return (
 		<TooltipProvider>

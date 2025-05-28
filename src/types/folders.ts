@@ -1,7 +1,8 @@
 import { z } from 'zod'
+
 import FoldersValidation from '@/schemas/folders.schema'
+
 import { IGetResponse, IPagination, IResponseStatus } from './common'
-import { TTask } from './tasks'
 
 export type TFolderName = z.infer<typeof FoldersValidation.folderName>
 
@@ -21,12 +22,4 @@ export interface IFolderResponse extends IResponseStatus {
 
 export interface IGetFoldersResponse extends IGetResponse {
 	folders: IFolder[]
-}
-
-export interface IFolderWithTasks extends IFolder {
-	tasks?: TTask[]
-	page?: number
-	pages?: number
-	limit?: number
-	total?: number
 }

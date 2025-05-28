@@ -1,4 +1,6 @@
 import { flexRender } from '@tanstack/react-table'
+
+import { ITableComponentProps } from '@/components/TablePage/components/Table/Table'
 import {
 	Table,
 	TableBody,
@@ -7,9 +9,9 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
+
 import columns from './Columns/Columns'
 import Row from './Row'
-import { ITableComponentProps } from '@/components/TablePage/Table'
 
 const Body = ({ table }: ITableComponentProps) => {
 	const rows = table.getRowModel().rows

@@ -1,6 +1,7 @@
-import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
-import createTaskSlice from './task'
 import { TTask } from '@/types/tasks'
+import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
+
+import createTaskSlice from './task'
 
 jest.mock('@/utils/getDefaultEditorSettings')
 

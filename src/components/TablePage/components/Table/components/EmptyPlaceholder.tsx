@@ -1,12 +1,12 @@
-'use client'
-
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { toast } from 'sonner'
+
 import LoadingButton from '@/components/ui/LoadingButton'
 
 const EmptyPlaceholder = () => {
 	const router = useRouter()
+
 	const [loading, setLoading] = useState(false)
 
 	const handleRefresh = () => {

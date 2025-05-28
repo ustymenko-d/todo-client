@@ -1,30 +1,33 @@
+'use client'
+
 import { useEffect } from 'react'
+
+import { queryClient } from '@/components/providers/Query.provider'
 import { getSocket } from '@/lib/socket'
-import { IFolder } from '@/types/folders'
-import useUpdate from './useUpdate'
+
+const FOLDER_EVENTS = [
+	'folder:created',
+	'folder:renamed',
+	'folder:deleted',
+] as const
 
 const useSocket = () => {
-	const { handleUpdateFolders } = useUpdate()
-
 	useEffect(() => {
 		const socket = getSocket()
 
-		const socketEvents: Record<string, (data: IFolder) => void> = {
-			'folder:created': (data) => handleUpdateFolders('create', data),
-			'folder:renamed': (data) => handleUpdateFolders('rename', data),
-			'folder:deleted': (data) => handleUpdateFolders('delete', data),
-		}
+		const invalidateFolders = () =>
+			queryClient.invalidateQueries({ queryKey: ['folders'] })
 
-		for (const [event, handler] of Object.entries(socketEvents)) {
-			socket.on(event, handler)
-		}
+		FOLDER_EVENTS.forEach((event) => {
+			socket.on(event, invalidateFolders)
+		})
 
 		return () => {
-			for (const [event, handler] of Object.entries(socketEvents)) {
-				socket.off(event, handler)
-			}
+			FOLDER_EVENTS.forEach((event) => {
+				socket.off(event, invalidateFolders)
+			})
 		}
-	}, [handleUpdateFolders])
+	}, [])
 }
 
 export default useSocket

@@ -1,24 +1,26 @@
 import { format } from 'date-fns'
-import useBreakpoints from '@/hooks/useBreakpoints'
-import { cn } from '@/lib/utils'
+import { CalendarIcon } from 'lucide-react'
+import { ControllerRenderProps } from 'react-hook-form'
+
+import { Button } from '@/components/ui/button'
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-	DialogClose,
 } from '@/components/ui/dialog'
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-import { ControllerRenderProps } from 'react-hook-form'
-import Content from './components/Content'
-import { CalendarIcon } from 'lucide-react'
+import useBreakpoints from '@/hooks/useBreakpoints'
+import { cn } from '@/lib/utils'
 import { TTaskBase } from '@/types/tasks'
+
+import Content from './components/Content'
 
 export interface DatePickerProps {
 	field: ControllerRenderProps<TTaskBase, 'expiresDate' | 'startDate'>

@@ -1,8 +1,11 @@
-import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 import { IEditorSettings } from '@/types/common'
 import { TTask } from '@/types/tasks'
+import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 
 export interface TaskSlice {
+	taskInMotion: TTask | null
+	setTaskInMotion: (task: TTask | null) => void
+
 	taskDialogSettings: {
 		open: boolean
 		task: TTask | null
@@ -26,6 +29,9 @@ const createTaskSlice = (
 		partial: Partial<TaskSlice> | ((state: TaskSlice) => Partial<TaskSlice>)
 	) => void
 ): TaskSlice => ({
+	taskInMotion: null,
+	setTaskInMotion: (taskInMotion) => set({ taskInMotion }),
+
 	taskDialogSettings: { open: false, task: null },
 	updateDialogTask: (task) =>
 		set((state) => ({

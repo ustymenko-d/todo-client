@@ -1,6 +1,5 @@
 'use client'
 
-import useAppStore from '@/store/store'
 import {
 	Card,
 	CardContent,
@@ -8,6 +7,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import useAppStore from '@/store/store'
+
 import AuthForm from './AuthForm'
 
 const cardConfig = {
@@ -27,7 +28,8 @@ const cardConfig = {
 } as const
 
 const AuthCard = () => {
-	const authFormType = useAppStore((state) => state.authFormType)
+	const authFormType = useAppStore((s) => s.authFormType)
+
 	const { title, description } = cardConfig[authFormType]
 
 	return (

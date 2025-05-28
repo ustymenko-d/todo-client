@@ -1,5 +1,3 @@
-import useBreakpoints from '@/hooks/useBreakpoints'
-import { cn } from '@/lib/utils'
 import {
 	Select,
 	SelectContent,
@@ -7,6 +5,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
+import useBreakpoints from '@/hooks/useBreakpoints'
+import { cn } from '@/lib/utils'
 
 interface TimeSelectorProps {
 	label: string
@@ -24,6 +24,7 @@ const TimeSelector = ({
 	internalDate,
 }: TimeSelectorProps) => {
 	const { heightIndex } = useBreakpoints({ height: [800] })
+	
 	const now = new Date()
 	const isToday = internalDate?.toDateString() === now.toDateString()
 

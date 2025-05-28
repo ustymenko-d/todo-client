@@ -1,11 +1,9 @@
-'use client'
-
-import useAppStore from '@/store/store'
+import useFetch from '@/hooks/folders/useFetch'
 import { formatValue } from '@/utils/formatting'
 
 const FolderCell = ({ id }: { id: string }) => {
-	const folders = useAppStore((state) => state.foldersWithTasks)
-	const folder = folders?.find((folder) => folder.id === id)
+	const { data } = useFetch({ page: 1, limit: 25 })
+	const folder = data?.folders?.find((folder) => folder.id === id)
 	const formatedValue = formatValue(folder?.name)
 
 	return <>{formatedValue}</>

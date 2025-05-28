@@ -1,25 +1,29 @@
-import { useEffect, useState } from 'react'
-import useAppStore from '@/store/store'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form } from '@/components/ui/form'
-import AuthFormSuggestion from './components/AuthFormSuggestion'
-import AuthFormInput from './components/AuthFormInput'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
-import LoadingButton from '@/components/ui/LoadingButton'
-import { TAuthPayload, TEmail } from '@/types/auth'
-import AuthService from '@/services/auth.service'
-import RememberMe from '@/components/AuthPage/components/RememberMe'
 import { AxiosError } from 'axios'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
+import RememberMe from '@/components/AuthPage/components/RememberMe'
+import { Form } from '@/components/ui/form'
+import LoadingButton from '@/components/ui/LoadingButton'
 import { formConfig } from '@/const'
+import AuthService from '@/services/auth.service'
+import useAppStore from '@/store/store'
+import { TAuthPayload, TEmail } from '@/types/auth'
 import { TResponseState } from '@/types/common'
+
+import { queryClient } from '../providers/Query.provider'
+import AuthFormInput from './components/AuthFormInput'
+import AuthFormSuggestion from './components/AuthFormSuggestion'
 
 const AuthForm = () => {
 	const router = useRouter()
-	const authFormType = useAppStore((state) => state.authFormType)
-	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
+
+	const authFormType = useAppStore((s) => s.authFormType)
+
 	const [loading, setLoading] = useState<TResponseState>('default')
 
 	const { fields, buttonText, validationSchema, defaultValues } =
@@ -40,7 +44,7 @@ const AuthForm = () => {
 			return
 		}
 
-		setLoading('default')
+		setLoading('success')
 		toast.success(message)
 		authForm.reset(defaultValues)
 	}
@@ -62,13 +66,14 @@ const AuthForm = () => {
 		setLoading('success')
 		authForm.reset(defaultValues)
 		toast.success(message)
-		setAccountInfo(userInfo)
+		queryClient.setQueryData(['account info'], userInfo)
 		router.push('/home')
 	}
 
 	const onSubmit = async (values: z.infer<typeof validationSchema>) => {
 		try {
 			setLoading('pending')
+
 			if (authFormType === 'forgotPassword') {
 				await handleForgotPassword({ email: values.email })
 			} else {

@@ -1,9 +1,10 @@
-import AuthService from '@/services/auth.service'
+import Link from 'next/link'
+
+import { buttonVariants } from '@/components/ui/button'
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import VerificationStatus from '@/components/VerificationPage/VerificationStatus'
-import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
+import AuthService from '@/services/auth.service'
 
 interface VerificationPageProps {
 	searchParams: Promise<{

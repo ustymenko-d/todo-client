@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getTokens, refreshTokens, verifyToken } from './utils/tokens'
+
 import clearAuthCookies from './utils/clearAuthCookies'
+import isStartPage from './utils/isStartPage'
+import { getTokens, refreshTokens, verifyToken } from './utils/tokens'
 
 export async function middleware(request: NextRequest) {
 	if (shouldBypassMiddleware(request))
@@ -38,9 +40,6 @@ const handlePageRouting = (request: NextRequest) => {
 	if (!verifyToken(tokens.accessToken))
 		return handleInvalidToken(tokens, request)
 }
-
-const isStartPage = (pathname: string) =>
-	pathname === '/' || pathname === '/auth'
 
 const handleInvalidToken = (
 	tokens: ReturnType<typeof getTokens>,

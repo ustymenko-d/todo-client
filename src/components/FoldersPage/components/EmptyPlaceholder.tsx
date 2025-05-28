@@ -1,13 +1,12 @@
-import useAppStore from '@/store/store'
-import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 
-const EmptyPlaceholder = () => {
-	const openEditor = useAppStore((state) => state.openFolderEditor)
+import { Button } from '@/components/ui/button'
+import useAppStore from '@/store/store'
 
-	const handleCreateFolder = () => {
-		openEditor('create', null)
-	}
+const EmptyPlaceholder = () => {
+	const openEditor = useAppStore((s) => s.openFolderEditor)
+
+	const handleCreateFolder = () => openEditor('create', null)
 
 	return (
 		<div className='flex flex-col items-center justify-center w-full gap-3 mt-4 border rounded-md min-h-40'>

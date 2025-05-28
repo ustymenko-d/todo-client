@@ -1,6 +1,6 @@
-import PageSection from '@/components/ui/PageSection'
 import PageHead from '@/components/PageHead'
 import Body from '@/components/SettingsPage/Body'
+import PageSection from '@/components/ui/PageSection'
 
 const SettingsPage = () => (
 	<PageSection>

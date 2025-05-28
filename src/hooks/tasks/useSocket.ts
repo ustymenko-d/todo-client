@@ -1,21 +1,23 @@
-import { useCallback, useEffect } from 'react'
-import { getSocket } from '@/lib/socket'
+'use client'
+
 import { useQueryClient } from '@tanstack/react-query'
-import useUpdate from './useUpdate'
-import { TTask, TTaskAction } from '@/types/tasks'
+import { useCallback, useEffect } from 'react'
+
+import { getSocket } from '@/lib/socket'
 import useAppStore from '@/store/store'
+import { TTask, TTaskAction } from '@/types/tasks'
 
 const useSocket = () => {
-	const { handleUpdateTasks } = useUpdate()
 	const queryClient = useQueryClient()
-	const { open, task } = useAppStore((state) => state.taskDialogSettings)
-	const updateDialogTask = useAppStore((state) => state.updateDialogTask)
-	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
+
+	const { open, task } = useAppStore((s) => s.taskDialogSettings)
+	const updateDialogTask = useAppStore((s) => s.updateDialogTask)
+	const closeTaskDialog = useAppStore((s) => s.closeTaskDialog)
 
 	const handleTaskEvent = useCallback(
 		(eventType: TTaskAction, data: TTask) => {
 			console.log(`Task ${eventType}: `, data)
-			handleUpdateTasks(eventType, data)
+
 			queryClient.invalidateQueries({ queryKey: ['tasks'] })
 
 			if (open && task?.id === data.id) {
@@ -24,18 +26,12 @@ const useSocket = () => {
 				else updateDialogTask(data)
 			}
 		},
-		[
-			handleUpdateTasks,
-			queryClient,
-			open,
-			task,
-			updateDialogTask,
-			closeTaskDialog,
-		]
+		[closeTaskDialog, open, queryClient, task?.id, updateDialogTask]
 	)
 
 	useEffect(() => {
 		const socket = getSocket()
+
 		const events: Record<TTaskAction, string> = {
 			create: 'task:created',
 			edit: 'task:updated',

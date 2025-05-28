@@ -1,15 +1,13 @@
 'use client'
 
-import useAppStore from '@/store/store'
 import Link from 'next/link'
+
 import { buttonVariants } from '@/components/ui/button'
+import useAppStore from '@/store/store'
 
 const AuthLink = ({ type }: { type: 'signin' | 'signup' }) => {
-	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
-
-	const handleClick = () => {
-		setAuthFormType(type)
-	}
+	const setAuthFormType = useAppStore((s) => s.setAuthFormType)
+	const handleClick = () => setAuthFormType(type)
 
 	return (
 		<Link

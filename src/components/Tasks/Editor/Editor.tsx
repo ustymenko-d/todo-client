@@ -1,6 +1,5 @@
 'use client'
 
-import useAppStore from '@/store/store'
 import {
 	Dialog,
 	DialogContent,
@@ -8,12 +7,13 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
+import useAppStore from '@/store/store'
+
 import EditorForm from './components/EditorForm'
 
 const Editor = () => {
-	const open = useAppStore((state) => state.taskEditorSettings.open)
-	const closeEditor = useAppStore((state) => state.closeTaskEditor)
-	const mode = useAppStore((state) => state.taskEditorSettings.mode)
+	const { open, mode } = useAppStore((s) => s.taskEditorSettings)
+	const closeEditor = useAppStore((s) => s.closeTaskEditor)
 
 	return (
 		<Dialog

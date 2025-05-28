@@ -1,10 +1,9 @@
-import { useState } from 'react'
-import useAppStore from '@/store/store'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import FoldersService from '@/services/folders.service'
-import useUpdate from '@/hooks/folders/useUpdate'
 import { toast } from 'sonner'
+
+import { queryClient } from '@/components/providers/Query.provider'
 import {
 	Form as RHForm,
 	FormControl,
@@ -16,31 +15,30 @@ import {
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/ui/LoadingButton'
 import FoldersValidation from '@/schemas/folders.schema'
+import FoldersService from '@/services/folders.service'
+import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 import { TFolderName } from '@/types/folders'
 
 const Form = () => {
-	const mode = useAppStore((state) => state.folderEditorSettings.mode)
-	const selectedFolder = useAppStore(
-		(state) => state.folderEditorSettings.target
-	)
-	const closeEditor = useAppStore((state) => state.closeFolderEditor)
-	const [status, setStatus] = useState<TResponseState>('default')
-	const isEditing = mode === 'edit'
+	const { mode, target } = useAppStore((s) => s.folderEditorSettings)
+	const closeEditor = useAppStore((s) => s.closeFolderEditor)
 
-	const { handleUpdateFolders } = useUpdate()
+	const [status, setStatus] = useState<TResponseState>('default')
+
+	const isEditing = mode === 'edit'
 
 	const folderForm = useForm<TFolderName>({
 		resolver: zodResolver(FoldersValidation.folderName),
 		defaultValues: {
-			name: isEditing ? selectedFolder?.name : '',
+			name: isEditing ? target?.name : '',
 		},
 	})
 
 	const handleAction = async (values: TFolderName) => {
 		try {
 			setStatus('pending')
-			const targetId = selectedFolder?.id ?? ''
+			const targetId = target?.id ?? ''
 
 			const action = isEditing
 				? FoldersService.renameFolder(targetId, values)
@@ -57,7 +55,9 @@ const Form = () => {
 			toast.success(isEditing ? 'Folder renamed' : 'Folder created')
 			setStatus('success')
 
-			handleUpdateFolders(isEditing ? 'rename' : 'create', data.folder)
+			queryClient.invalidateQueries({
+				queryKey: ['folders'],
+			})
 			folderForm.reset()
 			closeEditor()
 		} catch (error) {

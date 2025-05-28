@@ -1,23 +1,25 @@
-'use client'
+import { useDraggable } from '@dnd-kit/core'
+import { CircleCheck, GripVertical, Loader } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import useAppStore from '@/store/store'
 import { TTask } from '@/types/tasks'
 import { formatValue } from '@/utils/formatting'
-import { useDraggable } from '@dnd-kit/core'
-import { CircleCheck, GripVertical, Loader } from 'lucide-react'
 
 const Task = ({ task }: { task: TTask }) => {
-	const openTaskDialog = useAppStore((state) => state.openTaskDialog)
-	const { title, completed } = task
+	const openTaskDialog = useAppStore((s) => s.openTaskDialog)
+
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({
 		id: task.id,
+		data: {
+			task,
+		},
 	})
 	const isDragging = !!transform
 
-	const handleOpenDetails = () => {
-		openTaskDialog(task)
-	}
+	const handleOpenDetails = () => openTaskDialog(task)
+
+	const { title, completed } = task
 
 	return (
 		<div

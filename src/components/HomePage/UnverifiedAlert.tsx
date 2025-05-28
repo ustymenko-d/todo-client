@@ -1,14 +1,13 @@
 'use client'
 
-import useAppStore from '@/store/store'
-import { Separator } from '@/components/ui/separator'
 import UnverifiedInfo from '@/components/SettingsPage/components/UnverifiedInfo'
+import { Separator } from '@/components/ui/separator'
+import useAccountInfo from '@/hooks/useAccountInfo'
 
 const UnverifiedAlert = () => {
-	const accountInfo = useAppStore((state) => state.accountInfo)
-	const isVerified = accountInfo?.isVerified ?? null
+	const { data } = useAccountInfo()
 
-	if (!accountInfo || isVerified) return null
+	if (!data || data?.isVerified) return null
 
 	return (
 		<div className='pt-4'>

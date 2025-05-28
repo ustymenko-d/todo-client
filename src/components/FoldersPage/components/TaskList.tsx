@@ -1,65 +1,28 @@
-import { useCallback, useEffect, useState } from 'react'
-import useMergeFetchedTasks from '@/hooks/folders/useMergeFetchedTasks'
-import TasksService from '@/services/tasks.service'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Task from './Task'
-import { TASK_FETCH_LIMIT } from '@/const'
-import { IFolderWithTasks } from '@/types/folders'
+
 import Loader from '@/components/ui/Loader'
+import { TASK_FETCH_LIMIT } from '@/const'
+import useInfiniteFetch from '@/hooks/tasks/useInfiniteFetch'
+import { IFolder } from '@/types/folders'
 
-const TaskList = ({
-	folder,
-	showTasks,
-}: {
-	folder: IFolderWithTasks
-	showTasks: boolean
-}) => {
-	const [loading, setLoading] = useState(false)
-	const [hasMore, setHasMore] = useState(true)
-	const { mergeFetchedTasks } = useMergeFetchedTasks()
+import Task from './Task'
 
-	const { id, tasks = [] } = folder
+const TaskList = ({ id }: IFolder) => {
+	const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfiniteFetch({ folderId: id, limit: TASK_FETCH_LIMIT })
 
-	const fetchTasks = useCallback(
-		async (page: number) => {
-			try {
-				setLoading(true)
+	const tasks = data?.pages.flatMap((page) => page.tasks) ?? []
 
-				const { data } = await TasksService.getTasks({
-					page,
-					limit: TASK_FETCH_LIMIT,
-					folderId: id,
-				})
-
-				mergeFetchedTasks(id, data)
-				setHasMore(page < data.pages)
-			} catch (error) {
-				console.error('[Folder] Fetch tasks error: ', error)
-			} finally {
-				setLoading(false)
-			}
-		},
-		[id, mergeFetchedTasks]
-	)
-
-	const loadMoreTasks = () => {
-		if (hasMore && !loading) {
-			const nextPage = tasks.length / TASK_FETCH_LIMIT + 1
-			fetchTasks(Math.floor(nextPage))
-		}
-	}
-
-	useEffect(() => {
-		if (showTasks && !folder.limit && hasMore && !loading) {
-			fetchTasks(1)
-		}
-	}, [showTasks, folder.limit, hasMore, loading, fetchTasks])
-
-	if (!showTasks) return null
-
-	if (tasks.length === 0 && loading)
+	if (isLoading)
 		return (
 			<Loader className='flex items-center justify-center px-6 py-4 border-t' />
+		)
+
+	if (tasks.length === 0)
+		return (
+			<p className='text-center text-muted-foreground px-6 py-4 border-t'>
+				Does not contain any tasks yet
+			</p>
 		)
 
 	return (
@@ -69,8 +32,8 @@ const TaskList = ({
 			{tasks.length > 0 ? (
 				<InfiniteScroll
 					dataLength={tasks.length}
-					next={loadMoreTasks}
-					hasMore={hasMore}
+					next={fetchNextPage}
+					hasMore={!!hasNextPage}
 					scrollableTarget={`scrollable-folder-${id}`}
 					loader={null}
 					endMessage={
@@ -86,7 +49,7 @@ const TaskList = ({
 							/>
 						))}
 					</ul>
-					{loading && <Loader className='justify-center py-2' />}
+					{isFetchingNextPage && <Loader className='justify-center py-2' />}
 				</InfiniteScroll>
 			) : (
 				<p className='text-center text-muted-foreground'>

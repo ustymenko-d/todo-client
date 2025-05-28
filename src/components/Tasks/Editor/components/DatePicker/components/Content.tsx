@@ -1,3 +1,7 @@
+import { addDays } from 'date-fns'
+import { useState } from 'react'
+
+import { Calendar } from '@/components/ui/calendar'
 import {
 	Select,
 	SelectContent,
@@ -5,11 +9,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { Calendar } from '@/components/ui/calendar'
-import TimeSelector from './TimeSelector'
-import { useState } from 'react'
+
 import { DatePickerProps } from '../DatePicker'
-import { addDays } from 'date-fns'
+import TimeSelector from './TimeSelector'
 
 const Content = ({ field }: DatePickerProps) => {
 	const [internalDate, setInternalDate] = useState<Date | null>(

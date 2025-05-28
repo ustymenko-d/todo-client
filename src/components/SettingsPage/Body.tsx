@@ -1,12 +1,13 @@
 'use client'
 
-import useAppStore from '@/store/store'
-import UnverifiedInfo from './components/UnverifiedInfo'
+import useAccountInfo from '@/hooks/useAccountInfo'
+
 import VerificationBadge from '../ui/VerificationBadge'
 import DeleteSection from './components/DeleteSection'
+import UnverifiedInfo from './components/UnverifiedInfo'
 
 const Body = () => {
-	const accountInfo = useAppStore((state) => state.accountInfo)
+	const { data } = useAccountInfo()
 
 	const renderInfoRow = (label: string, children: React.ReactNode) => (
 		<div className='flex flex-col'>
@@ -17,16 +18,16 @@ const Body = () => {
 
 	return (
 		<div className='flex flex-col gap-2 pt-4'>
-			{renderInfoRow('Username:', <span>{accountInfo?.username}</span>)}
+			{renderInfoRow('Username:', <span>{data?.username}</span>)}
 			{renderInfoRow(
 				'Email:',
 				<div className='flex items-center gap-2'>
-					<span id='email'>{accountInfo?.email}</span>
+					<span id='email'>{data?.email}</span>
 					<VerificationBadge />
 				</div>
 			)}
 
-			{!accountInfo?.isVerified && <UnverifiedInfo />}
+			{!data?.isVerified && <UnverifiedInfo />}
 
 			<DeleteSection />
 		</div>

@@ -4,9 +4,10 @@ import axios, {
 	AxiosResponse,
 	Method,
 } from 'axios'
-import { Axios, getServerAxios } from '@/services/Axios'
 import { NextResponse } from 'next/server'
+
 import AuthService from '@/services/auth.service'
+import { Axios, getServerAxios } from '@/services/Axios'
 
 type NeedRefreshResponse = { needRefresh: true }
 type MaybeWithNeedRefresh<T> = T | NeedRefreshResponse

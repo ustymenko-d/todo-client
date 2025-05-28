@@ -1,4 +1,6 @@
-import useAppStore from '@/store/store'
+import { Menu } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -6,14 +8,14 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
 import VerificationBadge from '@/components/ui/VerificationBadge'
-import NavigationGroup from './NavigationGroup'
+import useAccountInfo from '@/hooks/useAccountInfo'
+
 import LogoutButton from './LogoutButton'
-import { Menu } from 'lucide-react'
+import NavigationGroup from './NavigationGroup'
 
 const MainMenu = () => {
-	const accountInfo = useAppStore((state) => state.accountInfo)
+	const { data } = useAccountInfo()
 
 	return (
 		<DropdownMenu>
@@ -28,12 +30,10 @@ const MainMenu = () => {
 			<DropdownMenuContent align='start'>
 				<DropdownMenuGroup className='flex flex-col px-3 py-2'>
 					<div className='flex items-center gap-2'>
-						<span className='font-medium'>{accountInfo?.username}</span>
+						<span className='font-medium'>{data?.username}</span>
 						<VerificationBadge />
 					</div>
-					<span className='text-sm font-light opacity-70'>
-						{accountInfo?.email}
-					</span>
+					<span className='text-sm font-light opacity-70'>{data?.email}</span>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<NavigationGroup />

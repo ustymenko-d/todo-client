@@ -1,10 +1,11 @@
 'use client'
 
+import EmptyPlaceholder from '@/components/TablePage/components/Table/components/EmptyPlaceholder'
+import Table from '@/components/TablePage/components/Table/Table'
 import useFetch from '@/hooks/tasks/useFetch'
-import Loader from '../ui/Loader'
-import EmptyPlaceholder from '@/components/TablePage/components/EmptyPlaceholder'
-import Table from '@/components/TablePage/Table'
 import { TGetTasksRequest } from '@/types/tasks'
+
+import Loader from '../ui/Loader'
 
 const Body = (searchparams: TGetTasksRequest) => {
 	const { data, isLoading, isFetching } = useFetch(searchparams)

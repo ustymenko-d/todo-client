@@ -1,40 +1,43 @@
-import { useState } from 'react'
-import useAppStore from '@/store/store'
-import FoldersService from '@/services/folders.service'
-import useUpdate from '@/hooks/folders/useUpdate'
-import { toast } from 'sonner'
-import TooltipButton from './TooltipButton'
-import DeleteDialog from '@/components/DeleteDialog'
 import { ListCheck, Loader2, PenLine, Trash2 } from 'lucide-react'
-import { IFolderWithTasks } from '@/types/folders'
+import { useState } from 'react'
+import { toast } from 'sonner'
+
+import DeleteDialog from '@/components/DeleteDialog'
+import { queryClient } from '@/components/providers/Query.provider'
+import FoldersService from '@/services/folders.service'
+import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
+import { IFolder } from '@/types/folders'
+
+import TooltipButton from './TooltipButton'
 
 const FolderActions = ({
 	folder,
-	showTasks,
+	handleShowTasks,
 }: {
-	folder: IFolderWithTasks
-	showTasks: () => void
+	folder: IFolder
+	handleShowTasks: () => void
 }) => {
 	const openEditor = useAppStore((state) => state.openFolderEditor)
+
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 	const [loading, setLoading] = useState<TResponseState>('default')
+
 	const { id } = folder
 
-	const { handleUpdateFolders } = useUpdate()
-
-	const handleEdit = () => {
-		openEditor('edit', folder)
-	}
+	const handleEdit = () => openEditor('edit', folder)
 
 	const handleDeleteFolder = async () => {
 		try {
 			setLoading('pending')
+
 			const { data } = await FoldersService.deleteFolder(id)
-			const { success, message, folder } = data
+			const { success, message } = data
+
 			if (success) {
+				setLoading('success')
 				toast.success(message)
-				handleUpdateFolders('delete', folder)
+				queryClient.invalidateQueries({ queryKey: ['folders'] })
 			}
 		} catch (error) {
 			setLoading('error')
@@ -49,7 +52,7 @@ const FolderActions = ({
 				size='icon'
 				variant='outline'
 				label='Show tasks'
-				onClick={showTasks}>
+				onClick={handleShowTasks}>
 				<ListCheck />
 			</TooltipButton>
 

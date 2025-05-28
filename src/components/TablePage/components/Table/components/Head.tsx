@@ -1,10 +1,9 @@
-'use client'
-
-import { ChangeEvent, useEffect, useMemo, useTransition } from 'react'
+import debounce from 'lodash.debounce'
+import { Plus, Settings2 } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import useAppStore from '@/store/store'
-import useBreakpoints from '@/hooks/useBreakpoints'
-import { Input } from '@/components/ui/input'
+import { ChangeEvent, useEffect, useMemo, useTransition } from 'react'
+
+import { ITableComponentProps } from '@/components/TablePage/components/Table/Table'
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
@@ -12,10 +11,10 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Plus, Settings2 } from 'lucide-react'
-import { ITableComponentProps } from '@/components/TablePage/Table'
-import debounce from 'lodash.debounce'
+import { Input } from '@/components/ui/input'
 import Loader from '@/components/ui/Loader'
+import useBreakpoints from '@/hooks/useBreakpoints'
+import useAppStore from '@/store/store'
 
 const defaultColumns = ['completed', 'title', 'actions']
 const columnLabels: Record<string, string> = {
@@ -28,11 +27,12 @@ const columnLabels: Record<string, string> = {
 const Head = ({ table }: ITableComponentProps) => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
-	const { widthIndex } = useBreakpoints({ width: [640] })
 	const [isPending, startTransition] = useTransition()
-	const searchTerm = useAppStore((state) => state.searchTerm)
-	const setSearchTerm = useAppStore((state) => state.setSearchTerm)
-	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
+	const { widthIndex } = useBreakpoints({ width: [640] })
+
+	const searchTerm = useAppStore((s) => s.searchTerm)
+	const setSearchTerm = useAppStore((s) => s.setSearchTerm)
+	const openTaskEditor = useAppStore((s) => s.openTaskEditor)
 
 	const handleSearchChange = useMemo(
 		() =>
@@ -78,11 +78,12 @@ const Head = ({ table }: ITableComponentProps) => {
 		setSearchTerm(searchParams.get('title') || '')
 	}, [searchParams, setSearchTerm])
 
-	useEffect(() => {
-		return () => {
+	useEffect(
+		() => () => {
 			handleSearchChange.cancel()
-		}
-	}, [handleSearchChange])
+		},
+		[handleSearchChange]
+	)
 
 	return (
 		<div className='flex items-center gap-4 py-4'>

@@ -1,19 +1,17 @@
-import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import useAppStore from '@/store/store'
-import AuthService from '@/services/auth.service'
+import { useState } from 'react'
 import { toast } from 'sonner'
+
+import DeleteDialog from '@/components/DeleteDialog'
+import { queryClient } from '@/components/providers/Query.provider'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import DeleteDialog from '@/components/DeleteDialog'
-import { Loader2 } from 'lucide-react'
+import AuthService from '@/services/auth.service'
 import { TResponseState } from '@/types/common'
 
 const DeleteSection = () => {
 	const router = useRouter()
-	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
-	const authHydrated = useAppStore((state) => state.authHydrated)
-	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
 
 	const [openAlert, setOpenAlert] = useState(false)
 	const [loading, setLoading] = useState<TResponseState>('default')
@@ -30,8 +28,7 @@ const DeleteSection = () => {
 			}
 
 			setLoading('success')
-			setAccountInfo(null)
-			if (!authHydrated) setAuthHydrated(true)
+			queryClient.clear()
 			toast.success(message)
 			router.push('/')
 		} catch (error) {

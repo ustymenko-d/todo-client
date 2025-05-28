@@ -1,4 +1,3 @@
-import { ApiAxios } from './Axios'
 import { handleApiRequest } from '@/services/requestHandler'
 import {
 	IFolderResponse,
@@ -6,6 +5,8 @@ import {
 	IGetFoldersResponse,
 	TFolderName,
 } from '@/types/folders'
+
+import { ApiAxios } from './Axios'
 
 const FOLDERS_API_URL = '/folders'
 

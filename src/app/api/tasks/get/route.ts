@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+
 import { handleRequest } from '@/services/requestHandler'
 import { TGetTasksRequest } from '@/types/tasks'
 

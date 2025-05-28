@@ -1,12 +1,12 @@
+import './globals.css'
+
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
-import Header from '@/components/Header/Header'
-import Footer from '@/components/Footer'
-import DetailsDialog from '@/components/Tasks/DetailsDialog/DetailsDialog'
-import './globals.css'
-import ProvidersTree from '@/components/providers/ProvidersTree'
 
+import Footer from '@/components/Footer'
+import Header from '@/components/Header/Header'
+import ProvidersTree from '@/components/providers/ProvidersTree'
 const geistSans = Geist({
 	variable: '--font-geist-sans',
 	subsets: ['latin'],
@@ -39,7 +39,6 @@ const RootLayout = ({
 					{children}
 				</main>
 				<Footer />
-				<DetailsDialog />
 				<Toaster
 					position='top-center'
 					richColors

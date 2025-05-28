@@ -1,8 +1,10 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import useAppStore from '@/store/store'
-import TasksValidation from '@/schemas/tasks.schema'
+
+import DatePicker from '@/components/Tasks/Editor/components/DatePicker/DatePicker'
+import Field from '@/components/Tasks/Editor/components/Field'
+import FormSelect from '@/components/Tasks/Editor/components/FormSelect'
 import {
 	Form,
 	FormControl,
@@ -11,27 +13,28 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import DatePicker from '@/components/Tasks/Editor/components/DatePicker/DatePicker'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import LoadingButton from '@/components/ui/LoadingButton'
-import Field from '@/components/Tasks/Editor/components/Field'
-import FormSelect from '@/components/Tasks/Editor/components/FormSelect'
-import { TTask, TTaskBase } from '@/types/tasks'
+import { Textarea } from '@/components/ui/textarea'
 import useActions from '@/hooks/tasks/useActions'
+import TasksValidation from '@/schemas/tasks.schema'
+import useAppStore from '@/store/store'
+import { TTask, TTaskBase } from '@/types/tasks'
 
 const EditorForm = () => {
-	const mode = useAppStore((state) => state.taskEditorSettings.mode)
-	const selectedTask = useAppStore((state) => state.taskEditorSettings.target)
-
-	const [loading, setLoading] = useState(false)
-	const isEditing = mode === 'edit'
+	const { mode, target: selectedTask } = useAppStore(
+		(s) => s.taskEditorSettings
+	)
 
 	const { handleTaskAction: createTask } = useActions('create')
 	const { handleTaskAction: editTask } = useActions(
 		'edit',
 		selectedTask as TTask
 	)
+
+	const [loading, setLoading] = useState(false)
+
+	const isEditing = mode === 'edit'
 
 	const taskForm = useForm<TTaskBase>({
 		resolver: zodResolver(TasksValidation.taskBase),

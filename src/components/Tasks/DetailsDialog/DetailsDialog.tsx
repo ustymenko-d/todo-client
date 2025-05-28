@@ -1,6 +1,9 @@
 'use client'
 
-import useAppStore from '@/store/store'
+import { useState } from 'react'
+
+import DeleteDialog from '@/components/DeleteDialog'
+import { Button } from '@/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
@@ -17,19 +20,21 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import DeleteDialog from '@/components/DeleteDialog'
-import { formatDate, formatValue } from '@/utils/formatting'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-import { TTask } from '@/types/tasks'
+import useFetch from '@/hooks/folders/useFetch'
 import useActions from '@/hooks/tasks/useActions'
+import useAppStore from '@/store/store'
+import { TTask } from '@/types/tasks'
+import { formatDate, formatValue } from '@/utils/formatting'
+
 import InfoBlock from './components/InfoBlock'
 
 const DetailsDialog = () => {
-	const { open, task } = useAppStore((state) => state.taskDialogSettings)
-	const folders = useAppStore((state) => state.foldersWithTasks)
-	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
-	const closeTaskDialog = useAppStore((state) => state.closeTaskDialog)
+	const { data } = useFetch({ page: 1, limit: 25 })
+	const { folders } = data ?? {}
+
+	const { open, task } = useAppStore((s) => s.taskDialogSettings)
+	const openTaskEditor = useAppStore((s) => s.openTaskEditor)
+	const closeTaskDialog = useAppStore((s) => s.closeTaskDialog)
 
 	const [deleting, setDeleting] = useState(false)
 	const [toggling, setToggling] = useState(false)
@@ -38,18 +43,15 @@ const DetailsDialog = () => {
 		'changeStatus',
 		task as TTask
 	)
-	
-	const { handleTaskAction: deleteTask } = useActions(
-		'delete',
-		task as TTask
-	)
-	
+
+	const { handleTaskAction: deleteTask } = useActions('delete', task as TTask)
+
 	if (!task) return null
 
 	const { title, description, completed, startDate, folderId, expiresDate } =
 		task
 
-	const taskFolder = folders.find((folder) => folder.id === folderId)
+	const taskFolder = folders?.find((folder) => folder.id === folderId)
 
 	const handleStatusChange = () => changeStatus(setToggling)
 	const handleEdit = () => openTaskEditor('edit', task)

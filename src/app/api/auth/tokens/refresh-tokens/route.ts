@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { parse,splitCookiesString } from 'set-cookie-parser'
+
 import { handleRequest } from '@/services/requestHandler'
-import { splitCookiesString, parse } from 'set-cookie-parser'
 import clearAuthCookies from '@/utils/clearAuthCookies'
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {

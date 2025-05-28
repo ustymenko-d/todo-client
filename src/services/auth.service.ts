@@ -1,4 +1,3 @@
-import { ApiAxios } from './Axios'
 import { handleApiRequest } from '@/services/requestHandler'
 import {
 	IAuthResponse,
@@ -8,6 +7,8 @@ import {
 	TPassword,
 } from '@/types/auth'
 import { IResponseStatus } from '@/types/common'
+
+import { ApiAxios } from './Axios'
 
 const AUTH_API_URL = '/auth'
 

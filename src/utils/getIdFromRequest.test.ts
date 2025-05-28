@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+
 import getIdFromRequest from './getIdFromRequest'
 
 const createMockRequest = (pathname: string): NextRequest => {

@@ -1,5 +1,6 @@
 import { ControllerRenderProps } from 'react-hook-form'
-import useAppStore from '@/store/store'
+
+import { FormControl } from '@/components/ui/form'
 import {
 	Select,
 	SelectContent,
@@ -7,7 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { FormControl } from '@/components/ui/form'
+import useFetch from '@/hooks/folders/useFetch'
 import { TTaskBase } from '@/types/tasks'
 
 interface FormSelectProps {
@@ -15,7 +16,12 @@ interface FormSelectProps {
 }
 
 const FormSelect = ({ field }: FormSelectProps) => {
-	const folders = useAppStore((state) => state.foldersWithTasks)
+	const { data } = useFetch({
+		page: 1,
+		limit: 25,
+	})
+
+	const { folders } = data ?? {}
 
 	const handleChange = (value: string) => {
 		field.onChange(value === 'null' ? null : value)
@@ -33,7 +39,7 @@ const FormSelect = ({ field }: FormSelectProps) => {
 			<SelectContent>
 				<SelectItem value='null'>No Folder</SelectItem>
 
-				{folders.map((folder) => (
+				{folders?.map((folder) => (
 					<SelectItem
 						key={folder.id}
 						value={folder.id}>

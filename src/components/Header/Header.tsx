@@ -1,17 +1,18 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
-import useAppStore from '@/store/store'
-import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
-import MainMenu from '@/components/Header/components/MainMenu'
-import ThemeToggle from '@/components/ui/ThemeToggle'
 import { ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
+import MainMenu from '@/components/Header/components/MainMenu'
+import { buttonVariants } from '@/components/ui/button'
+import ThemeToggle from '@/components/ui/ThemeToggle'
+import useAccountInfo from '@/hooks/useAccountInfo'
+import isStartPage from '@/utils/isStartPage'
 
 const Header = () => {
 	const pathname = usePathname()
-	const accountInfo = useAppStore((state) => state.accountInfo)
-	const isStartPage = pathname === '/' || pathname.startsWith('/auth')
+	const { data } = useAccountInfo()
 
 	return (
 		<header className='sticky top-0 z-10 border-b border-dashed backdrop-blur'>
@@ -26,7 +27,7 @@ const Header = () => {
 						<ChevronLeft />
 					</Link>
 				)}
-				{accountInfo && !isStartPage && <MainMenu />}
+				{data && !isStartPage(pathname) && <MainMenu />}
 				<ThemeToggle />
 			</div>
 		</header>

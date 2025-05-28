@@ -1,4 +1,7 @@
 import { Control } from 'react-hook-form'
+
+import EmailInput from '@/components/AuthPage/components/EmailInput'
+import PasswordInput from '@/components/AuthPage/components/PasswordInput'
 import {
 	FormControl,
 	FormField,
@@ -6,16 +9,13 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import EmailInput from '@/components/AuthPage/components/EmailInput'
-import PasswordInput from '@/components/AuthPage/components/PasswordInput'
-import { TBaseFields } from '@/types/auth'
 
 const AuthFormInput = ({
 	control,
 	name,
 }: {
 	control: Control
-	name: TBaseFields
+	name: 'email' | 'password' | 'confirmPassword'
 }) => (
 	<FormField
 		control={control}

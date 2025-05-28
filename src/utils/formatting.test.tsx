@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { formatDate, formatValue, stringToBoolean } from './formatting'
+
+import { render, screen } from '@testing-library/react'
 import React from 'react'
+
+import { formatDate, formatValue, stringToBoolean } from './formatting'
 
 type Props = { children: React.ReactNode }
 

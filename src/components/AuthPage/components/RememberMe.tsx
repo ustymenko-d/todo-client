@@ -1,6 +1,7 @@
 import { Control } from 'react-hook-form'
-import { FormControl, FormField, FormItem } from '@/components/ui/form'
+
 import { Checkbox } from '@/components/ui/checkbox'
+import { FormControl, FormField, FormItem } from '@/components/ui/form'
 
 const RememberMe = ({ control }: { control: Control }) => (
 	<FormField

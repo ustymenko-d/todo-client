@@ -1,8 +1,9 @@
-import { stringToBoolean } from '@/utils/formatting'
-import PageSection from '@/components/ui/PageSection'
 import PageHead from '@/components/PageHead'
-import TaskEditor from '@/components/Tasks/Editor/Editor'
 import Body from '@/components/TablePage/Body'
+import DetailsDialog from '@/components/Tasks/DetailsDialog/DetailsDialog'
+import TaskEditor from '@/components/Tasks/Editor/Editor'
+import PageSection from '@/components/ui/PageSection'
+import { stringToBoolean } from '@/utils/formatting'
 
 interface TablePageProps {
 	searchParams: Promise<{
@@ -42,6 +43,7 @@ const TablePage = async ({ searchParams }: TablePageProps) => {
 			<PageHead {...headProps} />
 			<Body {...pagination} />
 			<TaskEditor />
+			<DetailsDialog />
 		</PageSection>
 	)
 }

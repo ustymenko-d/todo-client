@@ -1,11 +1,12 @@
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+
 import {
 	DropdownMenuGroup,
 	DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
 import { navItems } from '@/const'
+import { cn } from '@/lib/utils'
 
 const NavigationGroup = () => {
 	const pathname = usePathname()

@@ -1,5 +1,6 @@
-import { Button } from './button'
 import { Loader2 } from 'lucide-react'
+
+import { Button } from './button'
 
 const LoadingButton = ({
 	loading,

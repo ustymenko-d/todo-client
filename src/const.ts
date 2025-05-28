@@ -1,6 +1,8 @@
 import { Folder, LayoutGrid, Settings, Sheet } from 'lucide-react'
-import { TNavItem } from '@/types/common'
+
 import AuthValidation from '@/schemas/authForm.schema'
+import { TNavItem } from '@/types/common'
+
 import { IFormConfig, TAuthForm } from './types/auth'
 
 export const navItems: TNavItem[] = [
@@ -28,7 +30,7 @@ export const navItems: TNavItem[] = [
 		icon: Settings,
 		description: 'View and update your account settings and preferences',
 	},
-]
+] as const
 
 export const formConfig: Record<TAuthForm, IFormConfig> = {
 	signin: {
@@ -60,6 +62,6 @@ export const formConfig: Record<TAuthForm, IFormConfig> = {
 			email: '',
 		},
 	},
-}
+} as const
 
 export const TASK_FETCH_LIMIT: number = 25 as const

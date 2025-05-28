@@ -1,14 +1,14 @@
-import useAppStore from '@/store/store'
+import useAccountInfo from '@/hooks/useAccountInfo'
 
 const UnverifiedInfo = () => {
-	const accountInfo = useAppStore((state) => state.accountInfo)
+	const { data } = useAccountInfo()
 
 	return (
 		<div className='flex flex-col gap-1'>
 			<p className='text-base'>
 				Please check the email address you provided during registration (
-				{accountInfo?.email}). Accounts with unverified emails will be deleted
-				three days after registration.
+				{data?.email}). Accounts with unverified emails will be deleted three
+				days after registration.
 			</p>
 			<ul
 				className='list-disc list-with-title text-muted-foreground'

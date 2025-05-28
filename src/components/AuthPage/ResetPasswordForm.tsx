@@ -1,11 +1,13 @@
 'use client'
 
-import AuthValidation from '@/schemas/authForm.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
+import PasswordInput from '@/components/AuthPage/components/PasswordInput'
 import {
 	Form,
 	FormControl,
@@ -14,12 +16,11 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form'
-import PasswordInput from '@/components/AuthPage/components/PasswordInput'
-import { toast } from 'sonner'
 import LoadingButton from '@/components/ui/LoadingButton'
+import AuthValidation from '@/schemas/authForm.schema'
 import AuthService from '@/services/auth.service'
-import { TResponseState } from '@/types/common'
 import { TPassword } from '@/types/auth'
+import { TResponseState } from '@/types/common'
 
 const formConfig = {
 	validationSchema: AuthValidation.resetPassword,
@@ -27,12 +28,14 @@ const formConfig = {
 		password: '',
 		confirmPassword: '',
 	},
-}
+} as const
 
 const ResetPasswordForm = () => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
+
 	const [status, setStatus] = useState<TResponseState>('default')
+
 	const { validationSchema, defaultValues } = formConfig
 
 	const resetPasswordForm = useForm<z.infer<typeof validationSchema>>({
@@ -45,6 +48,7 @@ const ResetPasswordForm = () => {
 	) => {
 		try {
 			setStatus('pending')
+
 			const payload: TPassword = { password: values.password }
 			const resetToken = searchParams.get('resetToken')
 			const { data } = await AuthService.resetPassword(payload, resetToken)

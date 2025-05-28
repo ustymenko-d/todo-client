@@ -1,6 +1,6 @@
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
+
+import { buttonVariants } from '@/components/ui/button'
 import {
 	Card,
 	CardDescription,
@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 const NotFound = () => (
 	<Card>

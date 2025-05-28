@@ -1,23 +1,15 @@
 import { IEditorSettings } from '@/types/common'
-import { IFolder, IFolderWithTasks } from '@/types/folders'
+import { IFolder } from '@/types/folders'
 import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 
 export interface FoldersSlice {
-	foldersHydrated: boolean
-	setFoldersHydrated: (newValue: boolean) => void
-
-	foldersWithTasks: IFolderWithTasks[]
-	setFoldersWithTasks: (
-		value:
-			| IFolderWithTasks[]
-			| ((prev: IFolderWithTasks[]) => IFolderWithTasks[])
-	) => void
-
 	folderEditorSettings: IEditorSettings<IFolder>
+
 	openFolderEditor: (
 		mode: 'edit' | 'create',
 		selectedFolder: IFolder | null
 	) => void
+
 	closeFolderEditor: () => void
 }
 
@@ -30,19 +22,11 @@ const createFoldersSlice = (
 			| ((state: FoldersSlice) => Partial<FoldersSlice>)
 	) => void
 ): FoldersSlice => ({
-	foldersHydrated: false,
-	setFoldersHydrated: (foldersHydrated) => set({ foldersHydrated }),
-
-	foldersWithTasks: [],
-	setFoldersWithTasks: (value) =>
-		set((state) => ({
-			foldersWithTasks:
-				typeof value === 'function' ? value(state.foldersWithTasks) : value,
-		})),
-
 	folderEditorSettings,
+
 	openFolderEditor: (mode, target) =>
 		set({ folderEditorSettings: { open: true, mode, target } }),
+
 	closeFolderEditor: () =>
 		set((state) => ({
 			folderEditorSettings: {

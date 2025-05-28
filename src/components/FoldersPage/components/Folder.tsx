@@ -1,18 +1,19 @@
-import { useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
-import { cn } from '@/lib/utils'
+import { useState } from 'react'
+
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
+import { IFolder } from '@/types/folders'
+
 import FolderActions from './FolderActions'
 import TaskList from './TaskList'
-import { IFolderWithTasks } from '@/types/folders'
 
-const Folder = ({ folder }: { folder: IFolderWithTasks }) => {
-	const { isOver, setNodeRef } = useDroppable({ id: folder.id })
+const Folder = ({ folder }: { folder: IFolder }) => {
 	const [showTasks, setShowTasks] = useState(false)
 
-	const handleShowTasks = () => {
-		setShowTasks((prev) => !prev)
-	}
+	const { isOver, setNodeRef } = useDroppable({ id: folder.id })
+
+	const handleShowTasks = () => setShowTasks((prev) => !prev)
 
 	return (
 		<Card
@@ -28,11 +29,11 @@ const Folder = ({ folder }: { folder: IFolderWithTasks }) => {
 				</CardTitle>
 				<FolderActions
 					folder={folder}
-					showTasks={handleShowTasks}
+					handleShowTasks={handleShowTasks}
 				/>
 			</CardHeader>
 
-		 <TaskList folder={folder} showTasks={showTasks} />
+			{showTasks && <TaskList {...folder} />}
 		</Card>
 	)
 }

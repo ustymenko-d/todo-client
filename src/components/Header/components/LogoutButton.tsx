@@ -1,19 +1,16 @@
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import useAppStore from '@/store/store'
-import AuthService from '@/services/auth.service'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { toast } from 'sonner'
 import { Loader2, LogOut } from 'lucide-react'
-import { TResponseState } from '@/types/common'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
+
+import { queryClient } from '@/components/providers/Query.provider'
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+import AuthService from '@/services/auth.service'
+import { TResponseState } from '@/types/common'
 
 const LogoutButton = () => {
 	const router = useRouter()
-
-	const setAccountInfo = useAppStore((state) => state.setAccountInfo)
-	const authHydrated = useAppStore((state) => state.authHydrated)
-	const setAuthHydrated = useAppStore((state) => state.setAuthHydrated)
 
 	const [loading, setLoading] = useState<TResponseState>('default')
 
@@ -32,9 +29,11 @@ const LogoutButton = () => {
 			}
 
 			setLoading('success')
+
+			queryClient.clear()
+
 			toast.success(message)
-			setAccountInfo(null)
-			if (!authHydrated) setAuthHydrated(true)
+
 			router.push('/')
 		} catch (error) {
 			setLoading('error')

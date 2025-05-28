@@ -4,10 +4,12 @@ import {
 	ChevronsLeft,
 	ChevronsRight,
 } from 'lucide-react'
-import PaginationSelect from './PaginationSelect'
 import { ReactElement } from 'react'
+
+import { ITableComponentProps } from '@/components/TablePage/components/Table/Table'
 import { Button } from '@/components/ui/button'
-import { ITableComponentProps } from '@/components/TablePage/Table'
+
+import PaginationSelect from './PaginationSelect'
 
 const Pagination = ({ table }: ITableComponentProps) => {
 	const { pageIndex } = table.getState().pagination

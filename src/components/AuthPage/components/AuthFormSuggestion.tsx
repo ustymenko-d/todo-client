@@ -1,5 +1,6 @@
-import useAppStore from '@/store/store'
 import Link from 'next/link'
+
+import useAppStore from '@/store/store'
 import { TAuthForm } from '@/types/auth'
 
 const signupSuggestion = {
@@ -22,8 +23,9 @@ const suggestionConfig: Record<
 } as const
 
 const AuthFormSuggestion = () => {
-	const authFormType = useAppStore((state) => state.authFormType)
-	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
+	const authFormType = useAppStore((s) => s.authFormType)
+	const setAuthFormType = useAppStore((s) => s.setAuthFormType)
+
 	const {
 		text: suggestionText,
 		linkText,

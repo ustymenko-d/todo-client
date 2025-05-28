@@ -1,5 +1,8 @@
+import { InfiniteData } from '@tanstack/react-query'
 import { z } from 'zod'
+
 import TasksValidation from '@/schemas/tasks.schema'
+
 import { IPagination } from './common'
 
 export type TGetTasksRequest = z.infer<typeof TasksValidation.getTasksRequest>
@@ -23,3 +26,5 @@ export interface IGetTasksResponse extends IPagination {
 }
 
 export type TTaskAction = 'create' | 'edit' | 'changeStatus' | 'delete'
+
+export type TasksInfiniteData = InfiniteData<IGetTasksResponse>

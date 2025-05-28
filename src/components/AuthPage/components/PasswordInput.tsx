@@ -1,14 +1,16 @@
-import { InputHTMLAttributes, ReactNode, useState } from 'react'
-import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
+import { InputHTMLAttributes, ReactNode, useState } from 'react'
+
+import { Input } from '@/components/ui/input'
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Button } from '../../ui/button'
 import useAppStore from '@/store/store'
+
+import { Button } from '../../ui/button'
 
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	labelNode: ReactNode
@@ -20,9 +22,10 @@ const PasswordInput = ({
 	forgotBtn = false,
 	...props
 }: PasswordInputProps) => {
+	const authFormType = useAppStore((s) => s.authFormType)
+	const setAuthFormType = useAppStore((s) => s.setAuthFormType)
+
 	const [showPassword, setShowPassword] = useState(false)
-	const authFormType = useAppStore((state) => state.authFormType)
-	const setAuthFormType = useAppStore((state) => state.setAuthFormType)
 
 	const handleForgotPassword = () => {
 		setAuthFormType('forgotPassword')
