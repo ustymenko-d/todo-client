@@ -8,10 +8,13 @@ import { queryClient } from '@/components/providers/Query.provider'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import AuthService from '@/services/auth.service'
+import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 
 const DeleteSection = () => {
 	const router = useRouter()
+
+	const setIsAuthorized = useAppStore((s) => s.setIsAuthorized)
 
 	const [openAlert, setOpenAlert] = useState(false)
 	const [loading, setLoading] = useState<TResponseState>('default')
@@ -28,6 +31,7 @@ const DeleteSection = () => {
 			}
 
 			setLoading('success')
+			setIsAuthorized(false)
 			queryClient.clear()
 			toast.success(message)
 			router.push('/')

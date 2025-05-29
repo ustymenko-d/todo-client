@@ -7,10 +7,13 @@ import { queryClient } from '@/components/providers/Query.provider'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 import AuthService from '@/services/auth.service'
+import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 
 const LogoutButton = () => {
 	const router = useRouter()
+
+	const setIsAuthorized = useAppStore((s) => s.setIsAuthorized)
 
 	const [loading, setLoading] = useState<TResponseState>('default')
 
@@ -29,7 +32,7 @@ const LogoutButton = () => {
 			}
 
 			setLoading('success')
-
+			setIsAuthorized(false)
 			queryClient.clear()
 
 			toast.success(message)

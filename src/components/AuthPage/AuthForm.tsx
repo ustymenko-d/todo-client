@@ -23,6 +23,7 @@ const AuthForm = () => {
 	const router = useRouter()
 
 	const authFormType = useAppStore((s) => s.authFormType)
+	const setIsAuthorized = useAppStore((s) => s.setIsAuthorized)
 
 	const [loading, setLoading] = useState<TResponseState>('default')
 
@@ -66,6 +67,7 @@ const AuthForm = () => {
 		setLoading('success')
 		authForm.reset(defaultValues)
 		toast.success(message)
+		setIsAuthorized(true)
 		queryClient.setQueryData(['account info'], userInfo)
 		router.push('/home')
 	}
