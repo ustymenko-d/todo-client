@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react'
 
 import PageHead from '@/components/PageHead'
 import { Button } from '@/components/ui/button'
+import Loader from '@/components/ui/Loader'
 import useFetch from '@/hooks/folders/useFetch'
 import useAppStore from '@/store/store'
 
@@ -11,6 +12,7 @@ const Head = () => {
 	const { data } = useFetch({ page: 1, limit: 25 })
 
 	const openEditor = useAppStore((s) => s.openFolderEditor)
+	const isFetching = useAppStore((s) => s.isFetching)
 
 	const handleOpenEditor = () => openEditor('create', null)
 
@@ -19,15 +21,24 @@ const Head = () => {
 			<PageHead
 				title='Manage and organize your folders'
 				description='You can view the list of tasks contained in folders, edit them, and drag them between folders'
+				className='basis-full xl:basis-auto'
 			/>
 
 			{!!data?.total && (
 				<Button
 					variant='outline'
-					onClick={handleOpenEditor}>
+					onClick={handleOpenEditor}
+					className='xl:order-1'>
 					<Plus className='opacity-60' />
 					Create folder
 				</Button>
+			)}
+
+			{isFetching && (
+				<Loader
+					className='justify-end mr-2 xl:h-9 xl:ml-auto'
+					text='Data is fetching'
+				/>
 			)}
 		</div>
 	)

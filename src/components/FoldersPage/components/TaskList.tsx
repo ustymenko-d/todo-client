@@ -1,15 +1,28 @@
+import { useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import Loader from '@/components/ui/Loader'
 import { TASK_FETCH_LIMIT } from '@/const'
 import useInfiniteFetch from '@/hooks/tasks/useInfiniteFetch'
+import useAppStore from '@/store/store'
 import { IFolder } from '@/types/folders'
 
 import Task from './Task'
 
 const TaskList = ({ id }: IFolder) => {
-	const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-		useInfiniteFetch({ folderId: id, limit: TASK_FETCH_LIMIT })
+	const {
+		data,
+		isLoading,
+		isFetching,
+		isFetchingNextPage,
+		hasNextPage,
+		fetchNextPage,
+	} = useInfiniteFetch({ folderId: id, limit: TASK_FETCH_LIMIT })
+	const setIsFetching = useAppStore((s) => s.setIsFetching)
+
+	useEffect(() => {
+		setIsFetching(isFetching)
+	}, [isFetching, setIsFetching])
 
 	const tasks = data?.pages.flatMap((page) => page.tasks) ?? []
 
