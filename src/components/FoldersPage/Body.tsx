@@ -11,7 +11,7 @@ import {
 	useSensor,
 	useSensors,
 } from '@dnd-kit/core'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import useFetch from '@/hooks/folders/useFetch'
 import useMove from '@/hooks/tasks/useMove'
@@ -23,13 +23,18 @@ import Folder from './components/Folder'
 import Task from './components/Task'
 
 const Body = () => {
-	const { data, isLoading, isSuccess, isError } = useFetch({
+	const { data, isLoading, isFetching, isSuccess, isError } = useFetch({
 		page: 1,
 		limit: 25,
 	})
 
+	const setIsFetching = useAppStore((s) => s.setIsFetching)
 	const taskInMotion = useAppStore((s) => s.taskInMotion)
 	const setTaskInMotion = useAppStore((s) => s.setTaskInMotion)
+
+	useEffect(() => {
+		setIsFetching(isFetching)
+	}, [isFetching, setIsFetching])
 
 	const [loading, setLoading] = useState(false)
 

@@ -3,9 +3,6 @@ import { TTask } from '@/types/tasks'
 import getDefaultEditorSettings from '@/utils/getDefaultEditorSettings'
 
 export interface TaskSlice {
-	isFetching: boolean
-	setIsFetching: (newValue: boolean) => void
-
 	taskInMotion: TTask | null
 	setTaskInMotion: (task: TTask | null) => void
 
@@ -32,9 +29,6 @@ const createTaskSlice = (
 		partial: Partial<TaskSlice> | ((state: TaskSlice) => Partial<TaskSlice>)
 	) => void
 ): TaskSlice => ({
-	isFetching: false,
-	setIsFetching: (isFetching) => set({ isFetching }),
-
 	taskInMotion: null,
 	setTaskInMotion: (taskInMotion) => set({ taskInMotion }),
 
