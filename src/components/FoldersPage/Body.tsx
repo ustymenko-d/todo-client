@@ -17,13 +17,13 @@ import useFetch from '@/hooks/folders/useFetch'
 import useMove from '@/hooks/tasks/useMove'
 import useAppStore from '@/store/store'
 
-import Loader from '../ui/Loader'
 import EmptyPlaceholder from './components/EmptyPlaceholder'
+import ErrorPlaceholder from './components/ErrorPlaceholder'
 import Folder from './components/Folder'
 import Task from './components/Task'
 
 const Body = () => {
-	const { data, isLoading, isFetching, isSuccess, isError } = useFetch({
+	const { data, isFetching, isSuccess, isError } = useFetch({
 		page: 1,
 		limit: 25,
 	})
@@ -80,11 +80,9 @@ const Body = () => {
 		if (!loading) setTaskInMotion(null)
 	}
 
-	if (isLoading) return <Loader />
-
 	if (isSuccess && data.folders.length === 0) return <EmptyPlaceholder />
 
-	if (isError) return <button>reload</button>
+	if (isError) return <ErrorPlaceholder />
 
 	return (
 		<div className='grid w-full gap-2 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>
