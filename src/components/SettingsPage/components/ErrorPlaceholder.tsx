@@ -2,8 +2,10 @@ import RefreshButton from '@/components/ui/RefreshButton'
 import { IRefreshButtonProps } from '@/types/common'
 
 const ErrorPlaceholder = ({ handleRefresh }: IRefreshButtonProps) => (
-	<div className='flex flex-col items-center justify-center w-full gap-3 mt-4 border rounded-md min-h-40'>
-		<h2>Something went wrong!</h2>
+	<div className='pt-4'>
+		<p className='mb-2'>
+			Failed to upload data, try again:
+		</p>
 		<RefreshButton handleRefresh={handleRefresh} />
 	</div>
 )

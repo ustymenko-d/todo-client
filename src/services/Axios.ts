@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from 'axios'
 const baseConfig = {
 	baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 	withCredentials: true,
-	timeout: 5000,
+	timeout: 60000,
 }
 
 export const Axios: AxiosInstance = axios.create(baseConfig)

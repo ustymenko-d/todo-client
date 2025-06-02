@@ -83,7 +83,13 @@ export const handleRequest = async <TPayload = undefined>(
 		return NextResponse.json(
 			axios.isAxiosError(error) && error.response?.data
 				? error.response.data
-				: 'Unexpected server error'
+				: { message: 'Unexpected server error' },
+			{
+				status:
+					axios.isAxiosError(error) && error.response?.status
+						? error.response.status
+						: 500,
+			}
 		)
 	}
 }

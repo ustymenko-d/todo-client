@@ -23,10 +23,14 @@ import Folder from './components/Folder'
 import Task from './components/Task'
 
 const Body = () => {
-	const { data, isFetching, isSuccess, isError } = useFetch({
+	const { data, isFetching, isSuccess, isError, refetch } = useFetch({
 		page: 1,
 		limit: 25,
 	})
+
+	const handleRefetch = () => {
+		if (isError) refetch()
+	}
 
 	const setIsFetching = useAppStore((s) => s.setIsFetching)
 	const taskInMotion = useAppStore((s) => s.taskInMotion)
@@ -82,7 +86,7 @@ const Body = () => {
 
 	if (isSuccess && data.folders.length === 0) return <EmptyPlaceholder />
 
-	if (isError) return <ErrorPlaceholder />
+	if (isError) return <ErrorPlaceholder handleRefresh={handleRefetch} />
 
 	return (
 		<div className='grid w-full gap-2 lg:grid-cols-2 xl:grid-cols-3 lg:gap-4'>

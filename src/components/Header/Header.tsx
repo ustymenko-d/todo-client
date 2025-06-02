@@ -7,12 +7,10 @@ import { usePathname } from 'next/navigation'
 import MainMenu from '@/components/Header/components/MainMenu'
 import { buttonVariants } from '@/components/ui/button'
 import ThemeToggle from '@/components/ui/ThemeToggle'
-import useAccountInfo from '@/hooks/useAccountInfo'
 import isStartPage from '@/utils/isStartPage'
 
 const Header = () => {
 	const pathname = usePathname()
-	const { data } = useAccountInfo()
 
 	return (
 		<header className='sticky top-0 z-10 border-b border-dashed backdrop-blur'>
@@ -27,7 +25,7 @@ const Header = () => {
 						<ChevronLeft />
 					</Link>
 				)}
-				{data && !isStartPage(pathname) && <MainMenu />}
+				{!isStartPage(pathname) && <MainMenu />}
 				<ThemeToggle />
 			</div>
 		</header>

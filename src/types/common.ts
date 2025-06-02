@@ -29,3 +29,7 @@ export type TNavItem = {
 	icon: LucideIcon
 	description: string
 }
+
+export interface IRefreshButtonProps {
+	handleRefresh: () => void
+}

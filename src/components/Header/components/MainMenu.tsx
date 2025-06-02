@@ -8,15 +8,12 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import VerificationBadge from '@/components/ui/VerificationBadge'
-import useAccountInfo from '@/hooks/useAccountInfo'
 
+import AccountInfo from './AccountInfo'
 import LogoutButton from './LogoutButton'
 import NavigationGroup from './NavigationGroup'
 
 const MainMenu = () => {
-	const { data } = useAccountInfo()
-
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -29,11 +26,7 @@ const MainMenu = () => {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='start'>
 				<DropdownMenuGroup className='flex flex-col px-3 py-2'>
-					<div className='flex items-center gap-2'>
-						<span className='font-medium'>{data?.username}</span>
-						<VerificationBadge />
-					</div>
-					<span className='text-sm font-light opacity-70'>{data?.email}</span>
+					<AccountInfo />
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<NavigationGroup />

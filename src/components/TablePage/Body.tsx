@@ -8,11 +8,22 @@ import { TGetTasksRequest } from '@/types/tasks'
 import Loader from '../ui/Loader'
 
 const Body = (searchparams: TGetTasksRequest) => {
-	const { data, isLoading, isFetching } = useFetch(searchparams)
+	const { data, isLoading, isFetching, isError, refetch } =
+		useFetch(searchparams)
 
-	if (isLoading) return <Loader className='pt-4 text-lg' />
+	const handleRefetch = () => {
+		if (isError) refetch()
+	}
 
-	if (!data) return <EmptyPlaceholder />
+	if (isLoading) {
+		return (
+			<div className='flex flex-col items-center justify-center w-full gap-3 mt-4 border rounded-md min-h-40'>
+				<Loader className='pt-4 text-lg' />
+			</div>
+		)
+	}
+
+	if (!data) return <EmptyPlaceholder handleRefresh={handleRefetch} />
 
 	const { tasks, pages } = data
 

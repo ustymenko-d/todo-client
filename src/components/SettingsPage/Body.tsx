@@ -2,12 +2,18 @@
 
 import useAccountInfo from '@/hooks/useAccountInfo'
 
+import Loader from '../ui/Loader'
 import VerificationBadge from '../ui/VerificationBadge'
 import DeleteSection from './components/DeleteSection'
+import ErrorPlaceholder from './components/ErrorPlaceholder'
 import UnverifiedInfo from './components/UnverifiedInfo'
 
 const Body = () => {
-	const { data } = useAccountInfo()
+	const { data, isLoading, isError, refetch } = useAccountInfo()
+
+	const handleRefetch = () => {
+		if (isError) refetch()
+	}
 
 	const renderInfoRow = (label: string, children: React.ReactNode) => (
 		<div className='flex flex-col'>
@@ -15,6 +21,10 @@ const Body = () => {
 			{children}
 		</div>
 	)
+
+	if (isLoading) return <Loader className='pt-4 text-lg' />
+
+	if (isError) return <ErrorPlaceholder handleRefresh={handleRefetch} />
 
 	return (
 		<div className='flex flex-col gap-2 pt-4'>
