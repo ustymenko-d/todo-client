@@ -5,7 +5,5 @@ import { TAuthPayload } from '@/types/auth'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
-	return handleRequest<TAuthPayload>('/auth/signup', 'post', body, {
-		skipRefresh: true,
-	})
+	return handleRequest<TAuthPayload>('/auth/signup', 'post', body)
 }

@@ -65,3 +65,8 @@ export const formConfig: Record<TAuthForm, IFormConfig> = {
 } as const
 
 export const TASK_FETCH_LIMIT: number = 25 as const
+
+export const PUBLIC_PATHS_REQUIRING_TOKENS: Record<string, string> = {
+	'/auth/reset-password': 'resetToken',
+	'/verification': 'verificationToken',
+} as const
