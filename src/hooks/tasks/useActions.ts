@@ -1,10 +1,10 @@
 'use client'
 
 import { useQueryClient } from '@tanstack/react-query'
-import { usePathname,useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
-import TasksService from '@/services/tasks.service'
+import TasksAPI from '@/api/tasks.api'
 import useAppStore from '@/store/store'
 import { TTask, TTaskAction, TTaskBase, TTaskPayload } from '@/types/tasks'
 
@@ -21,13 +21,13 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 	const performAction = async (payload?: TTaskBase | TTask) => {
 		switch (action) {
 			case 'create':
-				return TasksService.createTask(payload as TTaskBase)
+				return TasksAPI.createTask(payload as TTaskBase)
 			case 'edit':
-				return TasksService.editTask(payload as TTaskPayload)
+				return TasksAPI.editTask(payload as TTaskPayload)
 			case 'changeStatus':
-				return TasksService.toggleStatus(task?.id ?? '')
+				return TasksAPI.toggleStatus(task?.id ?? '')
 			case 'delete':
-				return TasksService.deleteTask(task?.id ?? '')
+				return TasksAPI.deleteTask(task?.id ?? '')
 			default:
 				throw new Error('Unknown action')
 		}
@@ -40,8 +40,11 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 		try {
 			setLoadingState(true)
 
-			const { data } = await performAction(payload)
-			const { success, message, task: updatedTask } = data
+			const {
+				success,
+				message,
+				task: updatedTask,
+			} = await performAction(payload)
 
 			if (!success) {
 				toast.error(message ?? 'Something went wrong')

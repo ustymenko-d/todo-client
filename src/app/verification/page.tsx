@@ -1,10 +1,10 @@
 import Link from 'next/link'
 
+import AuthAPI from '@/api/auth.api'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import VerificationStatus from '@/components/VerificationPage/VerificationStatus'
 import { cn } from '@/lib/utils'
-import AuthService from '@/services/auth.service'
 
 interface VerificationPageProps {
 	searchParams: Promise<{
@@ -14,8 +14,7 @@ interface VerificationPageProps {
 
 const VerificationPage = async ({ searchParams }: VerificationPageProps) => {
 	const { verificationToken } = await searchParams
-	const { data } = await AuthService.verifyEmail(verificationToken)
-	const { message } = data
+	const { message } = await AuthAPI.verifyEmail(verificationToken)
 
 	return (
 		<Card className='sm:w-96'>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRequest } from '@/services/requestHandler'
+import { handleRequest } from '@/api/requestHandler'
 import { TPassword } from '@/types/auth'
 
 export const PATCH = async (request: NextRequest): Promise<NextResponse> => {

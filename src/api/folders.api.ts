@@ -1,4 +1,4 @@
-import { handleApiRequest } from '@/services/requestHandler'
+import { handleApiRequest } from '@/api/requestHandler'
 import {
 	IFolderResponse,
 	IGetFoldersRequest,
@@ -10,10 +10,10 @@ import { ApiAxios } from './Axios'
 
 const FOLDERS_API_URL = '/folders'
 
-const FoldersService = {
+const FoldersAPI = {
 	createFolder: (payload: TFolderName) =>
-		handleApiRequest(() =>
-			ApiAxios.post<IFolderResponse>(`${FOLDERS_API_URL}`, payload)
+		handleApiRequest<IFolderResponse>(() =>
+			ApiAxios.post(`${FOLDERS_API_URL}`, payload)
 		),
 
 	getFolders: (searchParams: IGetFoldersRequest) => {
@@ -21,20 +21,20 @@ const FoldersService = {
 			searchParams as unknown as Record<string, string>
 		).toString()
 
-		return handleApiRequest(() =>
-			ApiAxios.get<IGetFoldersResponse>(`${FOLDERS_API_URL}?${params}`)
+		return handleApiRequest<IGetFoldersResponse>(() =>
+			ApiAxios.get(`${FOLDERS_API_URL}?${params}`)
 		)
 	},
 
 	renameFolder: (id: string, payload: TFolderName) =>
-		handleApiRequest(() =>
-			ApiAxios.patch<IFolderResponse>(`${FOLDERS_API_URL}/${id}`, payload)
+		handleApiRequest<IFolderResponse>(() =>
+			ApiAxios.patch(`${FOLDERS_API_URL}/${id}`, payload)
 		),
 
 	deleteFolder: (id: string) =>
-		handleApiRequest(() =>
-			ApiAxios.delete<IFolderResponse>(`${FOLDERS_API_URL}/${id}`)
+		handleApiRequest<IFolderResponse>(() =>
+			ApiAxios.delete(`${FOLDERS_API_URL}/${id}`)
 		),
 }
 
-export default FoldersService
+export default FoldersAPI

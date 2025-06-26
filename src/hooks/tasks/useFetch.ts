@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { usePathname } from 'next/navigation'
 
-import TasksService from '@/services/tasks.service'
+import TasksAPI from '@/api/tasks.api'
 import { IGetTasksResponse, TGetTasksRequest } from '@/types/tasks'
 import useIsStartPage from '@/utils/isStartPage'
 
@@ -17,7 +17,7 @@ const useFetch = (params: TGetTasksRequest) => {
 		[string, TGetTasksRequest]
 	>({
 		queryKey: ['tasks', params],
-		queryFn: () => TasksService.getTasks(params).then((res) => res.data),
+		queryFn: () => TasksAPI.getTasks(params),
 		placeholderData: (prev) => prev,
 		staleTime: 1000 * 60 * 30,
 		retry: false,

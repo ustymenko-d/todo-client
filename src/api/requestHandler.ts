@@ -7,8 +7,8 @@ import axios, {
 import { NextResponse } from 'next/server'
 import { toast } from 'sonner'
 
-import AuthService from '@/services/auth.service'
-import { Axios, getServerAxios } from '@/services/Axios'
+import AuthAPI from '@/api/auth.api'
+import { Axios, getServerAxios } from '@/api/Axios'
 import createSingletonPromise from '@/utils/createSingletonPromise'
 
 type NeedRefreshResponse = { needRefresh: true }
@@ -21,15 +21,31 @@ interface ICustomAxiosRequestConfig extends AxiosRequestConfig {
 export const handleApiRequest = async <T>(
 	apiRequest: () => Promise<AxiosResponse<MaybeWithNeedRefresh<T>>>,
 	allowRetry = true
-): Promise<AxiosResponse<T>> => {
-	const response = await apiRequest()
+): Promise<T> => {
+	try {
+		const { data } = await apiRequest()
 
-	if (isNeedRefreshResponse(response.data) && allowRetry) {
-		await handleTokenRefresh()
-		return handleApiRequest(apiRequest, false)
+		if (isNeedRefreshResponse(data) && allowRetry) {
+			console.log(123);
+			
+			await handleTokenRefresh()
+			return await handleApiRequest(apiRequest, false)
+		}
+
+		return data as T
+	} catch (error) {
+		let message = 'Unexpected error'
+
+		if (axios.isAxiosError(error)) {
+			message = error.response?.data?.message || error.message
+		} else if (error instanceof Error) {
+			message = error.message
+		}
+
+		toast.error(message)
+
+		throw error
 	}
-
-	return response as AxiosResponse<T>
 }
 
 export const handleRequest = async <TPayload = undefined>(
@@ -66,13 +82,13 @@ const getAxiosInstance = async (): Promise<AxiosInstance> =>
 const isNeedRefreshResponse = (data: unknown): data is NeedRefreshResponse =>
 	typeof data === 'object' && data !== null && 'needRefresh' in data
 
-const refreshToken = createSingletonPromise(() => AuthService.refreshToken())
+const refreshToken = createSingletonPromise(() => AuthAPI.refreshToken())
 
 const handleTokenRefresh = async () => {
 	try {
 		await refreshToken()
 	} catch {
-		await AuthService.clearAuthCookies()
+		await AuthAPI.clearAuthCookies()
 		toast.warning('Authentication cookies have been cleared', {
 			description: 'Please reload the page to continue',
 			action: {

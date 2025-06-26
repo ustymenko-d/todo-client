@@ -1,16 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import AuthAPI from '@/api/auth.api'
 import RememberMe from '@/components/AuthPage/components/RememberMe'
 import { Form } from '@/components/ui/form'
 import LoadingButton from '@/components/ui/LoadingButton'
 import { formConfig } from '@/const'
-import AuthService from '@/services/auth.service'
 import useAppStore from '@/store/store'
 import { TAuthPayload, TEmail } from '@/types/auth'
 import { TResponseState } from '@/types/common'
@@ -36,14 +35,9 @@ const AuthForm = () => {
 	})
 
 	const handleForgotPassword = async (payload: TEmail) => {
-		const { data } = await AuthService.forgotPassword(payload)
-		const { success, message } = data
+		const { success, message } = await AuthAPI.forgotPassword(payload)
 
-		if (!success) {
-			setLoading('error')
-			toast.error(message)
-			return
-		}
+		if (!success) throw new Error(message || 'Forgot Password error')
 
 		setLoading('success')
 		toast.success(message)
@@ -51,18 +45,12 @@ const AuthForm = () => {
 	}
 
 	const handleAuth = async (payload: TAuthPayload) => {
-		const { data } =
+		const { success, message, userInfo } =
 			authFormType === 'signup'
-				? await AuthService.signup(payload)
-				: await AuthService.login(payload)
+				? await AuthAPI.signup(payload)
+				: await AuthAPI.login(payload)
 
-		const { success, message, userInfo } = data
-
-		if (!success) {
-			setLoading('error')
-			toast.error(message)
-			return
-		}
+		if (!success) throw new Error(message || 'Auth error')
 
 		setLoading('success')
 		authForm.reset(defaultValues)
@@ -88,16 +76,6 @@ const AuthForm = () => {
 			}
 		} catch (error) {
 			setLoading('error')
-			const axiosError = error as AxiosError
-			const message =
-				(axiosError.response?.data as { message?: string })?.message ||
-				axiosError.response?.data ||
-				'Something went wrong'
-
-			toast.error(
-				typeof message === 'string' ? message : JSON.stringify(message)
-			)
-
 			console.error(`${authFormType} error:`, error)
 		}
 	}

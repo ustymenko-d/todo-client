@@ -3,10 +3,10 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import AuthAPI from '@/api/auth.api'
 import { queryClient } from '@/components/providers/Query.provider'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
-import AuthService from '@/services/auth.service'
 import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 
@@ -22,14 +22,9 @@ const LogoutButton = () => {
 	const handleLogout = async () => {
 		try {
 			setLoading('pending')
-			const { data } = await AuthService.logout()
-			const { success, message } = data
+			const { success, message } = await AuthAPI.logout()
 
-			if (!success) {
-				setLoading('error')
-				toast.error(message || 'Error during logout!')
-				return
-			}
+			if (!success) throw new Error(message || 'Error during logout')
 
 			setLoading('success')
 			setIsAuthorized(false)
@@ -40,8 +35,7 @@ const LogoutButton = () => {
 			router.push('/')
 		} catch (error) {
 			setLoading('error')
-			toast.error('Error during logout!')
-			console.error('Error:', error)
+			console.error('Error during logout:', error)
 		}
 	}
 

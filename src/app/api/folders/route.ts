@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRequest } from '@/services/requestHandler'
+import { handleRequest } from '@/api/requestHandler'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()

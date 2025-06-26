@@ -2,9 +2,9 @@ import { ListCheck, Loader2, PenLine, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import FoldersAPI from '@/api/folders.api'
 import DeleteDialog from '@/components/DeleteDialog'
 import { queryClient } from '@/components/providers/Query.provider'
-import FoldersService from '@/services/folders.service'
 import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 import { IFolder } from '@/types/folders'
@@ -31,17 +31,15 @@ const FolderActions = ({
 		try {
 			setLoading('pending')
 
-			const { data } = await FoldersService.deleteFolder(id)
-			const { success, message } = data
+			const { success, message } = await FoldersAPI.deleteFolder(id)
 
-			if (success) {
-				setLoading('success')
-				toast.success(message)
-				queryClient.invalidateQueries({ queryKey: ['folders'] })
-			}
+			if (!success) throw new Error(message || 'Delete folder failed')
+
+			setLoading('success')
+			toast.success(message)
+			queryClient.invalidateQueries({ queryKey: ['folders'] })
 		} catch (error) {
 			setLoading('error')
-			toast.error('Something went wrong!')
 			console.error('Delete Folder Error:', error)
 		}
 	}

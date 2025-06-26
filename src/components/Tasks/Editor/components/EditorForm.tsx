@@ -22,9 +22,8 @@ import useAppStore from '@/store/store'
 import { TTask, TTaskBase } from '@/types/tasks'
 
 const EditorForm = () => {
-	const { mode, target: selectedTask } = useAppStore(
-		(s) => s.taskEditorSettings
-	)
+	const mode = useAppStore((s) => s.taskEditorSettings.mode)
+	const selectedTask = useAppStore((s) => s.taskEditorSettings.target)
 
 	const { handleTaskAction: createTask } = useActions('create')
 	const { handleTaskAction: editTask } = useActions(

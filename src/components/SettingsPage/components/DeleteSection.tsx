@@ -3,11 +3,11 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import AuthAPI from '@/api/auth.api'
 import DeleteDialog from '@/components/DeleteDialog'
 import { queryClient } from '@/components/providers/Query.provider'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import AuthService from '@/services/auth.service'
 import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 
@@ -22,13 +22,9 @@ const DeleteSection = () => {
 	const handleDeleteAccount = async () => {
 		setLoading('pending')
 		try {
-			const { data } = await AuthService.deleteAccount()
-			const { success, message } = data
+			const { success, message } = await AuthAPI.deleteAccount()
 
-			if (!success) {
-				setLoading('error')
-				return
-			}
+			if (!success) throw new Error(message || 'Error during deleting')
 
 			setLoading('success')
 			setIsAuthorized(false)
@@ -38,7 +34,6 @@ const DeleteSection = () => {
 		} catch (error) {
 			setLoading('error')
 			console.error('Delete account error:', error)
-			toast.error('Something went wrong!')
 		}
 	}
 

@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import AuthAPI from '@/api/auth.api'
 import PasswordInput from '@/components/AuthPage/components/PasswordInput'
 import {
 	Form,
@@ -18,7 +19,6 @@ import {
 } from '@/components/ui/form'
 import LoadingButton from '@/components/ui/LoadingButton'
 import AuthValidation from '@/schemas/authForm.schema'
-import AuthService from '@/services/auth.service'
 import { TPassword } from '@/types/auth'
 import { TResponseState } from '@/types/common'
 
@@ -51,14 +51,12 @@ const ResetPasswordForm = () => {
 
 			const payload: TPassword = { password: values.password }
 			const resetToken = searchParams.get('resetToken')
-			const { data } = await AuthService.resetPassword(payload, resetToken)
-			const { success, message } = data
+			const { success, message } = await AuthAPI.resetPassword(
+				payload,
+				resetToken
+			)
 
-			if (!success) {
-				setStatus('error')
-				if (message) toast.error(message)
-				throw new Error(message || 'Reset failed')
-			}
+			if (!success) throw new Error(message || 'Reset Password failed')
 
 			setStatus('success')
 			toast.success('Your password has been changed successfully!', {
@@ -71,7 +69,6 @@ const ResetPasswordForm = () => {
 			}, 3000)
 		} catch (error) {
 			setStatus('error')
-			toast.error('Something went wrong!')
 			console.error('Change password error:', error)
 		}
 	}

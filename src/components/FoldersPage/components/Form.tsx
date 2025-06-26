@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
+import FoldersAPI from '@/api/folders.api'
 import { queryClient } from '@/components/providers/Query.provider'
 import {
 	Form as RHForm,
@@ -15,7 +16,6 @@ import {
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/ui/LoadingButton'
 import FoldersValidation from '@/schemas/folders.schema'
-import FoldersService from '@/services/folders.service'
 import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 import { TFolderName } from '@/types/folders'
@@ -41,16 +41,15 @@ const Form = () => {
 			const targetId = target?.id ?? ''
 
 			const action = isEditing
-				? FoldersService.renameFolder(targetId, values)
-				: FoldersService.createFolder(values)
+				? FoldersAPI.renameFolder(targetId, values)
+				: FoldersAPI.createFolder(values)
 
-			const { data } = await action
+			const { success, message } = await action
 
-			if (!data.success) {
-				toast.error(data.message || 'Failed to process folder')
-				setStatus('error')
-				return
-			}
+			if (!success)
+				throw new Error(
+					message || isEditing ? 'Folder rename failed' : 'Folder create failed'
+				)
 
 			toast.success(isEditing ? 'Folder renamed' : 'Folder created')
 			setStatus('success')
@@ -61,9 +60,8 @@ const Form = () => {
 			folderForm.reset()
 			closeEditor()
 		} catch (error) {
-			console.error(`Error while creating a task: ${error}`)
-			toast.error('Something went wrong!')
 			setStatus('error')
+			console.error(`Error while creating a task: ${error}`)
 		}
 	}
 

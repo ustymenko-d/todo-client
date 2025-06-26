@@ -12,7 +12,8 @@ import useAppStore from '@/store/store'
 import EditorForm from './components/EditorForm'
 
 const Editor = () => {
-	const { open, mode } = useAppStore((s) => s.taskEditorSettings)
+	const open = useAppStore((s) => s.taskEditorSettings.open)
+	const mode = useAppStore((s) => s.taskEditorSettings.mode)
 	const closeEditor = useAppStore((s) => s.closeTaskEditor)
 
 	return (
