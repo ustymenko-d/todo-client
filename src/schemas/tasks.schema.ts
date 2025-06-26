@@ -39,9 +39,9 @@ const getTasksRequest = z.object({
 })
 
 const taskBaseSchema = z.object({
-	title: z.string().nonempty({ message: 'Title is required.' }).max(50),
+	title: z.string().trim().nonempty({ message: 'Title is required.' }).max(50),
 
-	description: z.string().max(300).nullable().optional(),
+	description: z.string().trim().max(300).nullable().optional(),
 
 	completed: z.boolean().optional(),
 
