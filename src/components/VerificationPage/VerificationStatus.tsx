@@ -1,19 +1,32 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import AuthAPI from '@/api/auth.api'
 import { CardDescription } from '@/components/ui/card'
-import useAccountInfo from '@/hooks/useAccountInfo'
+import { IResponseStatus } from '@/types/common'
 
 const REDIRECT_DELAY = 15000
 
-const VerificationStatus = ({ message }: { message: string }) => {
+const VerificationStatus = () => {
 	const router = useRouter()
-	const { data } = useAccountInfo()
+	const searchParams = useSearchParams()
+	const verificationToken = searchParams.get('verificationToken')
+	const [verify, setVerify] = useState<IResponseStatus | null>(null)
+
 	const [secondsRemaining, setSecondsRemaining] = useState(
 		REDIRECT_DELAY / 1000
 	)
+
+	useEffect(() => {
+		const verify = async () => {
+			if (verificationToken)
+				setVerify(await AuthAPI.verifyEmail(verificationToken))
+		}
+
+		verify()
+	}, [verificationToken])
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -28,11 +41,11 @@ const VerificationStatus = ({ message }: { message: string }) => {
 			clearTimeout(timeout)
 			clearInterval(interval)
 		}
-	}, [data?.isVerified, router])
+	}, [verify, router])
 
 	return (
 		<CardDescription>
-			{data?.isVerified ? 'Your email has been verified.' : message}
+			{verify?.success ? 'Verified' : 'Failed'}
 			<br />
 			Redirecting to the home page in&nbsp;
 			<strong>

@@ -26,8 +26,6 @@ export const handleApiRequest = async <T>(
 		const { data } = await apiRequest()
 
 		if (isNeedRefreshResponse(data) && allowRetry) {
-			console.log(123);
-			
 			await handleTokenRefresh()
 			return await handleApiRequest(apiRequest, false)
 		}
