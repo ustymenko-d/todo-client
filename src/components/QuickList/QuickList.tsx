@@ -57,7 +57,7 @@ const QuickList = () => {
 					<Loader className='flex items-center justify-center px-6 py-4' />
 				)}
 
-				{tasks.length === 0 && (
+				{tasks.length === 0 && !isLoading && (
 					<p className='px-6 py-4 text-center text-muted-foreground'>
 						Does not have any tasks yet
 					</p>
