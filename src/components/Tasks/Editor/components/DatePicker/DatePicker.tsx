@@ -47,7 +47,7 @@ const DatePicker = ({ field }: DatePickerProps) => {
 
 	if (heightIndex) {
 		return (
-			<Popover>
+			<Popover modal>
 				<PopoverTrigger asChild>{Trigger}</PopoverTrigger>
 				<PopoverContent
 					align='start'
