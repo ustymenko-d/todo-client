@@ -48,11 +48,10 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 
 			if (!success) {
 				toast.error(message ?? 'Something went wrong')
-				throw new Error('Task action failed: response was not successful')
+				throw new Error(`[useActions] ${action} failed`)
 			}
 
 			toast.success('Successfuly completed')
-
 			queryClient.invalidateQueries({ queryKey: ['tasks'] })
 
 			if (action === 'delete') closeTaskDialog()
