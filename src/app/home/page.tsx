@@ -1,13 +1,13 @@
 import { LayoutGrid } from 'lucide-react'
 
-import Head from '@/components/HomePage/Head'
-import NavigationItem from '@/components/HomePage/NavigationItem'
-import UnverifiedAlert from '@/components/HomePage/UnverifiedAlert'
-import QuickList from '@/components/QuickList/QuickList'
+import Head from '@/components/pages/Home/Head'
+import NavigationItem from '@/components/pages/Home/NavigationItem'
+import QuickList from '@/components/pages/Home/QuickList/QuickList'
+import UnverifiedAlert from '@/components/pages/Home/UnverifiedAlert'
+import PageSection from '@/components/PageSection'
 import DetailsDialog from '@/components/Tasks/DetailsDialog/DetailsDialog'
 import TaskEditor from '@/components/Tasks/Editor/Editor'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
-import PageSection from '@/components/ui/PageSection'
 import { navItems } from '@/const'
 import { TNavItem } from '@/types/common'
 

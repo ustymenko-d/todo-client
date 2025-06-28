@@ -10,6 +10,9 @@ import { ApiAxios } from './Axios'
 
 const FOLDERS_API_URL = '/folders'
 
+const buildQueryParams = (params: Record<string, string>) =>
+	new URLSearchParams(params).toString()
+
 const FoldersAPI = {
 	createFolder: (payload: TFolderName) =>
 		handleApiRequest<IFolderResponse>(() =>
@@ -17,12 +20,10 @@ const FoldersAPI = {
 		),
 
 	getFolders: (searchParams: IGetFoldersRequest) => {
-		const params = new URLSearchParams(
-			searchParams as unknown as Record<string, string>
-		).toString()
+		const query = buildQueryParams(searchParams as unknown as Record<string, string>)
 
 		return handleApiRequest<IGetFoldersResponse>(() =>
-			ApiAxios.get(`${FOLDERS_API_URL}?${params}`)
+			ApiAxios.get(`${FOLDERS_API_URL}?${query}`)
 		)
 	},
 

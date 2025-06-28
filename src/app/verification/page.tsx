@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
+import VerificationStatus from '@/components/pages/Verification/VerificationStatus'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import VerificationStatus from '@/components/VerificationPage/VerificationStatus'
 import { cn } from '@/lib/utils'
 
 const VerificationPage = () => (

@@ -1,4 +1,4 @@
-import AuthCard from '@/components/AuthPage/AuthCard'
+import AuthCard from "@/components/pages/Auth/AuthCard"
 
 const AuthPage = () => <AuthCard />
 

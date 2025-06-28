@@ -10,6 +10,7 @@ export const getSocket = (): Socket => {
 			transports: ['websocket'],
 		})
 	}
+
 	return socket
 }
 

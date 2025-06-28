@@ -7,6 +7,7 @@ import useAppStore from '@/store/store'
 
 const AuthLink = ({ type }: { type: 'signin' | 'signup' }) => {
 	const setAuthFormType = useAppStore((s) => s.setAuthFormType)
+
 	const handleClick = () => setAuthFormType(type)
 
 	return (

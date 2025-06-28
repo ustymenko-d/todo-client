@@ -2,11 +2,13 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { ReactNode } from 'react'
 import { Toaster } from 'sonner'
 
 import Footer from '@/components/Footer'
 import Header from '@/components/Header/Header'
 import ProvidersTree from '@/components/providers/ProvidersTree'
+
 const geistSans = Geist({
 	variable: '--font-geist-sans',
 	subsets: ['latin'],
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
 const RootLayout = ({
 	children,
 }: Readonly<{
-	children: React.ReactNode
+	children: ReactNode
 }>) => (
 	<html lang='en'>
 		<body

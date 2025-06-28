@@ -1,3 +1,5 @@
+'use client'
+
 import RefreshButton from '@/components/ui/RefreshButton'
 import { Skeleton } from '@/components/ui/skeleton'
 import VerificationBadge from '@/components/ui/VerificationBadge'

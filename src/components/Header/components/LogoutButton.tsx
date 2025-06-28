@@ -1,3 +1,5 @@
+'use client'
+
 import { Loader2, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -15,18 +17,17 @@ const LogoutButton = () => {
 
 	const setIsAuthorized = useAppStore((s) => s.setIsAuthorized)
 
-	const [loading, setLoading] = useState<TResponseState>('default')
-
-	const iconClasses = '!w-5 !h-5 opacity-60'
+	const [status, setStatus] = useState<TResponseState>('default')
 
 	const handleLogout = async () => {
+		setStatus('pending')
+
 		try {
-			setLoading('pending')
 			const { success, message } = await AuthAPI.logout()
 
-			if (!success) throw new Error(message || 'Error during logout')
+			if (!success) throw new Error(message ?? 'Error during logout')
 
-			setLoading('success')
+			setStatus('success')
 			setIsAuthorized(false)
 			queryClient.clear()
 
@@ -34,25 +35,25 @@ const LogoutButton = () => {
 
 			router.push('/')
 		} catch (error) {
-			setLoading('error')
-			console.error('Error during logout:', error)
+			setStatus('error')
+			console.error('Logout failed:', error)
 		}
 	}
 
 	return (
 		<DropdownMenuItem
-			disabled={loading === 'pending' || loading === 'success'}
+			disabled={status === 'pending' || status === 'success'}
 			onClick={handleLogout}
 			className='flex items-center gap-2'>
-			{loading === 'pending' ? (
+			{status === 'pending' ? (
 				<Loader2
 					strokeWidth={1.5}
-					className={cn(iconClasses, 'animate-spin')}
+					className={cn('!w-5 !h-5 opacity-60', 'animate-spin')}
 				/>
 			) : (
 				<LogOut
 					strokeWidth={1.5}
-					className={cn(iconClasses)}
+					className={cn('!w-5 !h-5 opacity-60')}
 				/>
 			)}
 			Log out

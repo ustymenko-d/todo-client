@@ -1,3 +1,5 @@
+'use client'
+
 import { ControllerRenderProps } from 'react-hook-form'
 
 import { FormControl } from '@/components/ui/form'

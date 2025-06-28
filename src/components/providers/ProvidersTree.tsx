@@ -1,5 +1,7 @@
 'use client'
 
+import { ReactNode } from 'react'
+
 import buildProvidersTree from '@/utils/buildProvidersTree'
 
 import QueryProvider from './Query.provider'
@@ -22,7 +24,7 @@ const Tree = buildProvidersTree([
 	],
 ])
 
-const ProvidersTree = ({ children }: { children: React.ReactNode }) => (
+const ProvidersTree = ({ children }: { children: ReactNode }) => (
 	<Tree>{children}</Tree>
 )
 

@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -17,13 +19,12 @@ const NavigationGroup = () => {
 				const isActive = pathname === href
 				const commonClasses =
 					'flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm'
-				const iconClasses = '!w-5 !h-5 opacity-60'
 
 				const content = (
 					<>
 						<Icon
 							strokeWidth={1.5}
-							className={iconClasses}
+							className='!w-5 !h-5 opacity-60'
 						/>
 						{label}
 					</>

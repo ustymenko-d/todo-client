@@ -1,8 +1,9 @@
 import { Loader2 } from 'lucide-react'
+import { HTMLAttributes } from 'react'
 
 import { cn } from '@/lib/utils'
 
-interface ILoaderProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ILoaderProps extends HTMLAttributes<HTMLDivElement> {
 	text?: string
 }
 

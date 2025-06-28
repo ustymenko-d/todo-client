@@ -1,8 +1,8 @@
 import PageHead from '@/components/PageHead'
-import Body from '@/components/TablePage/Body'
+import Body from '@/components/pages/Table/Body'
+import PageSection from '@/components/PageSection'
 import DetailsDialog from '@/components/Tasks/DetailsDialog/DetailsDialog'
 import TaskEditor from '@/components/Tasks/Editor/Editor'
-import PageSection from '@/components/ui/PageSection'
 import { stringToBoolean } from '@/utils/formatting'
 
 interface TablePageProps {

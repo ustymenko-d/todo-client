@@ -1,11 +1,13 @@
+import { HTMLAttributes } from 'react'
+
 import { cn } from '@/lib/utils'
 
-type PageHeadProps = {
+interface IPageHeadProps extends HTMLAttributes<HTMLDivElement> {
 	title: string
 	description?: string
-} & React.HTMLAttributes<HTMLDivElement>
+}
 
-const PageHead = ({ title, description, className }: PageHeadProps) => (
+const PageHead = ({ title, description, className }: IPageHeadProps) => (
 	<div className={cn('flex flex-col gap-1', className)}>
 		<h1 className='text-xl font-semibold tracking-tight'>{title}</h1>
 		{description && (

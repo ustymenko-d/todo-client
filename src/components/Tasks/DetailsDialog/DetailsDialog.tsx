@@ -32,7 +32,8 @@ const DetailsDialog = () => {
 	const { data } = useFetch({ page: 1, limit: 25 })
 	const { folders } = data ?? {}
 
-	const { open, task } = useAppStore((s) => s.taskDialogSettings)
+	const open = useAppStore((s) => s.taskDialogSettings.open)
+	const task = useAppStore((s) => s.taskDialogSettings.task)
 	const openTaskEditor = useAppStore((s) => s.openTaskEditor)
 	const closeTaskDialog = useAppStore((s) => s.closeTaskDialog)
 

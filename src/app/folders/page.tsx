@@ -1,9 +1,9 @@
-import Body from '@/components/FoldersPage/Body'
-import Editor from '@/components/FoldersPage/Editor'
-import Head from '@/components/FoldersPage/Head'
+import Body from '@/components/pages/Folders/Body'
+import Editor from '@/components/pages/Folders/Editor'
+import Head from '@/components/pages/Folders/Head'
+import PageSection from '@/components/PageSection'
 import DetailsDialog from '@/components/Tasks/DetailsDialog/DetailsDialog'
 import TaskEditor from '@/components/Tasks/Editor/Editor'
-import PageSection from '@/components/ui/PageSection'
 
 const FoldersPage = () => (
 	<PageSection>
