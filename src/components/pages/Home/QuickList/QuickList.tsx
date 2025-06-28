@@ -75,6 +75,13 @@ const QuickList = () => {
 								No more tasks
 							</p>
 						}>
+						<div className='pl-11 flex items-center text-muted-foreground mb-2'>
+							<span className='grow'>Title</span>
+							<span className='min-w-[112px]'>Status</span>
+						</div>
+
+						<Separator className='mb-2' />
+
 						<ul className='space-y-2'>
 							{tasks.map((task) => (
 								<ListItem
