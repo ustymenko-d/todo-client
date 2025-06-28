@@ -12,7 +12,7 @@ import useAppStore from '@/store/store'
 import { Button } from '../../../ui/button'
 import Loader from '../../../ui/Loader'
 import { Separator } from '../../../ui/separator'
-import TaskCard from './components/TaskCard'
+import ListItem from './components/ListItem'
 
 const QuickList = () => {
 	const { widthIndex } = useBreakpoints({ width: [640] })
@@ -77,7 +77,7 @@ const QuickList = () => {
 						}>
 						<ul className='space-y-2'>
 							{tasks.map((task) => (
-								<TaskCard
+								<ListItem
 									key={task.id}
 									task={task}
 								/>
