@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react'
 import { useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
+import TaskContextMenu from '@/components/Tasks/TaskContextMenu'
 import { TASK_FETCH_LIMIT } from '@/const'
 import useInfiniteFetch from '@/hooks/tasks/useInfiniteFetch'
 import useBreakpoints from '@/hooks/useBreakpoints'
@@ -12,7 +13,7 @@ import useAppStore from '@/store/store'
 import { Button } from '../../../ui/button'
 import Loader from '../../../ui/Loader'
 import { Separator } from '../../../ui/separator'
-import ListItem from './components/ListItem'
+import TaskCard from './components/TaskCard'
 
 const QuickList = () => {
 	const { widthIndex } = useBreakpoints({ width: [640] })
@@ -84,10 +85,11 @@ const QuickList = () => {
 
 						<ul className='space-y-2'>
 							{tasks.map((task) => (
-								<ListItem
+								<TaskContextMenu
 									key={task.id}
-									task={task}
-								/>
+									task={task}>
+									<TaskCard task={task} />
+								</TaskContextMenu>
 							))}
 						</ul>
 						{isFetchingNextPage && <Loader className='justify-center py-2' />}

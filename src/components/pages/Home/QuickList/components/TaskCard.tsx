@@ -3,31 +3,25 @@ import { useState } from 'react'
 
 import { Checkbox } from '@/components/ui/checkbox'
 import useActions from '@/hooks/tasks/useActions'
-import useAppStore from '@/store/store'
 import { TTask } from '@/types/tasks'
 import { formatValue } from '@/utils/formatting'
 
 const TaskCard = ({ task }: { task: TTask }) => {
-	const openTaskDialog = useAppStore((s) => s.openTaskDialog)
-	const handleOpenDetails = () => openTaskDialog(task)
-
 	const [isToggling, setIsToggling] = useState(false)
-	const { handleTaskAction: chengeTaskStatus } = useActions(
+	const { handleTaskAction: changeTaskStatus } = useActions(
 		'changeStatus',
 		task
 	)
 
 	const toggleStatus = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.stopPropagation()
-		if (!isToggling) chengeTaskStatus(setIsToggling)
+		if (!isToggling) changeTaskStatus(setIsToggling)
 	}
 
 	const { title, completed } = task
 
 	return (
-		<div
-			onClick={handleOpenDetails}
-			className='flex items-stretch pr-2 transition-opacity bg-white border rounded-md cursor-pointer dark:bg-black hover:bg-accent'>
+		<div className='flex items-stretch pr-2 transition-opacity bg-white border rounded-md cursor-pointer dark:bg-black hover:bg-accent'>
 			<div
 				onClick={toggleStatus}
 				className='flex items-center justify-center px-2 border-r text-muted-foreground'>

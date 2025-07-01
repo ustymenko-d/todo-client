@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
+import { PropsWithChildren } from 'react'
 
 import DeleteDialog from '@/components/DeleteDialog'
 import {
@@ -12,10 +13,18 @@ import useActions from '@/hooks/tasks/useActions'
 import useAppStore from '@/store/store'
 import { TTask } from '@/types/tasks'
 
-import TaskCard from './TaskCard'
+interface IContextMenuProps extends PropsWithChildren {
+	task: TTask
+	inTable?: boolean
+}
 
-const ListItem = ({ task }: { task: TTask }) => {
+const TaskContextMenu = ({
+	task,
+	children,
+	inTable = false,
+}: IContextMenuProps) => {
 	const openTaskEditor = useAppStore((s) => s.openTaskEditor)
+	const openTaskDialog = useAppStore((s) => s.openTaskDialog)
 
 	const [openAlert, setOpenAlert] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
@@ -28,15 +37,16 @@ const ListItem = ({ task }: { task: TTask }) => {
 
 	const { handleTaskAction: deleteTask } = useActions('delete', task)
 
+	const handleOpenDetails = () => openTaskDialog(task)
 	const openDeleteDialog = () => setTimeout(() => setOpenAlert(true), 0)
 
 	return (
 		<>
 			<ContextMenu>
-				<ContextMenuTrigger asChild>
-					<div>
-						<TaskCard task={task} />
-					</div>
+				<ContextMenuTrigger
+					onClick={handleOpenDetails}
+					asChild>
+					{inTable ? children : <div>{children}</div>}
 				</ContextMenuTrigger>
 				<ContextMenuContent>
 					<ContextMenuItem
@@ -74,4 +84,4 @@ const ListItem = ({ task }: { task: TTask }) => {
 	)
 }
 
-export default ListItem
+export default TaskContextMenu

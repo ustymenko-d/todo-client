@@ -3,7 +3,9 @@
 import { useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
+import TaskContextMenu from '@/components/Tasks/TaskContextMenu'
 import Loader from '@/components/ui/Loader'
+import { Separator } from '@/components/ui/separator'
 import { TASK_FETCH_LIMIT } from '@/const'
 import useInfiniteFetch from '@/hooks/tasks/useInfiniteFetch'
 import useAppStore from '@/store/store'
@@ -57,12 +59,20 @@ const TaskList = ({ id }: IFolder) => {
 							No more tasks
 						</p>
 					}>
+					<div className='pl-11 flex items-center text-muted-foreground mb-2'>
+						<span className='grow'>Title</span>
+						<span className='min-w-[112px]'>Status</span>
+					</div>
+
+					<Separator className='mb-2' />
+
 					<ul className='space-y-2'>
 						{tasks.map((task) => (
-							<Task
+							<TaskContextMenu
 								key={task.id}
-								task={task}
-							/>
+								task={task}>
+								<Task task={task} />
+							</TaskContextMenu>
 						))}
 					</ul>
 					{isFetchingNextPage && <Loader className='justify-center py-2' />}
