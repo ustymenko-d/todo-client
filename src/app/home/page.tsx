@@ -2,7 +2,7 @@ import { LayoutGrid } from 'lucide-react'
 
 import Head from '@/components/pages/Home/Head'
 import NavigationItem from '@/components/pages/Home/NavigationItem'
-import QuickList from '@/components/pages/Home/QuickList/QuickList'
+import QuickList from '@/components/pages/Home/QuickList'
 import UnverifiedAlert from '@/components/pages/Home/UnverifiedAlert'
 import PageSection from '@/components/PageSection'
 import DetailsDialog from '@/components/Tasks/DetailsDialog/DetailsDialog'

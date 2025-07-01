@@ -46,7 +46,11 @@ const TaskContextMenu = ({
 				<ContextMenuTrigger
 					onClick={handleOpenDetails}
 					asChild>
-					{inTable ? children : <div>{children}</div>}
+					{inTable ? (
+						children
+					) : (
+						<div className='cursor-pointer'>{children}</div>
+					)}
 				</ContextMenuTrigger>
 				<ContextMenuContent>
 					<ContextMenuItem

@@ -4,16 +4,16 @@ import { Plus } from 'lucide-react'
 import { useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
+import TaskCard from '@/components/Tasks/TaskCard'
 import TaskContextMenu from '@/components/Tasks/TaskContextMenu'
 import { TASK_FETCH_LIMIT } from '@/const'
 import useInfiniteFetch from '@/hooks/tasks/useInfiniteFetch'
 import useBreakpoints from '@/hooks/useBreakpoints'
 import useAppStore from '@/store/store'
 
-import { Button } from '../../../ui/button'
-import Loader from '../../../ui/Loader'
-import { Separator } from '../../../ui/separator'
-import TaskCard from './components/TaskCard'
+import { Button } from '../../ui/button'
+import Loader from '../../ui/Loader'
+import { Separator } from '../../ui/separator'
 
 const QuickList = () => {
 	const { widthIndex } = useBreakpoints({ width: [640] })
@@ -88,7 +88,7 @@ const QuickList = () => {
 								<TaskContextMenu
 									key={task.id}
 									task={task}>
-									<TaskCard task={task} />
+									<TaskCard task={task} withCheckbox />
 								</TaskContextMenu>
 							))}
 						</ul>

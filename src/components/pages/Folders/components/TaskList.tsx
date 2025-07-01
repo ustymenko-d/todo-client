@@ -11,7 +11,7 @@ import useInfiniteFetch from '@/hooks/tasks/useInfiniteFetch'
 import useAppStore from '@/store/store'
 import { IFolder } from '@/types/folders'
 
-import Task from './Task'
+import DraggableItem from './DraggableItem'
 
 const TaskList = ({ id }: IFolder) => {
 	const {
@@ -71,7 +71,7 @@ const TaskList = ({ id }: IFolder) => {
 							<TaskContextMenu
 								key={task.id}
 								task={task}>
-								<Task task={task} />
+								<DraggableItem task={task} />
 							</TaskContextMenu>
 						))}
 					</ul>

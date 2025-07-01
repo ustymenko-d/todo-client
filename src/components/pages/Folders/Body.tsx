@@ -13,6 +13,7 @@ import {
 } from '@dnd-kit/core'
 import { useCallback, useEffect, useState } from 'react'
 
+import TaskCard from '@/components/Tasks/TaskCard'
 import useFetch from '@/hooks/folders/useFetch'
 import useMove from '@/hooks/tasks/useMove'
 import useAppStore from '@/store/store'
@@ -20,7 +21,6 @@ import useAppStore from '@/store/store'
 import EmptyPlaceholder from './components/EmptyPlaceholder'
 import ErrorPlaceholder from './components/ErrorPlaceholder'
 import Folder from './components/Folder'
-import Task from './components/Task'
 
 const Body = () => {
 	const { data, isFetching, isSuccess, isError, refetch } = useFetch({
@@ -104,7 +104,10 @@ const Body = () => {
 
 				{taskInMotion && (
 					<DragOverlay>
-						<Task task={taskInMotion} />
+						<TaskCard
+							task={taskInMotion}
+							taskInMotion={taskInMotion.id}
+						/>
 					</DragOverlay>
 				)}
 			</DndContext>
