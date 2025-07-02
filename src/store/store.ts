@@ -5,9 +5,10 @@ import getStorage from '@/utils/getStorage'
 
 import createAuthSlice, { AuthSlice } from './slices/auth'
 import createFoldersSlice, { FoldersSlice } from './slices/folders'
+import createTableSlice, { TableSlice } from './slices/table'
 import createTaskSlice, { TaskSlice } from './slices/task'
 
-interface AppStore extends TaskSlice, AuthSlice, FoldersSlice {}
+interface AppStore extends TaskSlice, AuthSlice, FoldersSlice, TableSlice {}
 
 export const useAppStore = create<AppStore>()(
 	devtools(
@@ -16,12 +17,14 @@ export const useAppStore = create<AppStore>()(
 				...createAuthSlice(set),
 				...createTaskSlice(set),
 				...createFoldersSlice(set),
+				...createTableSlice(set),
 			}),
 			{
 				name: 'app-store',
 				storage: createJSONStorage(getStorage),
 				partialize: (state) => ({
 					isAuthorized: state.isAuthorized,
+					visibleColumns: state.visibleColumns,
 				}),
 			}
 		)
