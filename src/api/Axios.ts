@@ -9,7 +9,10 @@ const baseConfig = {
 export const Axios: AxiosInstance = axios.create(baseConfig)
 export const ApiAxios: AxiosInstance = axios.create({
 	...baseConfig,
-	baseURL: new URL('/api', process.env.NEXT_PUBLIC_FRONTEND_URL).toString(),
+	baseURL:
+		typeof window !== 'undefined' && process.env.NODE_ENV === 'development'
+			? new URL('/api', window.location.origin).toString()
+			: new URL('/api', process.env.NEXT_PUBLIC_FRONTEND_URL).toString(),
 })
 
 if (typeof window !== 'undefined') {
