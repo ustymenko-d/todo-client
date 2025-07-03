@@ -4,6 +4,7 @@ import AuthValidation from '@/schemas/authForm.schema'
 import { TNavItem } from '@/types/common'
 
 import { IFormConfig, TAuthForm } from './types/auth'
+import { TTask } from './types/tasks'
 
 export const navItems: TNavItem[] = [
 	{
@@ -69,4 +70,18 @@ export const TASK_FETCH_LIMIT: number = 25 as const
 export const PUBLIC_PATHS_REQUIRING_TOKENS: Record<string, string> = {
 	'/auth/reset-password': 'resetToken',
 	'/verification': 'verificationToken',
+} as const
+
+export const MOCK_TASK: TTask = {
+	id: '',
+	title: '',
+	description: '',
+	completed: false,
+	userId: '',
+	parentTaskId: null,
+	startDate: null,
+	expiresDate: null,
+	lastEdited: new Date().toISOString(),
+	folderId: null,
+	subtasks: [],
 } as const

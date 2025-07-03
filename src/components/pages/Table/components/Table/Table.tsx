@@ -88,12 +88,7 @@ const Table = ({ data, isFetching, pagination }: TableProps) => {
 
 			<Pagination table={table} />
 
-			{isFetching && (
-				<Loader
-					className='justify-end'
-					text='Data is fetching'
-				/>
-			)}
+			{isFetching && <Loader className='justify-end' />}
 		</div>
 	)
 }

@@ -34,12 +34,7 @@ const Head = () => {
 				</Button>
 			)}
 
-			{isFetching && (
-				<Loader
-					className='justify-end mr-2 xl:h-9 xl:ml-auto'
-					text='Data is fetching'
-				/>
-			)}
+			{isFetching && <Loader className='justify-end mr-2 xl:h-9 xl:ml-auto' />}
 		</div>
 	)
 }

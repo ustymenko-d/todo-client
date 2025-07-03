@@ -1,12 +1,13 @@
 'use client'
 
-import { ListCheck, Loader2, PenLine, Trash2 } from 'lucide-react'
+import { ListCheck, Loader2, PenLine, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
 import FoldersAPI from '@/api/folders.api'
 import DeleteDialog from '@/components/DeleteDialog'
 import { queryClient } from '@/components/providers/Query.provider'
+import { MOCK_TASK } from '@/const'
 import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 import { IFolder } from '@/types/folders'
@@ -20,34 +21,49 @@ const FolderActions = ({
 	folder: IFolder
 	handleShowTasks: () => void
 }) => {
-	const openEditor = useAppStore((state) => state.openFolderEditor)
+	const openFolderEditor = useAppStore((state) => state.openFolderEditor)
+	const openTaskEditor = useAppStore((state) => state.openTaskEditor)
 
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-	const [status, setStatus] = useState<TResponseState>('default')
+	const [deleteStatus, setDeleteStatus] = useState<TResponseState>('default')
+
+	const isDeleting = deleteStatus === 'pending'
+	const isDeleted = deleteStatus === 'success'
 
 	const { id } = folder
 
-	const handleEdit = () => openEditor('edit', folder)
+	const handleCreateTask = () =>
+		openTaskEditor('create', { ...MOCK_TASK, folderId: id })
+
+	const handleEdit = () => openFolderEditor('edit', folder)
 
 	const handleDeleteFolder = async () => {
-		setStatus('pending')
+		setDeleteStatus('pending')
 
 		try {
 			const { success, message } = await FoldersAPI.deleteFolder(id)
 
 			if (!success) throw new Error(message ?? 'Delete folder failed')
 
-			setStatus('success')
+			setDeleteStatus('success')
 			toast.success(message)
 			queryClient.invalidateQueries({ queryKey: ['folders'] })
 		} catch (error) {
-			setStatus('error')
+			setDeleteStatus('error')
 			console.error('Delete Folder Error:', error)
 		}
 	}
 
 	return (
 		<div className='flex items-center gap-1'>
+			<TooltipButton
+				size='icon'
+				variant='outline'
+				label='Create new task'
+				onClick={handleCreateTask}>
+				<Plus />
+			</TooltipButton>
+
 			<TooltipButton
 				size='icon'
 				variant='outline'
@@ -59,7 +75,7 @@ const FolderActions = ({
 			<TooltipButton
 				size='icon'
 				variant='outline'
-				label='Rename'
+				label='Rename folder'
 				onClick={handleEdit}>
 				<PenLine />
 			</TooltipButton>
@@ -67,10 +83,10 @@ const FolderActions = ({
 			<TooltipButton
 				size='icon'
 				variant='destructive'
-				label='Delete'
-				disabled={status === 'pending' || status === 'success'}
+				label='Delete folder'
+				disabled={isDeleting || isDeleted}
 				onClick={() => setOpenDeleteDialog(true)}>
-				{status === 'pending' ? (
+				{isDeleting ? (
 					<Loader2
 						strokeWidth={1.5}
 						className='animate-spin'
@@ -82,8 +98,8 @@ const FolderActions = ({
 
 			<DeleteDialog
 				handleDelete={handleDeleteFolder}
-				loading={status === 'pending'}
-				disabled={status === 'success'}
+				loading={isDeleting}
+				disabled={isDeleted}
 				deleteTarget='folder'
 				open={openDeleteDialog}
 				onOpenChange={setOpenDeleteDialog}

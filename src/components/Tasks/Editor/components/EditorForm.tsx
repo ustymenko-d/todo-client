@@ -53,7 +53,7 @@ const EditorForm = () => {
 				isEditing && selectedTask?.expiresDate
 					? new Date(selectedTask.expiresDate)
 					: null,
-			folderId: isEditing ? selectedTask?.folderId : null,
+			folderId: selectedTask?.folderId ?? null,
 		},
 	})
 
