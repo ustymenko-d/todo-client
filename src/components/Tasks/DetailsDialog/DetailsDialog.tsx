@@ -12,14 +12,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import useFetch from '@/hooks/folders/useFetch'
 import useActions from '@/hooks/tasks/useActions'
 import useAppStore from '@/store/store'
@@ -80,29 +74,19 @@ const DetailsDialog = () => {
 						aria-labelledby='status-label'
 						className='flex flex-col gap-2'>
 						<h4 className='text-muted-foreground'>Status:</h4>
-						<Select
-							disabled={toggling}
-							onValueChange={handleStatusChange}
-							value={completed ? 'completed' : 'in-process'}>
-							<SelectTrigger className='w-[180px]'>
-								<SelectValue placeholder='Select status' />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectGroup>
-									<SelectItem
-										disabled={completed}
-										value='completed'>
-										Completed
-									</SelectItem>
-
-									<SelectItem
-										disabled={!completed}
-										value='in-process'>
-										In Process
-									</SelectItem>
-								</SelectGroup>
-							</SelectContent>
-						</Select>
+						<div className='flex items-center space-x-2'>
+							<Switch
+								id='task-status'
+								checked={completed}
+								disabled={toggling}
+								onCheckedChange={handleStatusChange}
+							/>
+							<Label
+								htmlFor='task-status'
+								className='text-base cursor-pointer'>
+								{completed ? 'Completed' : 'In Progress'}
+							</Label>
+						</div>
 					</div>
 
 					{startDate && (

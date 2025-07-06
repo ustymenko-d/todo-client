@@ -95,7 +95,7 @@ const TaskCard = ({
 						strokeWidth={1}
 					/>
 				)}
-				{completed ? 'Done' : 'In\u00A0Process'}
+				{completed ? 'Completed' : 'In\u00A0Progress'}
 			</div>
 		</div>
 	)
