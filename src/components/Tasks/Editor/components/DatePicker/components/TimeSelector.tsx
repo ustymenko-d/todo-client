@@ -1,19 +1,17 @@
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
+'use client'
+
+import { ChangeEvent } from 'react'
+
+import { Input } from '@/components/ui/input'
 import useBreakpoints from '@/hooks/useBreakpoints'
 import { cn } from '@/lib/utils'
 
 interface TimeSelectorProps {
-	label: string
+	label: 'Hour' | 'Minute'
 	values: number[]
 	onValueChange: (value: string) => void
 	selectedValue: number | undefined
-	internalDate: Date | null
+	showWarning?: boolean
 }
 
 const TimeSelector = ({
@@ -21,45 +19,39 @@ const TimeSelector = ({
 	values,
 	onValueChange,
 	selectedValue,
-	internalDate,
+	showWarning,
 }: TimeSelectorProps) => {
 	const { heightIndex } = useBreakpoints({ height: [800] })
-	
-	const now = new Date()
-	const isToday = internalDate?.toDateString() === now.toDateString()
 
-	const isOptionDisabled = (value: number): boolean => {
-		if (!internalDate || !isToday) return false
+	const min = values[0]
+	const max = values[values.length - 1]
 
-		const tempDate = new Date(internalDate)
-		const selectedHour = label === 'Hour' ? value : internalDate.getHours() ?? 0
-		const selectedMinute =
-			label === 'Minute' ? value : internalDate.getMinutes() ?? 0
-
-		tempDate.setHours(selectedHour, selectedMinute, 0, 0)
-		return tempDate < now
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const val = e.target.value
+		if (val === '' || !isNaN(Number(val))) {
+			onValueChange(val)
+		}
 	}
 
 	return (
 		<div>
-			<h4 className='mb-1 text-sm text-muted-foreground'>{label}</h4>
-			<Select
-				onValueChange={onValueChange}
-				value={selectedValue?.toString()}>
-				<SelectTrigger>
-					<SelectValue placeholder='--' />
-				</SelectTrigger>
-				<SelectContent className={cn(!heightIndex && 'max-h-[70vh]')}>
-					{values.map((value) => (
-						<SelectItem
-							key={value}
-							value={value.toString()}
-							disabled={isOptionDisabled(value)}>
-							{value.toString().padStart(2, '0')}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<label className='mb-1 block text-sm text-muted-foreground'>
+				{label}
+			</label>
+			<Input
+				type='number'
+				min={min}
+				max={max}
+				step={1}
+				inputMode='numeric'
+				value={selectedValue ?? ''}
+				onChange={handleChange}
+				className={cn(
+					!heightIndex && 'max-h-[70vh]',
+					showWarning &&
+						'border-destructive text-destructive placeholder-destructive'
+				)}
+			/>
 		</div>
 	)
 }

@@ -13,11 +13,11 @@ import {
 import useFetch from '@/hooks/folders/useFetch'
 import { TTaskBase } from '@/types/tasks'
 
-interface FormSelectProps {
+interface IDesktopFolderSelect {
 	field: ControllerRenderProps<TTaskBase, 'folderId'>
 }
 
-const FormSelect = ({ field }: FormSelectProps) => {
+const DesktopFolderSelect = ({ field }: IDesktopFolderSelect) => {
 	const { data } = useFetch({
 		page: 1,
 		limit: 25,
@@ -53,4 +53,4 @@ const FormSelect = ({ field }: FormSelectProps) => {
 	)
 }
 
-export default FormSelect
+export default DesktopFolderSelect

@@ -29,9 +29,10 @@ export interface DatePickerProps {
 const DatePicker = ({ field }: DatePickerProps) => {
 	const { heightIndex } = useBreakpoints({ height: [800] })
 
-	const formattedValue = field.value
-		? format(field.value, 'MM/dd/yyyy HH:mm')
-		: 'Pick a date'
+	const formattedValue =
+		field.value instanceof Date && !isNaN(field.value.getTime())
+			? format(field.value, 'MM/dd/yyyy HH:mm')
+			: 'Pick a date'
 
 	const Trigger = (
 		<Button

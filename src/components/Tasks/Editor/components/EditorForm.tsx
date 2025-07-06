@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 
 import DatePicker from '@/components/Tasks/Editor/components/DatePicker/DatePicker'
 import Field from '@/components/Tasks/Editor/components/Field'
-import FormSelect from '@/components/Tasks/Editor/components/FormSelect'
 import {
 	Form,
 	FormControl,
@@ -19,13 +18,19 @@ import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/ui/LoadingButton'
 import { Textarea } from '@/components/ui/textarea'
 import useActions from '@/hooks/tasks/useActions'
+import useIsTouchDevice from '@/hooks/useIsTouchDevice'
 import TasksValidation from '@/schemas/tasks.schema'
 import useAppStore from '@/store/store'
 import { TTask, TTaskBase } from '@/types/tasks'
 
+import DesktopFolderSelect from './FolderSelect/DesktopFolderSelect'
+import MobileFolderSelect from './FolderSelect/MobileFolderSelect'
+
 const EditorForm = () => {
 	const mode = useAppStore((s) => s.taskEditorSettings.mode)
 	const selectedTask = useAppStore((s) => s.taskEditorSettings.target)
+
+	const isTouchDevice = useIsTouchDevice()
 
 	const { handleTaskAction: createTask } = useActions('create')
 	const { handleTaskAction: editTask } = useActions(
@@ -121,7 +126,11 @@ const EditorForm = () => {
 						render={({ field }) => (
 							<FormItem className='flex flex-col gap-1'>
 								<FormLabel className='text-muted-foreground'>Folder:</FormLabel>
-								<FormSelect field={field} />
+								{isTouchDevice ? (
+									<MobileFolderSelect field={field} />
+								) : (
+									<DesktopFolderSelect field={field} />
+								)}
 								<FormMessage />
 							</FormItem>
 						)}
