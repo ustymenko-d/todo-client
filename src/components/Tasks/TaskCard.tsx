@@ -50,7 +50,7 @@ const TaskCard = ({
 			ref={dragProps?.setNodeRef}
 			{...(dragProps?.attributes || {})}
 			className={cn(
-				'flex items-stretch pr-2 border rounded-md transition-opacity bg-white dark:bg-black hover:bg-accent',
+				'flex items-stretch pr-2 border rounded-md transition-opacity bg-white dark:bg-black hover:bg-accent break-words',
 				dragProps?.isDragging && 'opacity-50'
 			)}>
 			{(dragProps || taskInMotion) && (
@@ -80,17 +80,22 @@ const TaskCard = ({
 				</div>
 			)}
 
-			<h4 className='p-2 border-r grow'>{formatValue(title)}</h4>
+			<div
+				className='p-2 border-r grow break-words'
+				style={{ wordBreak: 'break-word' }}>
+				{formatValue(title)}
+			</div>
+
 			<div className='flex items-center gap-2 p-2 min-w-28'>
 				{completed ? (
 					<CircleCheck
-						className='text-green-500 dark:text-green-400'
+						className='shrink-0 text-green-500 dark:text-green-400'
 						size={16}
 						strokeWidth={1}
 					/>
 				) : (
 					<Loader
-						className='text-muted-foreground'
+						className='shrink-0 text-muted-foreground'
 						size={16}
 						strokeWidth={1}
 					/>
