@@ -11,6 +11,7 @@ interface TimeSelectorProps {
 	values: number[]
 	onValueChange: (value: string) => void
 	selectedValue: number | undefined
+	internalDate: Date | null
 	showWarning?: boolean
 }
 
@@ -19,6 +20,7 @@ const TimeSelector = ({
 	values,
 	onValueChange,
 	selectedValue,
+	internalDate,
 	showWarning,
 }: TimeSelectorProps) => {
 	const { heightIndex } = useBreakpoints({ height: [800] })
@@ -43,6 +45,7 @@ const TimeSelector = ({
 				min={min}
 				max={max}
 				step={1}
+				disabled={!internalDate}
 				inputMode='numeric'
 				value={selectedValue ?? ''}
 				onChange={handleChange}

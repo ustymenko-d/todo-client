@@ -108,6 +108,7 @@ const Content = ({ field }: DatePickerProps) => {
 					values={hours}
 					onValueChange={(value) => handleTimeChange('hour', parseInt(value))}
 					selectedValue={internalDate?.getHours()}
+					internalDate={internalDate}
 					showWarning={showTimeWarning}
 				/>
 				<TimeSelector
@@ -115,13 +116,14 @@ const Content = ({ field }: DatePickerProps) => {
 					values={minutes}
 					onValueChange={(value) => handleTimeChange('minute', parseInt(value))}
 					selectedValue={internalDate?.getMinutes()}
+					internalDate={internalDate}
 					showWarning={showTimeWarning}
 				/>
 			</div>
 
 			{showTimeWarning && (
 				<p className='mt-1 sm:pl-2 text-xs text-destructive'>
-					Start time must be in the future
+					Date and time must be in the future
 				</p>
 			)}
 		</>
