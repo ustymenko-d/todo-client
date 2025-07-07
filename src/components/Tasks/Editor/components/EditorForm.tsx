@@ -97,6 +97,7 @@ const EditorForm = () => {
 						name='description'
 						Component={Textarea}
 						placeholder='Add some description'
+						className='max-h-40'
 					/>
 
 					<div className='grid sm:grid-cols-2 gap-3'>

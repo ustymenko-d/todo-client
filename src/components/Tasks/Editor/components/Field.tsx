@@ -15,9 +15,16 @@ interface IFieldProps {
 	name: keyof TTaskBase
 	Component: ElementType
 	placeholder: string
+	className?: string
 }
 
-const Field = ({ taskForm, name, Component, placeholder }: IFieldProps) => (
+const Field = ({
+	taskForm,
+	name,
+	Component,
+	placeholder,
+	className,
+}: IFieldProps) => (
 	<FormField
 		control={taskForm.control}
 		name={name}
@@ -31,6 +38,7 @@ const Field = ({ taskForm, name, Component, placeholder }: IFieldProps) => (
 						{...field}
 						placeholder={placeholder}
 						value={field.value || ''}
+						className={className}
 					/>
 				</FormControl>
 				<FormMessage />
