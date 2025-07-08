@@ -11,7 +11,7 @@ import useAppStore from '@/store/store'
 import { TGetTasksRequest, TTask } from '@/types/tasks'
 
 import DraggableItem from '../pages/Folders/components/DraggableItem'
-import TaskCard from './TaskCard'
+import TaskCard from './TaskCard/TaskCard'
 
 interface ITasksInfiniteScrollProps extends HTMLAttributes<HTMLDivElement> {
 	fetchParams: Omit<TGetTasksRequest, 'page'>

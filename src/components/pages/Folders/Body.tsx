@@ -13,7 +13,7 @@ import {
 } from '@dnd-kit/core'
 import { useCallback, useEffect, useState } from 'react'
 
-import TaskCard from '@/components/Tasks/TaskCard'
+import TaskCard from '@/components/Tasks/TaskCard/TaskCard'
 import useFetch from '@/hooks/folders/useFetch'
 import useMove from '@/hooks/tasks/useMove'
 import useAppStore from '@/store/store'

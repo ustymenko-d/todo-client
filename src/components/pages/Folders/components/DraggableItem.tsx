@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core'
 
-import TaskCard from '@/components/Tasks/TaskCard'
+import TaskCard from '@/components/Tasks/TaskCard/TaskCard'
 import { TTask } from '@/types/tasks'
 
 const DraggableItem = ({ task }: { task: TTask }) => {
