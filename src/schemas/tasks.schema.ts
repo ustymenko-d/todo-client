@@ -31,6 +31,8 @@ const getTasksRequest = z.object({
 			message: 'Invalid value.',
 		}),
 
+	taskId: z.string().uuid().optional(),
+
 	completed: z.boolean().optional(),
 
 	topLayerTasks: z.boolean().optional(),

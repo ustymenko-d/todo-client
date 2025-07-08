@@ -12,6 +12,7 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 	const router = useRouter()
 	const pathname = usePathname()
 
+	const openTask = useAppStore((s) => s.taskDialogSettings.task)
 	const closeTaskEditor = useAppStore((s) => s.closeTaskEditor)
 	const closeTaskDialog = useAppStore((s) => s.closeTaskDialog)
 	const updateDialogTask = useAppStore((s) => s.updateDialogTask)
@@ -55,9 +56,24 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 			queryClient.invalidateQueries({ queryKey: ['tasks'] })
 
 			if (action === 'delete') closeTaskDialog()
+
 			if (['create', 'edit'].includes(action)) closeTaskEditor()
-			if (['edit', 'changeStatus'].includes(action))
-				updateDialogTask(updatedTask)
+
+			if (['edit'].includes(action)) updateDialogTask(updatedTask)
+
+			if (['changeStatus'].includes(action)) {
+				if (updatedTask.id === openTask?.id)
+					updateDialogTask({ ...openTask, ...updatedTask })
+
+				if (updatedTask.parentTaskId) {
+					queryClient.removeQueries({
+						predicate: (query) => {
+							const queryKey = query.queryKey
+							return Array.isArray(queryKey) && queryKey[0] === 'tasks'
+						},
+					})
+				}
+			}
 
 			if (pathname === '/table') router.refresh()
 		} catch (error) {
