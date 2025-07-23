@@ -26,23 +26,20 @@ const columns: ColumnDef<TTask>[] = [
 					style={{ marginLeft: row.depth * 9 }}
 					className='flex items-center gap-2'>
 					{formatValue(row.original.title)}
+
 					{canExpand && (
 						<Button
 							size='icon'
-							variant='ghost'
-							className='w-6 h-6'
-							onClick={(e) => {
+							variant='outline'
+							className='w-6 h-6 ml-auto'
+							onClick={e => {
 								e.stopPropagation()
 								row.getToggleExpandedHandler()?.()
 							}}>
 							<ChevronRight
-								className={`duration-200 text-muted-foreground ${
-									isExpanded ? 'rotate-90' : ''
-								}`}
+								className={`duration-200 text-muted-foreground ${isExpanded ? 'rotate-90' : ''}`}
 							/>
-							<span className='sr-only'>
-								{isExpanded ? 'Collapse' : 'Expand'}
-							</span>
+							<span className='sr-only'>{isExpanded ? 'Collapse' : 'Expand'}</span>
 						</Button>
 					)}
 				</div>
