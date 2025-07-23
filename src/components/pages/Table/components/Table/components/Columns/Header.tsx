@@ -17,8 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 
-interface ColumnHeaderProps<TData, TValue>
-	extends HTMLAttributes<HTMLDivElement> {
+interface Props<TData, TValue> extends HTMLAttributes<HTMLDivElement> {
 	column: Column<TData, TValue>
 	title: string
 }
@@ -32,11 +31,7 @@ const getSortingIcon = (sortState: string | false) =>
 		<ArrowDownUp />
 	)
 
-const Header = <TData, TValue>({
-	column,
-	title,
-	className,
-}: ColumnHeaderProps<TData, TValue>) => {
+const Header = <TData, TValue>({ column, title, className }: Props<TData, TValue>) => {
 	if (!column.getCanSort()) return <div className={cn(className)}>{title}</div>
 
 	return (

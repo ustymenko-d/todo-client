@@ -3,16 +3,11 @@ import { ComponentProps } from 'react'
 
 import { Button } from './button'
 
-interface ILoadingButtonProps extends ComponentProps<typeof Button> {
+interface Props extends ComponentProps<typeof Button> {
 	loading: boolean
 }
 
-const LoadingButton = ({
-	loading,
-	children,
-	disabled,
-	...props
-}: ILoadingButtonProps) => (
+const LoadingButton = ({ loading, children, disabled, ...props }: Props) => (
 	<Button
 		{...props}
 		disabled={loading || disabled}>

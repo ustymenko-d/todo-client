@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import LoadingButton from '@/components/ui/LoadingButton'
 
-interface IDeleteDialogProps extends ComponentProps<typeof AlertDialog> {
+interface Props extends ComponentProps<typeof AlertDialog> {
 	handleDelete: () => void
 	loading: boolean
 	disabled?: boolean
@@ -28,7 +28,7 @@ const DeleteDialog = ({
 	needTrigger,
 	deleteTarget,
 	...props
-}: IDeleteDialogProps) => (
+}: Props) => (
 	<AlertDialog {...props}>
 		{needTrigger && (
 			<AlertDialogTrigger asChild>

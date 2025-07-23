@@ -11,7 +11,7 @@ type DateOption = {
 	value: string
 }
 
-interface DatePresetSelectorProps {
+interface Props {
 	onSelect: (value: string) => void
 }
 
@@ -22,7 +22,7 @@ const options: DateOption[] = [
 	{ label: 'In a week', value: '7' },
 ]
 
-const DatePresetSelector = ({ onSelect }: DatePresetSelectorProps) => {
+const DatePresetSelector = ({ onSelect }: Props) => {
 	const [selectedItem, setSelectedItem] = useState<DateOption | null>(null)
 	const triggerRef = useRef<HTMLButtonElement>(null)
 
@@ -36,7 +36,7 @@ const DatePresetSelector = ({ onSelect }: DatePresetSelectorProps) => {
 	} = useSelect({
 		items: options,
 		selectedItem,
-		itemToString: (item) => item?.label || '',
+		itemToString: item => item?.label || '',
 		onSelectedItemChange: ({ selectedItem }) => {
 			setSelectedItem(selectedItem ?? null)
 			if (selectedItem) onSelect(selectedItem.value)
@@ -57,7 +57,7 @@ const DatePresetSelector = ({ onSelect }: DatePresetSelectorProps) => {
 					'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring'
 				)}>
 				<span className='truncate'>{selectedItem?.label || 'Select'}</span>
-				<ChevronsUpDown className='ml-2 h-4 w-4 opacity-50' />
+				<ChevronsUpDown className='w-4 h-4 ml-2 opacity-50' />
 			</button>
 
 			<ul
@@ -68,9 +68,7 @@ const DatePresetSelector = ({ onSelect }: DatePresetSelectorProps) => {
 				})}
 				className={cn(
 					'absolute z-50 max-h-60 w-full my-1 px-1 overflow-hidden rounded-md bg-popover text-sm  duration-300',
-					isOpen
-						? 'max-h-60 py-1 border shadow-md'
-						: 'max-h-0 pointer-events-none'
+					isOpen ? 'max-h-60 py-1 border shadow-md' : 'max-h-0 pointer-events-none'
 				)}>
 				{options.map((item, index) => (
 					<li
@@ -81,14 +79,11 @@ const DatePresetSelector = ({ onSelect }: DatePresetSelectorProps) => {
 							highlightedIndex === index && 'bg-accent text-accent-foreground'
 						)}>
 						<span
-							className={cn(
-								'truncate',
-								downshiftSelected?.value === item.value && 'font-medium'
-							)}>
+							className={cn('truncate', downshiftSelected?.value === item.value && 'font-medium')}>
 							{item.label}
 						</span>
 						{downshiftSelected?.value === item.value && (
-							<Check className='ml-auto h-4 w-4 opacity-100' />
+							<Check className='w-4 h-4 ml-auto opacity-100' />
 						)}
 					</li>
 				))}

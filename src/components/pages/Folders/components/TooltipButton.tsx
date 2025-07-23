@@ -1,18 +1,13 @@
 import { ComponentProps } from 'react'
 
 import { Button } from '@/components/ui/button'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
-interface ITooltipButtonProps extends ComponentProps<typeof Button> {
+interface Props extends ComponentProps<typeof Button> {
 	label: string
 }
 
-const TooltipButton = ({ children, label, ...props }: ITooltipButtonProps) => (
+const TooltipButton = ({ children, label, ...props }: Props) => (
 	<TooltipProvider>
 		<Tooltip>
 			<TooltipTrigger asChild>

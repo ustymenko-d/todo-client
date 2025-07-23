@@ -3,17 +3,13 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import {
-	IGetTasksResponse,
-	TasksInfiniteData,
-	TTask,
-	TTaskPayload,
-} from '@/types/tasks'
+import { TResponseState } from '@/types/common'
+import { IGetTasksResponse, TasksInfiniteData, TTask, TTaskPayload } from '@/types/tasks'
 import getTasksKey from '@/utils/getTasksKey'
 
 import useActions from './useActions'
 
-const useMove = (setLoading: (loading: boolean) => void) => {
+const useMove = (setLoading: (loading: TResponseState) => void) => {
 	const queryClient = useQueryClient()
 	const { handleTaskAction } = useActions('edit')
 
@@ -28,14 +24,14 @@ const useMove = (setLoading: (loading: boolean) => void) => {
 
 		queryClient.setQueriesData<TasksInfiniteData>(
 			{ queryKey: getTasksKey(oldFolderId) },
-			(oldData) => {
+			oldData => {
 				if (!oldData) return oldData
 
 				return {
 					...oldData,
 					pages: oldData.pages.map((page: IGetTasksResponse) => ({
 						...page,
-						tasks: page.tasks.filter((t) => t.id !== task.id),
+						tasks: page.tasks.filter(t => t.id !== task.id),
 						total: page.total - 1,
 						pages: Math.ceil((page.total - 1) / page.limit),
 					})),
@@ -45,7 +41,7 @@ const useMove = (setLoading: (loading: boolean) => void) => {
 
 		queryClient.setQueriesData<TasksInfiniteData>(
 			{ queryKey: getTasksKey(newFolderId) },
-			(oldData) => {
+			oldData => {
 				if (!oldData) return oldData
 
 				return {

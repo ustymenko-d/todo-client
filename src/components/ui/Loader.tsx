@@ -3,11 +3,11 @@ import { HTMLAttributes } from 'react'
 
 import { cn } from '@/lib/utils'
 
-interface ILoaderProps extends HTMLAttributes<HTMLDivElement> {
+interface Props extends HTMLAttributes<HTMLDivElement> {
 	text?: string
 }
 
-const Loader = ({ text = 'Loading', className, ...props }: ILoaderProps) => (
+const Loader = ({ text = 'Loading', className, ...props }: Props) => (
 	<div
 		className={cn('flex items-center gap-2 text-muted-foreground', className)}
 		{...props}>

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import useBreakpoints from '@/hooks/useBreakpoints'
 import { cn } from '@/lib/utils'
 
-interface TimeSelectorProps {
+interface Props {
 	label: 'Hour' | 'Minute'
 	values: number[]
 	onValueChange: (value: string) => void
@@ -22,7 +22,7 @@ const TimeSelector = ({
 	selectedValue,
 	internalDate,
 	showWarning,
-}: TimeSelectorProps) => {
+}: Props) => {
 	const { heightIndex } = useBreakpoints({ height: [800] })
 
 	const min = values[0]
@@ -37,9 +37,7 @@ const TimeSelector = ({
 
 	return (
 		<div>
-			<label className='mb-1 block text-sm text-muted-foreground'>
-				{label}
-			</label>
+			<label className='block mb-1 text-sm text-muted-foreground'>{label}</label>
 			<Input
 				type='number'
 				min={min}
@@ -51,8 +49,7 @@ const TimeSelector = ({
 				onChange={handleChange}
 				className={cn(
 					!heightIndex && 'max-h-[70vh]',
-					showWarning &&
-						'border-destructive text-destructive placeholder-destructive'
+					showWarning && 'border-destructive text-destructive placeholder-destructive'
 				)}
 			/>
 		</div>

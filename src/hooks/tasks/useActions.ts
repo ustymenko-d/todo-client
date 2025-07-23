@@ -6,16 +6,17 @@ import { toast } from 'sonner'
 
 import TasksAPI from '@/api/tasks.api'
 import useAppStore from '@/store/store'
+import { TResponseState } from '@/types/common'
 import { TTask, TTaskAction, TTaskBase, TTaskPayload } from '@/types/tasks'
 
 const useActions = (action: TTaskAction, task?: TTask) => {
 	const router = useRouter()
 	const pathname = usePathname()
 
-	const openTask = useAppStore((s) => s.taskDialogSettings.task)
-	const closeTaskEditor = useAppStore((s) => s.closeTaskEditor)
-	const closeTaskDialog = useAppStore((s) => s.closeTaskDialog)
-	const updateDialogTask = useAppStore((s) => s.updateDialogTask)
+	const openTask = useAppStore(s => s.taskDialogSettings.task)
+	const closeTaskEditor = useAppStore(s => s.closeTaskEditor)
+	const closeTaskDialog = useAppStore(s => s.closeTaskDialog)
+	const updateDialogTask = useAppStore(s => s.updateDialogTask)
 
 	const queryClient = useQueryClient()
 
@@ -35,23 +36,21 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 	}
 
 	const handleTaskAction = async (
-		setLoadingState: (state: boolean) => void,
+		setLoadingState: (state: TResponseState) => void,
 		payload?: TTaskBase | TTaskPayload
 	) => {
 		try {
-			setLoadingState(true)
+			setLoadingState('pending')
 
-			const {
-				success,
-				message,
-				task: updatedTask,
-			} = await performAction(payload)
+			const { success, message, task: updatedTask } = await performAction(payload)
 
 			if (!success) {
+				setLoadingState('error')
 				toast.error(message ?? 'Something went wrong')
 				throw new Error(`[useTasksActions] ${action} failed`)
 			}
 
+			setLoadingState('success')
 			toast.success('Successfuly completed')
 			queryClient.invalidateQueries({ queryKey: ['tasks'] })
 
@@ -62,12 +61,11 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 			if (['edit'].includes(action)) updateDialogTask(updatedTask)
 
 			if (['changeStatus'].includes(action)) {
-				if (updatedTask.id === openTask?.id)
-					updateDialogTask({ ...openTask, ...updatedTask })
+				if (updatedTask.id === openTask?.id) updateDialogTask({ ...openTask, ...updatedTask })
 
 				if (updatedTask.parentTaskId) {
 					queryClient.removeQueries({
-						predicate: (query) => {
+						predicate: query => {
 							const queryKey = query.queryKey
 							return Array.isArray(queryKey) && queryKey[0] === 'tasks'
 						},
@@ -79,8 +77,6 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 		} catch (error) {
 			console.error(`[useTasksActions] ${action} task error:`, error)
 			throw error
-		} finally {
-			setLoadingState(false)
 		}
 	}
 

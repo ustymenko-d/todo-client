@@ -17,6 +17,7 @@ import TaskCard from '@/components/Tasks/TaskCard/TaskCard'
 import useFetch from '@/hooks/folders/useFetch'
 import useMove from '@/hooks/tasks/useMove'
 import useAppStore from '@/store/store'
+import { TResponseState } from '@/types/common'
 
 import EmptyPlaceholder from './components/EmptyPlaceholder'
 import ErrorPlaceholder from './components/ErrorPlaceholder'
@@ -40,9 +41,11 @@ const Body = () => {
 		setIsFetching(isFetching)
 	}, [isFetching, setIsFetching])
 
-	const [loading, setLoading] = useState(false)
+	const [status, setStatus] = useState<TResponseState>('default')
 
-	const { moveTask } = useMove(setLoading)
+	const isMoving = status === 'pending'
+
+	const { moveTask } = useMove(setStatus)
 
 	const sensors = useSensors(
 		useSensor(MouseSensor, {
@@ -61,12 +64,12 @@ const Body = () => {
 
 	const handleDragStart = ({ active }: DragStartEvent) => {
 		const task = active.data?.current?.task
-		if (task && !loading) setTaskInMotion(task)
+		if (task && !isMoving) setTaskInMotion(task)
 	}
 
 	const handleDragEnd = useCallback(
 		async ({ active, over }: DragEndEvent) => {
-			if (loading || !over) return
+			if (isMoving || !over) return
 
 			const { task } = active.data.current ?? {}
 			const newFolderId = String(over.id)
@@ -77,11 +80,11 @@ const Body = () => {
 
 			setTaskInMotion(null)
 		},
-		[loading, moveTask, setTaskInMotion]
+		[isMoving, moveTask, setTaskInMotion]
 	)
 
 	const handleDragCancel = () => {
-		if (!loading) setTaskInMotion(null)
+		if (!isMoving) setTaskInMotion(null)
 	}
 
 	if (isSuccess && data.folders.length === 0) return <EmptyPlaceholder />

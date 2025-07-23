@@ -2,12 +2,7 @@
 
 import { CircleCheck, Loader } from 'lucide-react'
 
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import useBreakpoints from '@/hooks/useBreakpoints'
 import { cn } from '@/lib/utils'
 import { TTask } from '@/types/tasks'
@@ -16,19 +11,14 @@ import { formatValue } from '@/utils/formatting'
 import CardCheckbox from './components/CardCheckbox'
 import DragHandle, { IDragProps } from './components/DragHandle'
 
-interface ITaskCardProps {
+interface Props {
 	task: TTask
 	withCheckbox?: boolean
 	dragProps?: IDragProps
 	taskInMotion?: string | null
 }
 
-const TaskCard = ({
-	task,
-	withCheckbox = false,
-	dragProps,
-	taskInMotion,
-}: ITaskCardProps) => {
+const TaskCard = ({ task, withCheckbox = false, dragProps, taskInMotion }: Props) => {
 	const { widthIndex } = useBreakpoints({ width: [640] })
 
 	const { id, title, completed } = task
@@ -37,7 +27,7 @@ const TaskCard = ({
 
 	const statusIcon = completed ? (
 		<CircleCheck
-			className='shrink-0 text-green-500 dark:text-green-400'
+			className='text-green-500 shrink-0 dark:text-green-400'
 			size={16}
 			strokeWidth={1}
 		/>
@@ -68,7 +58,7 @@ const TaskCard = ({
 			{withCheckbox && <CardCheckbox task={task} />}
 
 			<div
-				className='p-2 border-r grow break-words'
+				className='p-2 break-words border-r grow'
 				style={{ wordBreak: 'break-word' }}>
 				{formatValue(title)}
 			</div>

@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { ControllerRenderProps, useForm } from 'react-hook-form'
 
 import DatePicker from '@/components/Tasks/Editor/components/DatePicker/DatePicker'
 import Field from '@/components/Tasks/Editor/components/Field'
@@ -21,10 +21,15 @@ import useActions from '@/hooks/tasks/useActions'
 import useIsTouchDevice from '@/hooks/useIsTouchDevice'
 import TasksValidation from '@/schemas/tasks.schema'
 import useAppStore from '@/store/store'
+import { TResponseState } from '@/types/common'
 import { TTask, TTaskBase } from '@/types/tasks'
 
 import DesktopFolderSelect from './FolderSelect/DesktopFolderSelect'
 import MobileFolderSelect from './FolderSelect/MobileFolderSelect'
+
+export interface IFolderSelectProps {
+	field: ControllerRenderProps<TTaskBase, 'folderId'>
+}
 
 const EditorForm = () => {
 	const mode = useAppStore(s => s.taskEditorSettings.mode)
@@ -35,7 +40,7 @@ const EditorForm = () => {
 	const { handleTaskAction: createTask } = useActions('create')
 	const { handleTaskAction: editTask } = useActions('edit', selectedTask as TTask)
 
-	const [loading, setLoading] = useState(false)
+	const [status, setStatus] = useState<TResponseState>('default')
 
 	const isEditing = mode === 'edit'
 
@@ -66,9 +71,9 @@ const EditorForm = () => {
 				...selectedTask!,
 				...payload,
 			}
-			editTask(setLoading, editPayload)
+			editTask(setStatus, editPayload)
 		} else {
-			createTask(setLoading, payload)
+			createTask(setStatus, payload)
 		}
 	}
 
@@ -128,8 +133,8 @@ const EditorForm = () => {
 					/>
 
 					<LoadingButton
-						loading={loading}
-						disabled={loading}
+						loading={status === 'pending'}
+						disabled={status === 'success'}
 						type='submit'>
 						<span>{mode === 'create' ? 'Create task' : 'Edit task'}</span>
 					</LoadingButton>

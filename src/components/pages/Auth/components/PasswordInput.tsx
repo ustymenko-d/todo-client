@@ -3,26 +3,17 @@ import { ComponentProps, ReactNode, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import useAppStore from '@/store/store'
 
-interface IPasswordInputProps extends ComponentProps<typeof Input> {
+interface Props extends ComponentProps<typeof Input> {
 	labelNode: ReactNode
 	forgotBtn?: boolean
 }
 
-const PasswordInput = ({
-	labelNode,
-	forgotBtn = false,
-	...props
-}: IPasswordInputProps) => {
-	const authFormType = useAppStore((s) => s.authFormType)
-	const setAuthFormType = useAppStore((s) => s.setAuthFormType)
+const PasswordInput = ({ labelNode, forgotBtn = false, ...props }: Props) => {
+	const authFormType = useAppStore(s => s.authFormType)
+	const setAuthFormType = useAppStore(s => s.setAuthFormType)
 
 	const [showPassword, setShowPassword] = useState(false)
 
@@ -31,7 +22,7 @@ const PasswordInput = ({
 	}
 
 	const toggleShowPassword = () => {
-		setShowPassword((prev) => !prev)
+		setShowPassword(prev => !prev)
 	}
 
 	return (

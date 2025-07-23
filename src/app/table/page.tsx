@@ -5,7 +5,7 @@ import DetailsDialog from '@/components/Tasks/DetailsDialog/DetailsDialog'
 import TaskEditor from '@/components/Tasks/Editor/Editor'
 import { stringToBoolean } from '@/utils/formatting'
 
-interface TablePageProps {
+interface Props {
 	searchParams: Promise<{
 		limit?: string
 		page?: string
@@ -20,22 +20,15 @@ const headProps = {
 		'You can view the details of the task by clicking on it or you can edit the task using the\u00A0context\u00A0menu',
 } as const
 
-const TablePage = async ({ searchParams }: TablePageProps) => {
-	const {
-		page = 1,
-		limit = 25,
-		title,
-		topLayerTasks = true,
-	} = await searchParams
+const TablePage = async ({ searchParams }: Props) => {
+	const { page = 1, limit = 25, title, topLayerTasks = true } = await searchParams
 
 	const pagination = {
 		page: +page,
 		limit: +limit,
 		title,
 		topLayerTasks:
-			typeof topLayerTasks === 'string'
-				? stringToBoolean(topLayerTasks)
-				: topLayerTasks,
+			typeof topLayerTasks === 'string' ? stringToBoolean(topLayerTasks) : topLayerTasks,
 	}
 
 	return (

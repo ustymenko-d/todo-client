@@ -3,15 +3,12 @@
 import debounce from 'lodash.debounce'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-interface IUseBreakpointsOptions {
+interface Options {
 	width?: number[]
 	height?: number[]
 }
 
-const useBreakpoints = ({
-	width = [],
-	height = [],
-}: IUseBreakpointsOptions) => {
+const useBreakpoints = ({ width = [], height = [] }: Options) => {
 	const [indices, setIndices] = useState<{
 		widthIndex: number
 		heightIndex: number
@@ -24,19 +21,12 @@ const useBreakpoints = ({
 		const currentWidth = window.innerWidth
 		const currentHeight = window.innerHeight
 
-		const newWidthIndex = width.length
-			? width.findLastIndex((bp) => currentWidth >= bp) + 1
-			: 0
+		const newWidthIndex = width.length ? width.findLastIndex(bp => currentWidth >= bp) + 1 : 0
 
-		const newHeightIndex = height.length
-			? height.findLastIndex((bp) => currentHeight >= bp) + 1
-			: 0
+		const newHeightIndex = height.length ? height.findLastIndex(bp => currentHeight >= bp) + 1 : 0
 
-		setIndices((prev) => {
-			if (
-				prev.widthIndex !== newWidthIndex ||
-				prev.heightIndex !== newHeightIndex
-			) {
+		setIndices(prev => {
+			if (prev.widthIndex !== newWidthIndex || prev.heightIndex !== newHeightIndex) {
 				return {
 					widthIndex: newWidthIndex,
 					heightIndex: newHeightIndex,
@@ -46,10 +36,7 @@ const useBreakpoints = ({
 		})
 	}, [width, height])
 
-	const debouncedUpdate = useMemo(
-		() => debounce(updateIndices, 150),
-		[updateIndices]
-	)
+	const debouncedUpdate = useMemo(() => debounce(updateIndices, 150), [updateIndices])
 
 	useEffect(() => {
 		updateIndices()

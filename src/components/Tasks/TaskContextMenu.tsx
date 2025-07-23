@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import { PropsWithChildren } from 'react'
 
 import DeleteDialog from '@/components/DeleteDialog'
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/context-menu'
 import useActions from '@/hooks/tasks/useActions'
 import useAppStore from '@/store/store'
+import { TResponseState } from '@/types/common'
 import { TTask } from '@/types/tasks'
 
 interface Props extends PropsWithChildren {
@@ -23,8 +24,7 @@ const TaskContextMenu = ({ task, children, inTable = false }: Props) => {
 	const openTaskDialog = useAppStore(s => s.openTaskDialog)
 
 	const [openAlert, setOpenAlert] = useState(false)
-	const [deleteLoading, setDeleteLoading] = useState(false)
-	const [togglingLoading, setTogglingLoading] = useState(false)
+	const [status, setStatus] = useState<TResponseState>('default')
 
 	const { handleTaskAction: chengeTaskStatus } = useActions('changeStatus', task)
 
@@ -49,22 +49,22 @@ const TaskContextMenu = ({ task, children, inTable = false }: Props) => {
 						Add Subtask
 					</ContextMenuItem>
 					<ContextMenuItem
-						onClick={() => chengeTaskStatus(setTogglingLoading)}
-						disabled={togglingLoading}>
+						onClick={() => chengeTaskStatus(setStatus)}
+						disabled={status === 'pending'}>
 						Toggle status
 					</ContextMenuItem>
 					<ContextMenuSeparator />
 					<ContextMenuItem
 						onSelect={openDeleteDialog}
-						disabled={deleteLoading}>
+						disabled={status === 'pending'}>
 						Delete
 					</ContextMenuItem>
 				</ContextMenuContent>
 			</ContextMenu>
 
 			<DeleteDialog
-				handleDelete={() => deleteTask(setDeleteLoading)}
-				loading={deleteLoading}
+				handleDelete={() => deleteTask(setStatus)}
+				loading={status === 'pending'}
 				deleteTarget='task'
 				open={openAlert}
 				onOpenChange={setOpenAlert}

@@ -23,7 +23,7 @@ import { TTask } from '@/types/tasks'
 
 import Loader from '../../../../ui/Loader'
 
-interface TableProps {
+interface Props {
 	data: TTask[] | []
 	isFetching: boolean
 	pagination: {
@@ -37,7 +37,7 @@ export interface ITableComponentProps {
 	table: TanstackTable<TTask>
 }
 
-const Table = ({ data, isFetching, pagination }: TableProps) => {
+const Table = ({ data, isFetching, pagination }: Props) => {
 	const router = useRouter()
 
 	const [sorting, setSorting] = useState<SortingState>([])
@@ -57,7 +57,7 @@ const Table = ({ data, isFetching, pagination }: TableProps) => {
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
 		getExpandedRowModel: getExpandedRowModel(),
-		getSubRows: (row) => row.subtasks,
+		getSubRows: row => row.subtasks,
 		state: {
 			sorting,
 			columnFilters,
@@ -69,11 +69,9 @@ const Table = ({ data, isFetching, pagination }: TableProps) => {
 		},
 		pageCount: pages,
 		manualPagination: true,
-		onPaginationChange: (updater) => {
+		onPaginationChange: updater => {
 			const newState =
-				typeof updater === 'function'
-					? updater({ pageIndex: page - 1, pageSize: limit })
-					: updater
+				typeof updater === 'function' ? updater({ pageIndex: page - 1, pageSize: limit }) : updater
 			const newPage = newState.pageIndex + 1
 			const newLimit = newState.pageSize
 			router.push(`?page=${newPage}&limit=${newLimit}`)

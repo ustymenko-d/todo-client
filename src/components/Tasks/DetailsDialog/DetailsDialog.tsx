@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import fetchFolders from '@/hooks/folders/useFetch'
 import useActions from '@/hooks/tasks/useActions'
 import useAppStore from '@/store/store'
+import { TResponseState } from '@/types/common'
 import { IGetTasksResponse, TTask } from '@/types/tasks'
 import { formatDate, formatValue } from '@/utils/formatting'
 
@@ -39,8 +40,7 @@ const DetailsDialog = () => {
 	const closeTaskDialog = useAppStore(s => s.closeTaskDialog)
 
 	const [loading, setLoading] = useState(false)
-	const [deleting, setDeleting] = useState(false)
-	const [toggling, setToggling] = useState(false)
+	const [status, setStatus] = useState<TResponseState>('default')
 
 	const { handleTaskAction: changeStatus } = useActions('changeStatus', task as TTask)
 
@@ -91,11 +91,6 @@ const DetailsDialog = () => {
 
 	const taskFolder = folders?.find(folder => folder.id === folderId)
 
-	const handleStatusChange = () => changeStatus(setToggling)
-	const handleEdit = () => openTaskEditor('edit', task)
-	const handleAddSubtask = () => openTaskEditor('create', task)
-	const handleDelete = () => deleteTask(setDeleting)
-
 	return (
 		<Dialog
 			open={open}
@@ -121,8 +116,8 @@ const DetailsDialog = () => {
 							<Switch
 								id='task-status'
 								checked={completed}
-								disabled={toggling}
-								onCheckedChange={handleStatusChange}
+								disabled={status === 'pending'}
+								onCheckedChange={() => changeStatus(setStatus)}
 							/>
 							<Label
 								htmlFor='task-status'
@@ -179,17 +174,17 @@ const DetailsDialog = () => {
 					)}
 					<Button
 						variant='outline'
-						onClick={handleAddSubtask}>
+						onClick={() => openTaskEditor('create', task)}>
 						Add subtask
 					</Button>
 					<Button
 						variant='outline'
-						onClick={handleEdit}>
+						onClick={() => openTaskEditor('edit', task)}>
 						Edit
 					</Button>
 					<DeleteDialog
-						handleDelete={handleDelete}
-						loading={deleting}
+						handleDelete={() => deleteTask(setStatus)}
+						loading={status === 'pending'}
 						needTrigger
 						deleteTarget='task'
 					/>

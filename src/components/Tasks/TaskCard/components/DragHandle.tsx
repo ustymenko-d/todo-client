@@ -11,16 +11,16 @@ export interface IDragProps {
 	isDragging: boolean
 }
 
-interface IDragHandleProps {
+interface Props {
 	id: string
 	dragProps?: IDragProps
 	taskInMotion?: string | null
 }
 
-const DragHandle = ({ id, dragProps, taskInMotion }: IDragHandleProps) => (
+const DragHandle = ({ id, dragProps, taskInMotion }: Props) => (
 	<div
 		{...dragProps?.listeners}
-		onClick={(e) => e.stopPropagation()}
+		onClick={e => e.stopPropagation()}
 		className={cn(
 			'flex items-center justify-center px-2 text-muted-foreground border-r',
 			taskInMotion === id ? 'cursor-grabbing' : 'cursor-grab'

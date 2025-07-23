@@ -2,21 +2,14 @@ import { Control } from 'react-hook-form'
 
 import EmailInput from '@/components/pages/Auth/components/EmailInput'
 import PasswordInput from '@/components/pages/Auth/components/PasswordInput'
-import {
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
-const AuthFormInput = ({
-	control,
-	name,
-}: {
+interface Props {
 	control: Control
 	name: 'email' | 'password' | 'confirmPassword'
-}) => (
+}
+
+const AuthFormInput = ({ control, name }: Props) => (
 	<FormField
 		control={control}
 		name={name}

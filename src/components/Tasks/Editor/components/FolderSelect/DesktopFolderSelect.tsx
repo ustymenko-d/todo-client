@@ -1,7 +1,5 @@
 'use client'
 
-import { ControllerRenderProps } from 'react-hook-form'
-
 import { FormControl } from '@/components/ui/form'
 import {
 	Select,
@@ -11,13 +9,10 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import useFetch from '@/hooks/folders/useFetch'
-import { TTaskBase } from '@/types/tasks'
 
-interface IDesktopFolderSelect {
-	field: ControllerRenderProps<TTaskBase, 'folderId'>
-}
+import { IFolderSelectProps } from '../EditorForm'
 
-const DesktopFolderSelect = ({ field }: IDesktopFolderSelect) => {
+const DesktopFolderSelect = ({ field }: IFolderSelectProps) => {
 	const { data } = useFetch({
 		page: 1,
 		limit: 25,
@@ -41,7 +36,7 @@ const DesktopFolderSelect = ({ field }: IDesktopFolderSelect) => {
 			<SelectContent>
 				<SelectItem value='null'>No Folder</SelectItem>
 
-				{folders?.map((folder) => (
+				{folders?.map(folder => (
 					<SelectItem
 						key={folder.id}
 						value={folder.id}>

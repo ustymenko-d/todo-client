@@ -3,17 +3,13 @@
 import { useSelect } from 'downshift'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useMemo } from 'react'
-import { ControllerRenderProps } from 'react-hook-form'
 
 import useFetch from '@/hooks/folders/useFetch'
 import { cn } from '@/lib/utils'
-import { TTaskBase } from '@/types/tasks'
 
-interface IMobileFolderSelect {
-	field: ControllerRenderProps<TTaskBase, 'folderId'>
-}
+import { IFolderSelectProps } from '../EditorForm'
 
-const MobileFolderSelect = ({ field }: IMobileFolderSelect) => {
+const MobileFolderSelect = ({ field }: IFolderSelectProps) => {
 	const { data } = useFetch({ page: 1, limit: 25 })
 
 	const items = useMemo(() => {
@@ -21,7 +17,7 @@ const MobileFolderSelect = ({ field }: IMobileFolderSelect) => {
 		return [{ id: 'null', name: 'No Folder' }, ...folders]
 	}, [data?.folders])
 
-	const selectedItem = items.find((f) => f.id === (field.value ?? 'null'))
+	const selectedItem = items.find(f => f.id === (field.value ?? 'null'))
 
 	const {
 		isOpen,
@@ -33,7 +29,7 @@ const MobileFolderSelect = ({ field }: IMobileFolderSelect) => {
 	} = useSelect({
 		items,
 		selectedItem,
-		itemToString: (item) => item?.name ?? '',
+		itemToString: item => item?.name ?? '',
 		onSelectedItemChange: ({ selectedItem }) => {
 			field.onChange(selectedItem?.id === 'null' ? null : selectedItem?.id)
 		},
@@ -48,11 +44,9 @@ const MobileFolderSelect = ({ field }: IMobileFolderSelect) => {
 					'aria-expanded': isOpen,
 					id: 'folder-select-trigger',
 				})}
-				className='flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50'>
-				<span className='truncate'>
-					{selectedItem?.name || 'Select folder...'}
-				</span>
-				<ChevronsUpDown className='ml-2 h-4 w-4 opacity-50' />
+				className='flex items-center justify-between w-full px-3 py-2 text-sm bg-transparent border rounded-md shadow-sm h-9 border-input ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50'>
+				<span className='truncate'>{selectedItem?.name || 'Select folder...'}</span>
+				<ChevronsUpDown className='w-4 h-4 ml-2 opacity-50' />
 			</button>
 
 			<ul
@@ -63,9 +57,7 @@ const MobileFolderSelect = ({ field }: IMobileFolderSelect) => {
 				})}
 				className={cn(
 					'absolute z-50 max-h-60 w-full my-1 px-1 overflow-hidden rounded-md bg-popover text-sm  duration-300',
-					isOpen
-						? 'max-h-60 py-1 border shadow-md'
-						: 'max-h-0 pointer-events-none'
+					isOpen ? 'max-h-60 py-1 border shadow-md' : 'max-h-0 pointer-events-none'
 				)}>
 				{items.map((item, index) => {
 					const isSelected = downshiftSelected?.id === item.id
@@ -79,10 +71,8 @@ const MobileFolderSelect = ({ field }: IMobileFolderSelect) => {
 								'relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5',
 								isHighlighted && 'bg-accent text-accent-foreground'
 							)}>
-							<span className={cn('truncate', isSelected && 'font-medium')}>
-								{item.name}
-							</span>
-							{isSelected && <Check className='ml-auto h-4 w-4 opacity-100' />}
+							<span className={cn('truncate', isSelected && 'font-medium')}>{item.name}</span>
+							{isSelected && <Check className='w-4 h-4 ml-auto opacity-100' />}
 						</li>
 					)
 				})}

@@ -1,16 +1,10 @@
 import { ElementType } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
-import {
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { TTaskBase } from '@/types/tasks'
 
-interface IFieldProps {
+interface Props {
 	taskForm: UseFormReturn<TTaskBase>
 	name: keyof TTaskBase
 	Component: ElementType
@@ -18,13 +12,7 @@ interface IFieldProps {
 	className?: string
 }
 
-const Field = ({
-	taskForm,
-	name,
-	Component,
-	placeholder,
-	className,
-}: IFieldProps) => (
+const Field = ({ taskForm, name, Component, placeholder, className }: Props) => (
 	<FormField
 		control={taskForm.control}
 		name={name}
