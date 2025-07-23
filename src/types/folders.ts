@@ -23,3 +23,5 @@ export interface IFolderResponse extends IResponseStatus {
 export interface IGetFoldersResponse extends IGetResponse {
 	folders: IFolder[]
 }
+
+export type TFoldersAction = 'create' | 'rename' | 'delete'

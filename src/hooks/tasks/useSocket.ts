@@ -10,14 +10,12 @@ import { TTask, TTaskAction } from '@/types/tasks'
 const useSocket = () => {
 	const queryClient = useQueryClient()
 
-	const { open, task } = useAppStore((s) => s.taskDialogSettings)
-	const updateDialogTask = useAppStore((s) => s.updateDialogTask)
-	const closeTaskDialog = useAppStore((s) => s.closeTaskDialog)
+	const { open, task } = useAppStore(s => s.taskDialogSettings)
+	const updateDialogTask = useAppStore(s => s.updateDialogTask)
+	const closeTaskDialog = useAppStore(s => s.closeTaskDialog)
 
 	const handleTaskEvent = useCallback(
 		(eventType: TTaskAction, data: TTask) => {
-			console.log(`Task ${eventType}: `, data)
-
 			queryClient.invalidateQueries({ queryKey: ['tasks'] })
 
 			if (open && task?.id === data.id) {
@@ -40,8 +38,7 @@ const useSocket = () => {
 		}
 
 		const listeners = Object.entries(events).map(([action, event]) => {
-			const listener = (data: TTask) =>
-				handleTaskEvent(action as TTaskAction, data)
+			const listener = (data: TTask) => handleTaskEvent(action as TTaskAction, data)
 			socket.on(event, listener)
 			return { event, listener }
 		})

@@ -17,12 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import fetchFolders from '@/hooks/folders/useFetch'
 import useActions from '@/hooks/tasks/useActions'
 import useAppStore from '@/store/store'
@@ -37,20 +32,17 @@ const DetailsDialog = () => {
 	const { data } = fetchFolders({ page: 1, limit: 25 })
 	const { folders } = data ?? {}
 
-	const open = useAppStore((s) => s.taskDialogSettings.open)
-	const task = useAppStore((s) => s.taskDialogSettings.task)
-	const updateDialogTask = useAppStore((s) => s.updateDialogTask)
-	const openTaskEditor = useAppStore((s) => s.openTaskEditor)
-	const closeTaskDialog = useAppStore((s) => s.closeTaskDialog)
+	const open = useAppStore(s => s.taskDialogSettings.open)
+	const task = useAppStore(s => s.taskDialogSettings.task)
+	const updateDialogTask = useAppStore(s => s.updateDialogTask)
+	const openTaskEditor = useAppStore(s => s.openTaskEditor)
+	const closeTaskDialog = useAppStore(s => s.closeTaskDialog)
 
 	const [loading, setLoading] = useState(false)
 	const [deleting, setDeleting] = useState(false)
 	const [toggling, setToggling] = useState(false)
 
-	const { handleTaskAction: changeStatus } = useActions(
-		'changeStatus',
-		task as TTask
-	)
+	const { handleTaskAction: changeStatus } = useActions('changeStatus', task as TTask)
 
 	const { handleTaskAction: deleteTask } = useActions('delete', task as TTask)
 
@@ -72,10 +64,7 @@ const DetailsDialog = () => {
 
 		setLoading(true)
 
-		const queryKey = [
-			'tasks',
-			JSON.stringify({ limit: 1, page: 1, taskId: parentTaskId }),
-		]
+		const queryKey = ['tasks', JSON.stringify({ limit: 1, page: 1, taskId: parentTaskId })]
 
 		let parentTaskData = queryClient.getQueryData<IGetTasksResponse>(queryKey)
 
@@ -83,8 +72,7 @@ const DetailsDialog = () => {
 			try {
 				parentTaskData = await queryClient.fetchQuery<IGetTasksResponse>({
 					queryKey,
-					queryFn: () =>
-						TasksAPI.getTasks({ limit: 1, page: 1, taskId: parentTaskId }),
+					queryFn: () => TasksAPI.getTasks({ limit: 1, page: 1, taskId: parentTaskId }),
 				})
 			} catch (error) {
 				console.error('Error fetching parent task:', error)
@@ -101,15 +89,12 @@ const DetailsDialog = () => {
 		setLoading(false)
 	}
 
-	const taskFolder = folders?.find((folder) => folder.id === folderId)
+	const taskFolder = folders?.find(folder => folder.id === folderId)
 
 	const handleStatusChange = () => changeStatus(setToggling)
 	const handleEdit = () => openTaskEditor('edit', task)
 	const handleAddSubtask = () => openTaskEditor('create', task)
 	const handleDelete = () => deleteTask(setDeleting)
-
-	console.log(task);
-	
 
 	return (
 		<Dialog

@@ -49,7 +49,7 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 
 			if (!success) {
 				toast.error(message ?? 'Something went wrong')
-				throw new Error(`[useActions] ${action} failed`)
+				throw new Error(`[useTasksActions] ${action} failed`)
 			}
 
 			toast.success('Successfuly completed')
@@ -77,7 +77,7 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 
 			if (pathname === '/table') router.refresh()
 		} catch (error) {
-			console.error(`[useActions] ${action} task error:`, error)
+			console.error(`[useTasksActions] ${action} task error:`, error)
 			throw error
 		} finally {
 			setLoadingState(false)

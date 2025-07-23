@@ -13,27 +13,20 @@ import useActions from '@/hooks/tasks/useActions'
 import useAppStore from '@/store/store'
 import { TTask } from '@/types/tasks'
 
-interface IContextMenuProps extends PropsWithChildren {
+interface Props extends PropsWithChildren {
 	task: TTask
 	inTable?: boolean
 }
 
-const TaskContextMenu = ({
-	task,
-	children,
-	inTable = false,
-}: IContextMenuProps) => {
-	const openTaskEditor = useAppStore((s) => s.openTaskEditor)
-	const openTaskDialog = useAppStore((s) => s.openTaskDialog)
+const TaskContextMenu = ({ task, children, inTable = false }: Props) => {
+	const openTaskEditor = useAppStore(s => s.openTaskEditor)
+	const openTaskDialog = useAppStore(s => s.openTaskDialog)
 
 	const [openAlert, setOpenAlert] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [togglingLoading, setTogglingLoading] = useState(false)
 
-	const { handleTaskAction: chengeTaskStatus } = useActions(
-		'changeStatus',
-		task
-	)
+	const { handleTaskAction: chengeTaskStatus } = useActions('changeStatus', task)
 
 	const { handleTaskAction: deleteTask } = useActions('delete', task)
 
@@ -46,21 +39,13 @@ const TaskContextMenu = ({
 				<ContextMenuTrigger
 					onClick={handleOpenDetails}
 					asChild>
-					{inTable ? (
-						children
-					) : (
-						<div className='cursor-pointer'>{children}</div>
-					)}
+					{inTable ? children : <div className='cursor-pointer'>{children}</div>}
 				</ContextMenuTrigger>
 				<ContextMenuContent>
-					<ContextMenuItem
-						onSelect={() => setTimeout(() => openTaskEditor('edit', task), 0)}>
+					<ContextMenuItem onSelect={() => setTimeout(() => openTaskEditor('edit', task), 0)}>
 						Edit task
 					</ContextMenuItem>
-					<ContextMenuItem
-						onSelect={() =>
-							setTimeout(() => openTaskEditor('create', task), 0)
-						}>
+					<ContextMenuItem onSelect={() => setTimeout(() => openTaskEditor('create', task), 0)}>
 						Add Subtask
 					</ContextMenuItem>
 					<ContextMenuItem

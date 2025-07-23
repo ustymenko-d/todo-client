@@ -27,16 +27,13 @@ import DesktopFolderSelect from './FolderSelect/DesktopFolderSelect'
 import MobileFolderSelect from './FolderSelect/MobileFolderSelect'
 
 const EditorForm = () => {
-	const mode = useAppStore((s) => s.taskEditorSettings.mode)
-	const selectedTask = useAppStore((s) => s.taskEditorSettings.target)
+	const mode = useAppStore(s => s.taskEditorSettings.mode)
+	const selectedTask = useAppStore(s => s.taskEditorSettings.target)
 
 	const isTouchDevice = useIsTouchDevice()
 
 	const { handleTaskAction: createTask } = useActions('create')
-	const { handleTaskAction: editTask } = useActions(
-		'edit',
-		selectedTask as TTask
-	)
+	const { handleTaskAction: editTask } = useActions('edit', selectedTask as TTask)
 
 	const [loading, setLoading] = useState(false)
 
@@ -47,22 +44,11 @@ const EditorForm = () => {
 		defaultValues: {
 			title: isEditing ? selectedTask?.title : '',
 			description: isEditing ? selectedTask?.description : '',
-			parentTaskId: isEditing
-				? selectedTask?.parentTaskId
-				: selectedTask?.id || null,
-			startDate:
-				isEditing && selectedTask?.startDate
-					? new Date(selectedTask.startDate)
-					: null,
+			parentTaskId: isEditing ? selectedTask?.parentTaskId : selectedTask?.id || null,
+			startDate: isEditing && selectedTask?.startDate ? new Date(selectedTask.startDate) : null,
 			expiresDate:
-				isEditing && selectedTask?.expiresDate
-					? new Date(selectedTask.expiresDate)
-					: null,
-			folderId: isEditing
-				? selectedTask?.folderId
-				: !isEditing && !!selectedTask?.id
-				? selectedTask?.folderId
-				: null,
+				isEditing && selectedTask?.expiresDate ? new Date(selectedTask.expiresDate) : null,
+			folderId: selectedTask?.folderId ?? null,
 		},
 	})
 
@@ -104,8 +90,8 @@ const EditorForm = () => {
 						className='max-h-40'
 					/>
 
-					<div className='grid sm:grid-cols-2 gap-3'>
-						{['startDate', 'expiresDate'].map((name) => (
+					<div className='grid gap-3 sm:grid-cols-2'>
+						{['startDate', 'expiresDate'].map(name => (
 							<FormField
 								key={name}
 								control={taskForm.control}
