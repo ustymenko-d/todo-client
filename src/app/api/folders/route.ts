@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { handleRequest } from '@/api/requestHandler'
+import { IRecaptcha } from '@/types/common'
+import { TFolderName } from '@/types/folders'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
 	const body = await request.json()
 	const socketId = request.headers.get('x-socket-id') || undefined
 
-	return handleRequest('/folders', 'post', body, {
+	return handleRequest<TFolderName & IRecaptcha>('/folders', 'post', body, {
 		headers: {
 			'x-socket-id': socketId,
 		},

@@ -1,9 +1,6 @@
 import { z } from 'zod'
 
-const validateDates = (data: {
-	startDate?: Date | null
-	expiresDate?: Date | null
-}) => {
+const validateDates = (data: { startDate?: Date | null; expiresDate?: Date | null }) => {
 	if (!data.startDate || !data.expiresDate) return true
 	return data.expiresDate >= data.startDate
 }
@@ -27,7 +24,7 @@ const getTasksRequest = z.object({
 	title: z
 		.string()
 		.optional()
-		.refine((val) => val === undefined || val.length > 0, {
+		.refine(val => val === undefined || val.length > 0, {
 			message: 'Invalid value.',
 		}),
 
@@ -53,7 +50,7 @@ const taskBaseSchema = z.object({
 		.date()
 		.nullable()
 		.optional()
-		.refine((date) => !date || date > new Date(), {
+		.refine(date => !date || date > new Date(), {
 			message: 'Start date must be in the future.',
 		}),
 
@@ -61,7 +58,7 @@ const taskBaseSchema = z.object({
 		.date()
 		.nullable()
 		.optional()
-		.refine((date) => !date || date > new Date(), {
+		.refine(date => !date || date > new Date(), {
 			message: 'Expiration date must be in the future.',
 		}),
 

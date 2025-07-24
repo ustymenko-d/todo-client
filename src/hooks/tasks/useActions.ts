@@ -9,21 +9,23 @@ import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 import { TTask, TTaskAction, TTaskBase, TTaskPayload } from '@/types/tasks'
 
+import { useWithRecaptcha } from '../useWithRecaptcha'
+
 const useActions = (action: TTaskAction, task?: TTask) => {
 	const router = useRouter()
 	const pathname = usePathname()
+	const queryClient = useQueryClient()
+	const { withRecaptcha } = useWithRecaptcha()
 
 	const openTask = useAppStore(s => s.taskDialogSettings.task)
 	const closeTaskEditor = useAppStore(s => s.closeTaskEditor)
 	const closeTaskDialog = useAppStore(s => s.closeTaskDialog)
 	const updateDialogTask = useAppStore(s => s.updateDialogTask)
 
-	const queryClient = useQueryClient()
-
 	const performAction = async (payload?: TTaskBase | TTask) => {
 		switch (action) {
 			case 'create':
-				return TasksAPI.createTask(payload as TTaskBase)
+				return TasksAPI.createTask(await withRecaptcha<TTaskBase>(payload as TTaskBase))
 			case 'edit':
 				return TasksAPI.editTask(payload as TTaskPayload)
 			case 'changeStatus':

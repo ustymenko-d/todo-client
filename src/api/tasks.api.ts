@@ -1,4 +1,5 @@
 import { handleApiRequest } from '@/api/requestHandler'
+import { IRecaptcha } from '@/types/common'
 import {
 	IGetTasksResponse,
 	ITaskResponse,
@@ -17,25 +18,17 @@ const TasksAPI = {
 			ApiAxios.post(`${TASKS_API_URL}/get`, payload, config)
 		),
 
-	createTask: (payload: TTaskBase) =>
-		handleApiRequest<ITaskResponse>(() =>
-			ApiAxios.post(`${TASKS_API_URL}/create`, payload)
-		),
+	createTask: (payload: TTaskBase & IRecaptcha) =>
+		handleApiRequest<ITaskResponse>(() => ApiAxios.post(`${TASKS_API_URL}/create`, payload)),
 
 	editTask: (payload: TTaskPayload) =>
-		handleApiRequest<ITaskResponse>(() =>
-			ApiAxios.put(`${TASKS_API_URL}`, payload)
-		),
+		handleApiRequest<ITaskResponse>(() => ApiAxios.put(`${TASKS_API_URL}`, payload)),
 
 	toggleStatus: (taskId: string) =>
-		handleApiRequest<ITaskResponse>(() =>
-			ApiAxios.patch(`${TASKS_API_URL}/${taskId}`)
-		),
+		handleApiRequest<ITaskResponse>(() => ApiAxios.patch(`${TASKS_API_URL}/${taskId}`)),
 
 	deleteTask: (taskId: string) =>
-		handleApiRequest<ITaskResponse>(() =>
-			ApiAxios.delete(`${TASKS_API_URL}/${taskId}`)
-		),
+		handleApiRequest<ITaskResponse>(() => ApiAxios.delete(`${TASKS_API_URL}/${taskId}`)),
 }
 
 export default TasksAPI

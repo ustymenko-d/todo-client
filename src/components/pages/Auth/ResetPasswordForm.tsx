@@ -18,6 +18,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import LoadingButton from '@/components/ui/LoadingButton'
+import { useWithRecaptcha } from '@/hooks/useWithRecaptcha'
 import AuthValidation from '@/schemas/authForm.schema'
 import { TPassword } from '@/types/auth'
 import { TResponseState } from '@/types/common'
@@ -33,6 +34,7 @@ const formConfig = {
 const ResetPasswordForm = () => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
+	const { withRecaptcha } = useWithRecaptcha()
 
 	const [status, setStatus] = useState<TResponseState>('default')
 
@@ -43,9 +45,7 @@ const ResetPasswordForm = () => {
 		defaultValues,
 	})
 
-	const handleResetPassword = async (
-		values: z.infer<typeof validationSchema>
-	) => {
+	const handleResetPassword = async (values: z.infer<typeof validationSchema>) => {
 		setStatus('pending')
 
 		try {
@@ -53,7 +53,7 @@ const ResetPasswordForm = () => {
 			const resetToken = searchParams.get('resetToken')
 
 			const { success, message } = await AuthAPI.resetPassword(
-				payload,
+				await withRecaptcha<TPassword>(payload),
 				resetToken
 			)
 
@@ -63,8 +63,7 @@ const ResetPasswordForm = () => {
 			resetPasswordForm.reset(defaultValues)
 
 			toast.success('Your password has been changed successfully!', {
-				description:
-					'You will be automatically redirected to the main page in 3 seconds.',
+				description: 'You will be automatically redirected to the main page in 3 seconds.',
 			})
 
 			setTimeout(() => {
@@ -80,7 +79,7 @@ const ResetPasswordForm = () => {
 		<Form {...resetPasswordForm}>
 			<form onSubmit={resetPasswordForm.handleSubmit(handleResetPassword)}>
 				<div className='flex flex-col gap-6'>
-					{(['password', 'confirmPassword'] as const).map((element) => (
+					{(['password', 'confirmPassword'] as const).map(element => (
 						<FormField
 							key={`${element}-field`}
 							control={resetPasswordForm.control}
@@ -92,9 +91,7 @@ const ResetPasswordForm = () => {
 											{...field}
 											labelNode={
 												<FormLabel>
-													{element === 'password'
-														? 'Password'
-														: 'Confirm Password'}
+													{element === 'password' ? 'Password' : 'Confirm Password'}
 												</FormLabel>
 											}
 											value={field.value || ''}

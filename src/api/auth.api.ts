@@ -1,12 +1,6 @@
 import { handleApiRequest } from '@/api/requestHandler'
-import {
-	IAuthResponse,
-	IUserInfo,
-	TAuthPayload,
-	TEmail,
-	TPassword,
-} from '@/types/auth'
-import { IResponseStatus } from '@/types/common'
+import { IAuthResponse, IUserInfo, TAuthPayload, TEmail, TPassword } from '@/types/auth'
+import { IRecaptcha, IResponseStatus } from '@/types/common'
 
 import { ApiAxios } from './Axios'
 
@@ -14,53 +8,37 @@ const AUTH_API_URL = '/auth'
 
 const AuthAPI = {
 	signup: (payload: TAuthPayload) =>
-		handleApiRequest<IAuthResponse>(() =>
-			ApiAxios.post(`${AUTH_API_URL}/signup`, payload)
-		),
+		handleApiRequest<IAuthResponse>(() => ApiAxios.post(`${AUTH_API_URL}/signup`, payload)),
 
 	verifyEmail: (verificationToken: string) =>
 		handleApiRequest<IResponseStatus>(() =>
-			ApiAxios.get(
-				`${AUTH_API_URL}/email-verification?verificationToken=${verificationToken}`
-			)
+			ApiAxios.get(`${AUTH_API_URL}/email-verification?verificationToken=${verificationToken}`)
 		),
 
 	login: (payload: TAuthPayload) =>
-		handleApiRequest<IAuthResponse>(() =>
-			ApiAxios.post(`${AUTH_API_URL}/login`, payload)
-		),
+		handleApiRequest<IAuthResponse>(() => ApiAxios.post(`${AUTH_API_URL}/login`, payload)),
 
 	getAccountInfo: () =>
-		handleApiRequest<IUserInfo>(() =>
-			ApiAxios.get(`${AUTH_API_URL}/account-info`)
-		),
+		handleApiRequest<IUserInfo>(() => ApiAxios.get(`${AUTH_API_URL}/account-info`)),
 
-	logout: () =>
-		handleApiRequest<IResponseStatus>(() =>
-			ApiAxios.get(`${AUTH_API_URL}/logout`)
-		),
+	logout: () => handleApiRequest<IResponseStatus>(() => ApiAxios.get(`${AUTH_API_URL}/logout`)),
 
 	refreshToken: () =>
+		handleApiRequest<IResponseStatus>(() => ApiAxios.get(`${AUTH_API_URL}/tokens/refresh-tokens`)),
+
+	deleteAccount: (payload: IRecaptcha) =>
 		handleApiRequest<IResponseStatus>(() =>
-			ApiAxios.get(`${AUTH_API_URL}/tokens/refresh-tokens`)
+			ApiAxios.delete(`${AUTH_API_URL}/delete-account`, { data: payload })
 		),
 
-	deleteAccount: () =>
-		handleApiRequest<IResponseStatus>(() =>
-			ApiAxios.delete(`${AUTH_API_URL}/delete-account`)
-		),
-
-	forgotPassword: (payload: TEmail) =>
+	forgotPassword: (payload: TEmail & IRecaptcha) =>
 		handleApiRequest<IResponseStatus>(() =>
 			ApiAxios.post(`${AUTH_API_URL}/password/forgot-password`, payload)
 		),
 
-	resetPassword: (payload: TPassword, resetToken: string | null) =>
+	resetPassword: (payload: TPassword & IRecaptcha, resetToken: string | null) =>
 		handleApiRequest<IResponseStatus>(() =>
-			ApiAxios.patch(
-				`${AUTH_API_URL}/password/reset-password?resetToken=${resetToken}`,
-				payload
-			)
+			ApiAxios.patch(`${AUTH_API_URL}/password/reset-password?resetToken=${resetToken}`, payload)
 		),
 
 	clearAuthCookies: () =>

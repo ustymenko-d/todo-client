@@ -21,10 +21,10 @@ export interface IAuthResponse extends IResponseStatus {
 	userInfo: IUserInfo
 }
 
-type TFields = 'email' | 'password' | 'confirmPassword' | 'rememberMe'
+type Fields = 'email' | 'password' | 'confirmPassword' | 'rememberMe'
 
 export interface IFormConfig {
-	fields: TFields[]
+	fields: Fields[]
 	buttonText: string
 	validationSchema: ZodSchema
 	defaultValues: {

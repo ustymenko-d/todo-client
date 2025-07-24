@@ -3,6 +3,7 @@
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { toast } from 'sonner'
 
 import AuthAPI from '@/api/auth.api'
@@ -16,7 +17,9 @@ import { TResponseState } from '@/types/common'
 const DeleteSection = () => {
 	const router = useRouter()
 
-	const setIsAuthorized = useAppStore((s) => s.setIsAuthorized)
+	const setIsAuthorized = useAppStore(s => s.setIsAuthorized)
+
+	const { executeRecaptcha } = useGoogleReCaptcha()
 
 	const [openAlert, setOpenAlert] = useState(false)
 	const [status, setStatus] = useState<TResponseState>('default')
@@ -28,7 +31,10 @@ const DeleteSection = () => {
 		setStatus('pending')
 
 		try {
-			const { success, message } = await AuthAPI.deleteAccount()
+			if (!executeRecaptcha) throw new Error('reCAPTCHA not ready')
+			const recaptchaToken = await executeRecaptcha('delete_account')
+
+			const { success, message } = await AuthAPI.deleteAccount({ recaptchaToken })
 
 			if (!success) throw new Error(message ?? 'Error during deleting')
 

@@ -21,7 +21,8 @@ import { TResponseState } from '@/types/common'
 import { TFolderName } from '@/types/folders'
 
 const Form = () => {
-	const { mode, target } = useAppStore(s => s.folderEditorSettings)
+	const mode = useAppStore(s => s.folderEditorSettings.mode)
+	const target = useAppStore(s => s.folderEditorSettings.target)
 
 	const [status, setStatus] = useState<TResponseState>('default')
 

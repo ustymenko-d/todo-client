@@ -33,3 +33,7 @@ export type TNavItem = {
 export interface IRefreshButtonProps {
 	handleRefresh: () => void
 }
+
+export interface IRecaptcha {
+	recaptchaToken: string
+}

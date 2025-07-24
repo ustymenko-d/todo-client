@@ -1,3 +1,5 @@
+'use client'
+
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
@@ -6,22 +8,25 @@ import useAppStore from '@/store/store'
 import { TResponseState } from '@/types/common'
 import { IFolder, TFolderName, TFoldersAction } from '@/types/folders'
 
+import { useWithRecaptcha } from '../useWithRecaptcha'
+
 const useActions = (action: TFoldersAction, folder?: IFolder) => {
 	const queryClient = useQueryClient()
+	const { withRecaptcha } = useWithRecaptcha()
 
 	const closeEditor = useAppStore(s => s.closeFolderEditor)
 
 	const performAction = async (payload?: TFolderName | string) => {
 		switch (action) {
 			case 'create':
-				return FoldersAPI.createFolder(payload as TFolderName)
+				return FoldersAPI.createFolder(await withRecaptcha<TFolderName>(payload as TFolderName))
 
 			case 'rename':
 				if (!folder) throw new Error('`folder` is required to rename')
 				return FoldersAPI.renameFolder(folder?.id, payload as TFolderName)
 
 			case 'delete':
-				if (!folder) throw new Error('`folder` is required to rename')
+				if (!folder) throw new Error('`folder` is required to delete')
 				return FoldersAPI.deleteFolder(folder?.id)
 
 			default:
