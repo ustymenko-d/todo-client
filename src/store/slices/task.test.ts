@@ -8,110 +8,125 @@ jest.mock('@/utils/getDefaultEditorSettings')
 describe('TaskSlice', () => {
 	let mockSet: jest.Mock
 	let taskSlice: ReturnType<typeof createTaskSlice>
-	let task: TTask
+	const defaultEditorSettings = getDefaultEditorSettings<TTask>()
+
+	const getMockTask = (): TTask => ({
+		id: '1',
+		title: 'Test Task',
+		userId: 'user-1',
+		completed: false,
+		folderId: null,
+		description: 'Task description',
+		parentTaskId: null,
+		startDate: new Date(),
+		expiresDate: new Date(),
+		lastEdited: new Date().toISOString(),
+		subtasks: [],
+	})
 
 	beforeEach(() => {
 		mockSet = jest.fn()
 		taskSlice = createTaskSlice(mockSet)
-
-		task = {
-			id: '1',
-			title: 'Test Task',
-			userId: 'user-1',
-			completed: false,
-			folderId: null,
-			description: 'Task description',
-			parentTaskId: null,
-			startDate: new Date(),
-			expiresDate: new Date(),
-			lastEdited: new Date().toISOString(),
-			subtasks: [],
-		}
 	})
 
-	it('should initialize taskEditorSettings with default values', () => {
-		const defaultEditorSettings = getDefaultEditorSettings<TTask>()
+	it('initializes taskEditorSettings with default values', () => {
 		expect(taskSlice.taskEditorSettings).toEqual(defaultEditorSettings)
 	})
 
-	it('should open task editor with correct settings', () => {
-		const mode = 'edit'
-		taskSlice.openTaskEditor(mode, task)
+	describe('taskInMotion block', () => {
+		it('sets taskInMotion to a given task', () => {
+			const task = getMockTask()
 
-		expect(mockSet).toHaveBeenCalledWith({
-			taskEditorSettings: { open: true, mode, target: task },
+			taskSlice.setTaskInMotion(task)
+
+			expect(mockSet).toHaveBeenCalledWith({ taskInMotion: task })
+		})
+
+		it('resets taskInMotion to null', () => {
+			taskSlice.setTaskInMotion(null)
+
+			expect(mockSet).toHaveBeenCalledWith({ taskInMotion: null })
 		})
 	})
 
-	it('should close task editor and reset target', () => {
-		const mode = 'edit'
-		taskSlice.openTaskEditor(mode, task)
-		taskSlice.closeTaskEditor()
+	describe('taskDialogSettings block', () => {
+		it('opens task dialog with correct task', () => {
+			const task = getMockTask()
+			taskSlice.openTaskDialog(task)
 
-		expect(mockSet).toHaveBeenCalledTimes(2)
+			expect(mockSet).toHaveBeenCalledWith({
+				taskDialogSettings: { open: true, task },
+			})
+		})
 
-		const setFn = mockSet.mock.calls[1][0]
-		const prevState = {
-			taskEditorSettings: {
-				open: true,
-				mode,
-				target: task,
-			},
-		}
+		it('closes task dialog and resets task', () => {
+			taskSlice.closeTaskDialog()
 
-		expect(setFn(prevState)).toEqual({
-			taskEditorSettings: {
-				open: false,
-				mode,
-				target: null,
-			},
+			expect(mockSet).toHaveBeenCalledWith({
+				taskDialogSettings: { open: false, task: null },
+			})
+		})
+
+		it('updates task in task dialog settings', () => {
+			const task = getMockTask()
+			taskSlice.updateDialogTask(task)
+
+			const setFn = mockSet.mock.calls[0][0]
+			const prevState = {
+				taskDialogSettings: {
+					open: true,
+					task: null,
+				},
+			}
+
+			expect(setFn(prevState)).toEqual({
+				taskDialogSettings: {
+					open: true,
+					task,
+				},
+			})
 		})
 	})
 
-	it('should open task dialog with correct task', () => {
-		taskSlice.openTaskDialog(task)
+	describe('taskEditorSettings block', () => {
+		it('opens task editor with correct settings', () => {
+			const task = getMockTask()
+			const mode = 'edit'
 
-		expect(mockSet).toHaveBeenCalledWith({
-			taskDialogSettings: { open: true, task },
+			taskSlice.openTaskEditor(mode, task)
+
+			expect(mockSet).toHaveBeenCalledWith({
+				taskEditorSettings: { open: true, mode, target: task },
+			})
+		})
+
+		it('closes task editor and resets target', () => {
+			taskSlice.closeTaskEditor()
+
+			const setFn = mockSet.mock.calls[0][0]
+			const prevState = {
+				taskEditorSettings: {
+					open: true,
+					mode: 'edit',
+					target: getMockTask(),
+				},
+			}
+
+			expect(setFn(prevState)).toEqual({
+				taskEditorSettings: {
+					open: false,
+					mode: 'edit',
+					target: null,
+				},
+			})
 		})
 	})
 
-	it('should close task dialog and reset task', () => {
-		taskSlice.closeTaskDialog()
-
-		expect(mockSet).toHaveBeenCalledWith({
-			taskDialogSettings: { open: false, task: null },
-		})
-	})
-
-	it('should update task in task dialog settings', () => {
-		taskSlice.updateDialogTask(task)
-
-		expect(mockSet).toHaveBeenCalledTimes(1)
-
-		const setFn = mockSet.mock.calls[0][0]
-		const prevState = {
-			taskDialogSettings: {
-				open: true,
-				task: null,
-			},
-		}
-
-		expect(setFn(prevState)).toEqual({
-			taskDialogSettings: {
-				open: true,
-				task,
-			},
-		})
-	})
-
-	it('should set search term correctly', () => {
+	it('sets search term correctly', () => {
 		const searchTerm = 'test'
 
 		taskSlice.setSearchTerm(searchTerm)
 
-		expect(mockSet).toHaveBeenCalledWith({
-			searchTerm,
-		})
+		expect(mockSet).toHaveBeenCalledWith({ searchTerm })
 	})
 })
