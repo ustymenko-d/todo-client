@@ -15,7 +15,7 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 	const router = useRouter()
 	const pathname = usePathname()
 	const queryClient = useQueryClient()
-	const { withRecaptcha } = useWithRecaptcha()
+	const { withRecaptcha } = useWithRecaptcha('task_action')
 
 	const openTask = useAppStore(s => s.taskDialogSettings.task)
 	const closeTaskEditor = useAppStore(s => s.closeTaskEditor)

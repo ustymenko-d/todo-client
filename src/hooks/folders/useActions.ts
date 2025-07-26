@@ -12,7 +12,7 @@ import { useWithRecaptcha } from '../useWithRecaptcha'
 
 const useActions = (action: TFoldersAction, folder?: IFolder) => {
 	const queryClient = useQueryClient()
-	const { withRecaptcha } = useWithRecaptcha()
+	const { withRecaptcha } = useWithRecaptcha('folder_action')
 
 	const closeEditor = useAppStore(s => s.closeFolderEditor)
 

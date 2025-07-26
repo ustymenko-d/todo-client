@@ -34,7 +34,7 @@ const formConfig = {
 const ResetPasswordForm = () => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
-	const { withRecaptcha } = useWithRecaptcha()
+	const { withRecaptcha } = useWithRecaptcha('reset_password')
 
 	const [status, setStatus] = useState<TResponseState>('default')
 

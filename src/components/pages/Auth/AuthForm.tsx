@@ -21,7 +21,7 @@ import AuthFormSuggestion from './components/AuthFormSuggestion'
 
 const AuthForm = () => {
 	const router = useRouter()
-	const { withRecaptcha } = useWithRecaptcha()
+	const { withRecaptcha } = useWithRecaptcha('auth')
 
 	const authFormType = useAppStore(s => s.authFormType)
 	const setIsAuthorized = useAppStore(s => s.setIsAuthorized)
