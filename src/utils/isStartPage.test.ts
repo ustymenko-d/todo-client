@@ -1,15 +1,10 @@
 import isStartPage from './isStartPage'
 
 describe('isStartPage', () => {
-	it('should return true for "/"', () => {
+	it('should return true for valid value', () => {
 		expect(isStartPage('/')).toBe(true)
-	})
-
-	it('should return true for "/auth"', () => {
 		expect(isStartPage('/auth')).toBe(true)
-	})
-
-	it('should return true for "/verification"', () => {
+		expect(isStartPage('/auth/reset-password')).toBe(true)
 		expect(isStartPage('/verification')).toBe(true)
 	})
 
