@@ -1,9 +1,4 @@
-import axios, {
-	AxiosInstance,
-	AxiosRequestConfig,
-	AxiosResponse,
-	Method,
-} from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from 'axios'
 import { NextResponse } from 'next/server'
 import { toast } from 'sonner'
 
@@ -65,10 +60,7 @@ export const handleRequest = async <TPayload = undefined>(
 		const response = await axiosInstance.request(config)
 		const { data, status, headers } = response
 
-		return withSetCookie(
-			NextResponse.json(data, { status }),
-			headers['set-cookie']
-		)
+		return withSetCookie(NextResponse.json(data, { status }), headers['set-cookie'])
 	} catch (error) {
 		return handleAxiosError(error, extraConfig.skipRefresh)
 	}
@@ -99,16 +91,10 @@ const handleTokenRefresh = async () => {
 	}
 }
 
-const withSetCookie = (
-	res: NextResponse,
-	cookies?: string | string[]
-): NextResponse => {
+const withSetCookie = (res: NextResponse, cookies?: string | string[]): NextResponse => {
 	if (!cookies) return res
 
-	res.headers.set(
-		'set-cookie',
-		Array.isArray(cookies) ? cookies.join(', ') : cookies
-	)
+	res.headers.set('set-cookie', Array.isArray(cookies) ? cookies.join(', ') : cookies)
 
 	return res
 }
@@ -116,11 +102,13 @@ const withSetCookie = (
 const handleAxiosError = (error: unknown, skipRefresh?: boolean) => {
 	if (axios.isAxiosError(error)) {
 		const res = error.response
-		const is401 =
+		console.log(res);
+		const filter401 =
 			res?.status === 401 &&
-			res.data?.message !== 'Missing access or refresh token'
+			res.data?.message !== 'Missing access or refresh token.' &&
+			res.data?.message !== 'Invalid credentials.'
 
-		if (is401 && !skipRefresh) {
+		if (filter401 && !skipRefresh) {
 			return NextResponse.json({ needRefresh: true })
 		}
 
@@ -131,8 +119,5 @@ const handleAxiosError = (error: unknown, skipRefresh?: boolean) => {
 		return NextResponse.json(data, { status: res?.status || 500 })
 	}
 
-	return NextResponse.json(
-		{ message: 'Unexpected non-Axios error' },
-		{ status: 500 }
-	)
+	return NextResponse.json({ message: 'Unexpected non-Axios error' }, { status: 500 })
 }
