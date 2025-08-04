@@ -3,7 +3,7 @@ import AuthLink from '@/components/ui/AuthLink'
 const RootPage = () => (
 	<div className='flex flex-col gap-12 mb-6'>
 		<h1 className='font-extrabold text-center leading-none text-[max(48px,min(5vw,76px))]'>
-			Welcome to UpTodo!
+			Welcome to uTodo!
 		</h1>
 
 		<div className='flex flex-col gap-1'>

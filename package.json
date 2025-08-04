@@ -1,6 +1,12 @@
 {
-	"name": "todo-client",
-	"version": "0.1.0",
+	"name": "u-todo-client",
+	"version": "1.0.0",
+	"description": "Client-side logic for the uTodo task management application",
+	"author": {
+    "name": "Denys Ustymenko",
+    "email": "ustymenko.denys@gmail.com",
+    "url": "https://ustymenko.vercel.app"
+  },
 	"private": true,
 	"scripts": {
 		"dev": "dotenv -e .env.development.local -- next dev --turbopack",
