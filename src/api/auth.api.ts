@@ -15,6 +15,11 @@ const AuthAPI = {
 			ApiAxios.get(`${AUTH_API_URL}/email-verification?verificationToken=${verificationToken}`)
 		),
 
+	resendVerificationEmail: () =>
+		handleApiRequest<IResponseStatus>(() =>
+			ApiAxios.get(`${AUTH_API_URL}/resend-verification-email`)
+		),
+
 	login: (payload: TAuthPayload) =>
 		handleApiRequest<IAuthResponse>(() => ApiAxios.post(`${AUTH_API_URL}/login`, payload)),
 

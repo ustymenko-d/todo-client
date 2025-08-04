@@ -6,9 +6,9 @@ import Loader from '@/components/ui/Loader'
 import VerificationBadge from '@/components/ui/VerificationBadge'
 import useAccountInfo from '@/hooks/useAccountInfo'
 
-import UnverifiedInfo from '../../UnverifiedInfo'
 import DeleteSection from './components/DeleteSection'
 import ErrorPlaceholder from './components/ErrorPlaceholder'
+import Verification from './components/Verification'
 
 const Body = () => {
 	const { data, isLoading, isError, refetch } = useAccountInfo()
@@ -39,7 +39,7 @@ const Body = () => {
 				</div>
 			)}
 
-			{!data?.isVerified && <UnverifiedInfo />}
+			{!data?.isVerified && <Verification />}
 
 			<DeleteSection />
 		</div>
