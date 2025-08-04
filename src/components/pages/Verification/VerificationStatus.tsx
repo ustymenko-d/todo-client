@@ -1,18 +1,20 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import AuthAPI from '@/api/auth.api'
 import { CardDescription } from '@/components/ui/card'
-import { IResponseStatus } from '@/types/common'
+import { TResponseState } from '@/types/common'
 
 const REDIRECT_DELAY = 15000
 const INITIAL_SECONDS = REDIRECT_DELAY / 1000
 const messages = {
-	verifying: 'Verifying…',
+	default: undefined,
+	pending: 'Verifying…',
 	success: 'Email successfully verified',
-	failure: 'Verification failed',
+	error: 'Verification failed',
 }
 
 const VerificationStatus = () => {
@@ -20,33 +22,37 @@ const VerificationStatus = () => {
 	const searchParams = useSearchParams()
 	const verificationToken = searchParams.get('verificationToken')
 
-	const [isVerifying, setIsVerifying] = useState(false)
-	const [verificationResult, setVerificationResult] =
-		useState<IResponseStatus | null>(null)
+	const [status, setStatus] = useState<TResponseState>('default')
 	const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_SECONDS)
 
-	const handleVerification = useCallback(async () => {
-		if (!verificationToken) return
+	useEffect(() => {
+		const verify = async () => {
+			if (!verificationToken) return
 
-		setIsVerifying(true)
+			try {
+				setStatus('pending')
+				const { success, message } = await AuthAPI.verifyEmail(verificationToken)
 
-		try {
-			setVerificationResult(await AuthAPI.verifyEmail(verificationToken))
-		} finally {
-			setIsVerifying(false)
+				if (!success) throw new Error(message ?? 'Error during verification')
+
+				setStatus('success')
+				toast.success(message)
+			} catch (error) {
+				setStatus('error')
+				toast.error('Verification failed')
+				console.error('Verification failed:', error)
+			}
 		}
+
+		verify()
 	}, [verificationToken])
 
 	useEffect(() => {
-		handleVerification()
-	}, [handleVerification])
-
-	useEffect(() => {
-		if (verificationResult?.success) {
+		if (status === 'success') {
 			setSecondsRemaining(INITIAL_SECONDS)
 
 			const countdown = setInterval(() => {
-				setSecondsRemaining((prev) => Math.max(prev - 1, 0))
+				setSecondsRemaining(prev => Math.max(prev - 1, 0))
 			}, 1000)
 
 			const redirectTimeout = setTimeout(() => {
@@ -58,19 +64,13 @@ const VerificationStatus = () => {
 				clearInterval(countdown)
 			}
 		}
-	}, [verificationResult, router])
-
-	const statusMessage = isVerifying
-		? messages.verifying
-		: verificationResult?.success
-		? messages.success
-		: messages.failure
+	}, [status, router])
 
 	return (
 		<CardDescription>
-			{statusMessage}
+			{status ? messages[status] : ''}
 			<br />
-			{verificationResult?.success && (
+			{status === 'success' && (
 				<>
 					Redirecting to the home page in&nbsp;
 					<strong>
