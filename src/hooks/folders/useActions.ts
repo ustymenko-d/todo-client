@@ -50,7 +50,7 @@ const useActions = (action: TFoldersAction, folder?: IFolder) => {
 			}
 
 			setLoadingState('success')
-			toast.success('Successfuly completed')
+			toast.success(message || 'Successfuly completed')
 
 			queryClient.invalidateQueries({ queryKey: ['folders'] })
 

@@ -102,7 +102,6 @@ const withSetCookie = (res: NextResponse, cookies?: string | string[]): NextResp
 const handleAxiosError = (error: unknown, skipRefresh?: boolean) => {
 	if (axios.isAxiosError(error)) {
 		const res = error.response
-		console.log(res);
 		const filter401 =
 			res?.status === 401 &&
 			res.data?.message !== 'Missing access or refresh token.' &&

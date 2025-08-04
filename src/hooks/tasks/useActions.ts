@@ -53,7 +53,7 @@ const useActions = (action: TTaskAction, task?: TTask) => {
 			}
 
 			setLoadingState('success')
-			toast.success('Successfuly completed')
+			toast.success(message || 'Successfuly completed')
 			queryClient.invalidateQueries({ queryKey: ['tasks'] })
 
 			if (action === 'delete') closeTaskDialog()
