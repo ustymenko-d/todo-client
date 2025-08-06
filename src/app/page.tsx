@@ -7,14 +7,16 @@ const RootPage = () => (
 		</h1>
 
 		<div className='flex flex-col gap-1'>
-			<p className='w-11/12 mx-auto text-xl font-bold text-center lg:w-full sm:text-2xl lg:text-3xl'>
+			<p className='w-11/12 mx-auto mb-4 text-xl font-bold text-center lg:w-full sm:text-2xl lg:text-3xl'>
 				Manage and organize your{'\u00A0'}tasks
 			</p>
 
-			<p className='w-3/4 mx-auto mb-2 text-base text-center xl:text-lg text-muted-foreground text-balance'>
-				Log in to your account or create a new one to{'\u00A0'}continue. <br /> Please note: Since
-				this is a demo app hosted on a free server, it may take a few seconds to respond on the
-				first request due to cold start. Thank you for your patience!
+			<p className='max-w-md mx-auto mb-1 text-base text-center max-sm:px-4 xl:text-lg text-muted-foreground text-balance'>
+				Log in to your account or create a new one to{'\u00A0'}continue.
+			</p>
+			<p className='max-w-md mx-auto mb-4 text-base text-center max-sm:px-4 xl:text-lg text-muted-foreground text-balance'>
+				Please note: Since this is a demo app hosted on a free server, it may take a few seconds to
+				respond on the first request due to cold start. Thank you for your patience!
 			</p>
 
 			<div className='grid grid-cols-2 gap-4 mx-auto w-fit'>
