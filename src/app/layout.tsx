@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 })
 
 const title =
-	process.env.NEXT_PUBLIC_DEVELOPMENT === 'true'
+	process.env.NODE_ENV === 'development'
 		? 'uTodo (development)'
 		: 'uTodo'
 
