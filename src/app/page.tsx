@@ -11,8 +11,10 @@ const RootPage = () => (
 				Manage and organize your{'\u00A0'}tasks
 			</p>
 
-			<p className='w-3/4 mx-auto mb-4 text-base text-center xl:text-lg text-muted-foreground'>
-				Please log in to your account or create a new one to{'\u00A0'}continue
+			<p className='w-3/4 mx-auto mb-2 text-base text-center xl:text-lg text-muted-foreground text-balance'>
+				Log in to your account or create a new one to{'\u00A0'}continue. <br /> Please note: Since
+				this is a demo app hosted on a free server, it may take a few seconds to respond on the
+				first request due to cold start. Thank you for your patience!
 			</p>
 
 			<div className='grid grid-cols-2 gap-4 mx-auto w-fit'>
