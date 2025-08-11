@@ -9,6 +9,8 @@ import { buttonVariants } from '@/components/ui/button'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import isStartPage from '@/utils/isStartPage'
 
+import Reminder from './components/Reminder'
+
 const Header = () => {
 	const pathname = usePathname()
 
@@ -26,6 +28,7 @@ const Header = () => {
 					</Link>
 				)}
 				{!isStartPage(pathname) && <MainMenu />}
+				<Reminder />
 				<ThemeToggle />
 			</div>
 		</header>
