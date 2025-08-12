@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRequest } from '@/api/requestHandler'
+import { handleRequest } from '@/api/Axios'
 import { IRecaptcha } from '@/types/common'
 
 export const DELETE = async (request: NextRequest): Promise<NextResponse> => {

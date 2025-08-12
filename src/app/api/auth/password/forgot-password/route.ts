@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRequest } from '@/api/requestHandler'
+import { handleRequest } from '@/api/Axios'
 import { TEmail } from '@/types/auth'
 import { IRecaptcha } from '@/types/common'
 

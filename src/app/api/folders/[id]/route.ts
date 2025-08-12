@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRequest } from '@/api/requestHandler'
+import { handleRequest } from '@/api/Axios'
 import getIdFromRequest from '@/utils/getIdFromRequest'
 
 export const PATCH = async (request: NextRequest): Promise<NextResponse> => {

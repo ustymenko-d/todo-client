@@ -1,4 +1,3 @@
-import { handleApiRequest } from '@/api/requestHandler'
 import { IRecaptcha } from '@/types/common'
 import {
 	IGetTasksResponse,
@@ -8,7 +7,7 @@ import {
 	TTaskPayload,
 } from '@/types/tasks'
 
-import { ApiAxios } from './Axios'
+import { ApiAxios, handleApiRequest } from './Axios'
 
 const TASKS_API_URL = '/tasks'
 

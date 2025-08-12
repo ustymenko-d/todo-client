@@ -1,4 +1,3 @@
-import { handleApiRequest } from '@/api/requestHandler'
 import { IRecaptcha } from '@/types/common'
 import {
 	IFolderResponse,
@@ -7,7 +6,7 @@ import {
 	TFolderName,
 } from '@/types/folders'
 
-import { ApiAxios } from './Axios'
+import { ApiAxios, handleApiRequest } from './Axios'
 
 const FOLDERS_API_URL = '/folders'
 
