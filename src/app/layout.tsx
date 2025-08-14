@@ -23,12 +23,12 @@ const geistMono = Geist_Mono({
 
 const title =
 	process.env.NODE_ENV === 'development'
-		? 'uTodo (development)'
-		: 'uTodo'
+		? 'u-todo (development)'
+		: 'u-todo'
 
 export const metadata: Metadata = {
 	title,
-	description: 'uTodo is a task management application that helps you organize and manage your tasks efficiently.',
+	description: 'u-todo is a task management application that helps you organize and manage your tasks efficiently.',
 	creator: 'ustymenko.denys@gmail.com',
 }
 

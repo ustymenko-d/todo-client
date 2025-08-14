@@ -1,7 +1,7 @@
 {
 	"name": "u-todo-client",
 	"version": "1.0.0",
-	"description": "Client-side logic for the uTodo task management application",
+	"description": "Client-side logic for the task management application",
 	"author": {
     "name": "Denys Ustymenko",
     "email": "ustymenko.denys@gmail.com",
